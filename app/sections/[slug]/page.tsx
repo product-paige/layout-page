@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SECTIONS, getSection } from "@/lib/sections";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import SectionDetail from "./SectionDetail";
 import "../sections.css";
 
@@ -36,15 +36,13 @@ export default async function SectionDetailPage({
     <main className="section-detail-page flex-1 min-w-0">
       {/* breadcrumb */}
       <div className="px-10 pt-6">
-        <Link href="/sections" className="lbl lplink" style={{ borderBottom: "none" }}>
-          Section Library
-        </Link>{" "}
-        <span className="lbl" style={{ margin: "0 6px" }}>
-          /
-        </span>{" "}
-        <span className="lbl" style={{ color: "var(--ink)" }}>
-          {section.title}
-        </span>
+        <Breadcrumbs
+          items={[
+            { label: "Overview", href: "/" },
+            { label: "Browse Sections", href: "/sections" },
+            { label: section.title },
+          ]}
+        />
       </div>
 
       {/* HERO: title left, condensed details right */}

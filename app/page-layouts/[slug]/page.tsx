@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PAGE_LAYOUTS, SECTIONS, SYSTEM_NAMES } from "@/lib/sections";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import LayoutPreview from "./LayoutPreview";
 import "../page-layouts.css";
 
@@ -48,15 +48,13 @@ export default async function PageLayoutDetail({
     <main className="page-layout-detail flex-1 min-w-0">
       {/* breadcrumb */}
       <div className="px-10 pt-6">
-        <Link href="/page-layouts" className="lbl lplink" style={{ borderBottom: "none" }}>
-          Page Layouts
-        </Link>{" "}
-        <span className="lbl" style={{ margin: "0 6px" }}>
-          /
-        </span>{" "}
-        <span className="lbl" style={{ color: "var(--ink)" }}>
-          {layout.title}
-        </span>
+        <Breadcrumbs
+          items={[
+            { label: "Overview", href: "/" },
+            { label: "Page Layouts", href: "/page-layouts" },
+            { label: layout.title },
+          ]}
+        />
       </div>
 
       {/* meta */}

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Sparkles, Check } from "lucide-react";
 import { STRUCTURED_EDITORIAL as SS } from "./data";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import "./design-systems.css";
 
 type Tab = "claude" | "css" | "tailwind";
@@ -101,6 +102,9 @@ export default function DesignSystemsPage() {
 
   return (
     <div className="design-systems-page min-w-0">
+      <div className="px-8 pt-6">
+        <Breadcrumbs items={[{ label: "Overview", href: "/" }, { label: "Design Systems" }]} />
+      </div>
       {/* hero: name + meta on the left, install / code on the right */}
       <div className="grid lg:grid-cols-[1fr_minmax(0,460px)] gap-x-12 gap-y-9 px-8 py-9 border-b border-line items-start">
         <div className="stack stack-3">
