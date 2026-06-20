@@ -10,7 +10,6 @@
     {type:'link', page:'sections',    href:'section-library.html', label:'Browse Sections', icon:'layout-grid'},
     {type:'link', page:'styles',      href:'style-systems.html',   label:'Design Systems',  icon:'swatch-book'},
     {type:'link', page:'layouts',     href:'page-layouts.html',    label:'Page Layouts',    icon:'layout-template'},
-    {type:'link', page:'collections', href:'#',                    label:'Collections',     icon:'library'},
     {type:'section', label:'Resources', foot:true},
     {type:'link', page:'docs',        href:'docs.html',            label:'Docs',            icon:'book-open'},
     {type:'link', page:'changelog',   href:'changelog.html',       label:'Changelog',       icon:'history'}
@@ -46,8 +45,7 @@
     '</div>'+
     '<nav class="lp-links">'+links+'</nav>'+
     '<div class="lp-nav-foot">'+
-      '<a class="lp-login" href="#" data-label="Log in">'+icon('log-in','navicon')+'<span class="navlabel">Log in</span></a>'+
-      '<button id="themeToggle" class="themebtn" aria-label="Toggle theme">'+icon('moon','ico')+'</button>'+
+      '<button id="themeToggle" class="themebtn" aria-label="Toggle theme" style="margin-left:auto">'+icon('moon','ico')+'</button>'+
     '</div>';
 
   function syncThemeIcon(){
@@ -58,9 +56,19 @@
   function draw(){ if(window.lucide) lucide.createIcons({attrs:{'stroke-width':1.25,width:16,height:16}}); }
 
   var collapseBtn = document.getElementById('lpCollapse');
+  // arrow rotation is JS-driven so every toggle spins 180° COUNTER-CLOCKWISE (consistent direction).
+  // open = 180° (up-left), closed = 0° (down-right); each toggle subtracts 180.
+  var collapseRot = root.classList.contains('nav-collapsed') ? 0 : 180;
+  function applyCollapseRot(animate){
+    var ic = collapseBtn.querySelector('svg,i'); if(!ic) return;
+    if(animate===false){ ic.style.transition='none'; ic.style.transform='rotate('+collapseRot+'deg)'; ic.getBoundingClientRect(); ic.style.transition=''; }
+    else { ic.style.transform='rotate('+collapseRot+'deg)'; }
+  }
   collapseBtn.setAttribute('aria-expanded', String(!root.classList.contains('nav-collapsed')));
   collapseBtn.addEventListener('click', function(){
     var collapsed = root.classList.toggle('nav-collapsed');
+    collapseRot -= 180;
+    applyCollapseRot();
     collapseBtn.setAttribute('aria-expanded', String(!collapsed));
     try{ localStorage.setItem('lp-nav-collapsed', collapsed?'1':'0'); }catch(e){}
   });
@@ -144,5 +152,5 @@
   if(backdropEl) backdropEl.addEventListener('click', closeNav);
   mount.addEventListener('click', function(e){ if(e.target.closest('a')) closeNav(); });
 
-  syncThemeIcon(); draw();
+  syncThemeIcon(); draw(); applyCollapseRot(false);
 })();

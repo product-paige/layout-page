@@ -99,22 +99,17 @@ svg.lucide{stroke-width:1.25}
 .lp-logo{display:flex;align-items:center;gap:13px;min-width:0}
 .lp-logo-mark{width:16px;height:16px;background:var(--royal);transform:rotate(45deg);border-radius:3px !important;flex-shrink:0}
 .lp-collapse{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;flex-shrink:0;
-  color:var(--royal);background:#fff;border:1px solid var(--royal);border-radius:0 !important;cursor:pointer;
-  transition:background .15s ease,color .15s ease}
-.lp-collapse .ico,.lp-collapse svg{transition:transform .4s cubic-bezier(.65,.05,.36,1);transform:rotate(180deg)}
-.lp-collapse:hover{background:var(--royal);color:#fff}
-/* OPEN (expanded): curved arrow points up-left. hover spins a quarter-turn to preview the toggle */
-.lp-collapse:hover .ico,.lp-collapse:hover svg{transform:rotate(270deg)}
-/* CLOSED (collapsed): curved arrow points down-right */
-.nav-collapsed .lp-collapse .ico,.nav-collapsed .lp-collapse svg{transform:rotate(0deg)}
-.nav-collapsed .lp-collapse:hover .ico,.nav-collapsed .lp-collapse:hover svg{transform:rotate(90deg)}
-.nav-collapsed .lp-nav-head{flex-direction:column;gap:18px;padding-left:0}
+  color:var(--royal);background:#fff;border:1px solid var(--royal);border-radius:0 !important;cursor:pointer}
+/* rotation is JS-driven: each toggle spins 180° counter-clockwise (open = up-left, closed = down-right). no hover effect. */
+.lp-collapse .ico,.lp-collapse svg{transition:transform .45s cubic-bezier(.65,.05,.36,1)}
+.nav-collapsed .lp-nav-head{flex-direction:column;gap:16px;height:auto;padding:14px 0 0;margin-bottom:22px}
 
 /* links */
 .lp-links{flex:1;display:flex;flex-direction:column;gap:2px;min-height:0;overflow-y:auto;overflow-x:hidden}
 .navlink{display:flex;align-items:center;gap:11px;width:100%;font-family:'Funnel Sans',sans-serif;font-weight:500;font-size:16px;
   letter-spacing:-.02em;line-height:1.3;padding:7px 8px;color:var(--ink);opacity:.72;transition:.12s;position:relative;white-space:nowrap}
-.navlink:hover{background:#4337FF;color:#fff;opacity:1}
+/* motion hover: link slides right + turns royal (no background); active stays a filled pill */
+.navlink:not(.active):hover{color:var(--royal);opacity:1;transform:translateX(4px)}
 .navlink.active{background:#4337FF;color:#fff;opacity:1}
 .navlink .navicon{width:18px;height:18px;flex-shrink:0}
 .navtop{font-family:'Geist Mono',ui-monospace,monospace;text-transform:uppercase;letter-spacing:0.05em;font-size:13px;font-weight:400}
@@ -137,7 +132,9 @@ svg.lucide{stroke-width:1.25}
 
 /* ---- collapsed state ---- */
 .nav-collapsed .navlabel{display:none}
-.nav-collapsed .navlink{justify-content:center;gap:0;padding:9px 0}
+/* collapsed: each link is a centered square, so hover/active bg is a square the size of the icon box */
+.nav-collapsed .navlink{width:40px;height:40px;margin:0 auto;padding:0;justify-content:center;gap:0}
+.nav-collapsed .navlink:not(.active):hover{transform:none;background:#4337FF;color:#fff}
 .nav-collapsed .navtop{font-size:0}
 .nav-collapsed .navsection{margin:18px 6px 8px;padding:0;height:1px;overflow:hidden;border-top:1px solid var(--line)}
 .nav-collapsed .navsection-foot{margin-top:auto}
