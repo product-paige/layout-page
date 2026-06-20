@@ -20,18 +20,24 @@ tailwind.config = { theme: { extend: {
   body{font-family:'Funnel Sans','system-ui',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.45;animation:lp-page-in .35s ease both}
 
   /* ===== global TOP NAV (prototype) ===== */
-  .lp-topnav{display:flex;align-items:center;gap:28px;height:60px;padding:0 24px;border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:60}
+  .lp-topnav{display:flex;align-items:stretch;height:54px;padding-left:24px;background:var(--navy);position:sticky;top:0;z-index:60}
+  .lp-topnav .lp-logo{display:flex;align-items:center;gap:11px;flex-shrink:0;padding-right:6px}
   .lp-topnav .lp-logo-mark{width:16px;height:16px}
-  .lp-topnav-links{display:flex;align-items:center;gap:4px;flex:1;overflow-x:auto}
-  .lp-topnav-links a{font-family:'Funnel Sans',sans-serif;font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink);opacity:.66;padding:7px 12px;white-space:nowrap;transition:.12s}
-  .lp-topnav-links a:hover{opacity:1;color:var(--royal)}
-  .lp-topnav-links a.active{color:var(--royal);opacity:1}
-  .lp-topnav .themebtn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--line);color:var(--ink);background:transparent;cursor:pointer;flex-shrink:0}
-  .lp-topnav .themebtn:hover{border-color:var(--ink)}
+  .lp-topnav .lp-logo .logo{color:var(--cream)}
+  .lp-topnav-links{display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow-x:auto;padding-left:14px}
+  .lp-topnav-links a{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:rgba(251,250,246,.6);padding:8px 14px;white-space:nowrap;transition:.12s}
+  .lp-topnav-links a:hover{color:var(--cream)}
+  .lp-topnav-links a.active{color:var(--cream)}
+  .lp-topnav-actions{display:flex;align-items:stretch;flex-shrink:0}
+  .lp-topnav-actions a{display:inline-flex;align-items:center;padding:0 22px;border-left:1px solid rgba(251,250,246,.22);color:var(--cream);font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;white-space:nowrap}
+  .lp-topnav-actions .lp-tbi{display:inline-flex;align-items:center;gap:11px;transition:transform .2s cubic-bezier(.4,0,.2,1)}
+  .lp-topnav-actions a:hover .lp-tbi{transform:translateX(-4px)}
+  .lp-topnav .themebtn{display:inline-flex;align-items:center;justify-content:center;width:54px;border-left:1px solid rgba(251,250,246,.22);color:var(--cream);background:transparent;cursor:pointer;flex-shrink:0}
+  .lp-topnav .themebtn:hover{background:rgba(251,250,246,.08)}
 
   /* ===== contextual LEFT RAIL (controls) ===== */
   .lp-shell{display:flex;align-items:flex-start;max-width:1600px;margin:0 auto}
-  .lp-rail{width:256px;flex-shrink:0;border-right:1px solid var(--line);padding:24px 20px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+  .lp-rail{width:256px;flex-shrink:0;border-right:1px solid var(--line);padding:24px 20px;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto}
   .rail-ctrl{display:flex;flex-direction:column;gap:10px;padding:16px 0;border-top:1px solid var(--line)}
   .rail-ctrl:first-of-type{border-top:0;padding-top:6px}
   .rail-head{display:flex;align-items:center;justify-content:space-between}
@@ -40,31 +46,38 @@ tailwind.config = { theme: { extend: {
   /* ===== Cards playground (Inter) ===== */
   .cl-range{width:100%;accent-color:var(--royal);cursor:pointer}
   .cl-val{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)}
-  .cl-seg{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05em;padding:6px 12px;border:1px solid var(--line);color:var(--muted);background:transparent;cursor:pointer;transition:.12s}
+  .cl-seg{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:11px;letter-spacing:.04em;padding:4px 8px;border:1px solid var(--line);color:var(--muted);background:transparent;cursor:pointer;transition:.12s;white-space:nowrap}
   .cl-seg:hover{color:var(--ink);border-color:var(--ink)}
   .cl-seg.active{background:var(--royal);color:#fff;border-color:var(--royal)}
-  .cardlab{--cl-radius:0px;--cl-pad:16px;--cl-bw:0px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  .cardlab{--cl-radius:0px;--cl-pad:16px;--cl-bw:0px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
   @media(min-width:1000px){ .cardlab{grid-template-columns:repeat(3,minmax(0,1fr))} }
-  /* card = a vertical auto-layout frame; groups inside are nested frames with their own gap */
-  .cl-card{font-family:'Inter',system-ui,sans-serif;background:var(--card);color:var(--ink);
+  /* card = a vertical auto-layout frame; nested frames carry their own gap */
+  .cl-card{position:relative;font-family:'Inter',system-ui,sans-serif;background:var(--card);color:var(--ink);
     border:var(--cl-bw) solid var(--line);border-radius:var(--cl-radius) !important;padding:var(--cl-pad);
-    aspect-ratio:3/4;display:flex;flex-direction:column;gap:16px;overflow:hidden;
+    aspect-ratio:3/4;display:flex;flex-direction:column;gap:12px;overflow:hidden;
     transition:border-radius .18s ease,padding .18s ease,border-width .18s ease,background .2s ease}
   .cl-card *{font-family:'Inter',system-ui,sans-serif}
-  .cl-group{display:flex;flex-direction:column;gap:12px}            /* heading + subheading frame */
-  .cl-ph{background-color:#dcdcd9;border-radius:calc(var(--cl-radius) * .6) !important;flex-shrink:0}
+  .cl-group{display:flex;flex-direction:column;gap:12px}      /* eyebrow + heading group: 12px */
+  .cl-headsub{display:flex;flex-direction:column;gap:8px}     /* heading + subheading pair: 8px */
+  /* grey image placeholder — dotted texture + asterisk mark, theme-aware */
+  .cl-ph{background-color:#dcdcd9;border-radius:calc(var(--cl-radius) * .6) !important;flex-shrink:0;
+    background-image:radial-gradient(rgba(120,120,120,.4) 1px,transparent 1.6px);background-size:26px 26px;display:grid;place-items:center}
   [data-theme="dark"] .cl-ph{background-color:#191919}
-  .cl-ph--dots{background-image:radial-gradient(rgba(120,120,120,.45) 1px,transparent 1.6px);background-size:26px 26px;display:grid;place-items:center}
-  .cl-ph--dots .cl-mark{width:64px;height:64px;color:var(--ink)}
+  .cl-mark{width:30%;max-width:58px;min-width:32px;height:auto;color:var(--ink)}
   .cl-grow{flex:1;min-height:0}
-  .cl-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:500}
-  .cl-title{font-weight:600;font-size:19px;letter-spacing:-.02em;line-height:1.12;color:var(--ink)}
-  .cl-num{font-weight:600;font-size:34px;letter-spacing:-.03em;line-height:1;color:var(--ink)}
+  .cl-eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500}
+  .cl-title{font-weight:500;font-size:19px;letter-spacing:-.02em;line-height:1.14;color:var(--ink)}
+  .cl-num{font-weight:500;font-size:34px;letter-spacing:-.03em;line-height:1;color:var(--ink)}
   .cl-text{font-size:16px;line-height:1.3;color:var(--muted)}
-  .cl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:14px;color:var(--ink)}
-  .cl-overlay{position:relative}
+  .cl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13px;color:var(--ink)}
   .cl-overlay .cl-cap{position:absolute;left:0;right:0;bottom:0;padding:14px;background:linear-gradient(transparent,rgba(0,0,0,.55));border-radius:0 0 calc(var(--cl-radius) * .6) calc(var(--cl-radius) * .6) !important}
   .cl-overlay .cl-title{color:#fff}
+  /* card number badge + per-card copy */
+  .cl-badge{position:absolute;top:calc(var(--cl-pad) + 4px);right:calc(var(--cl-pad) + 6px);z-index:3;font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);opacity:.85;pointer-events:none;transition:opacity .12s}
+  .cl-card:hover .cl-badge{opacity:0}
+  .cl-copy{position:absolute;top:8px;right:8px;z-index:4;display:inline-flex;align-items:center;gap:6px;font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:11px;letter-spacing:.04em;padding:5px 9px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;opacity:0;transition:opacity .12s}
+  .cl-card:hover .cl-copy{opacity:1}
+  .cl-copy.copied{color:var(--royal);border-color:var(--royal)}
 
   /* ===== Action control: Button / Arrow / None ===== */
   .cl-cta{display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;cursor:pointer;align-self:flex-start}
@@ -90,6 +103,10 @@ tailwind.config = { theme: { extend: {
     <a href="components.html" class="active">Components</a>
     <a href="page-layouts.html">Page Layouts</a>
   </nav>
+  <div class="lp-topnav-actions">
+    <a href="mailto:hello@productpaige.com?subject=Section%20request"><span class="lp-tbi"><i data-lucide="corner-down-right" class="ico"></i>Request a section</span></a>
+    <a href="index.html#pricing"><span class="lp-tbi"><i data-lucide="corner-down-right" class="ico"></i>Start free</span></a>
+  </div>
   <button class="themebtn" id="themeToggle" aria-label="Toggle theme"><i data-lucide="moon" class="ico"></i></button>
 </header>
 
@@ -101,15 +118,16 @@ tailwind.config = { theme: { extend: {
 
     <div class="rail-ctrl">
       <div class="rail-head"><span class="lbl">Radius</span><span class="cl-val" id="clRadiusVal">0px</span></div>
-      <input type="range" id="clRadius" min="0" max="36" value="0" class="cl-range" aria-label="Card radius">
+      <input type="range" id="clRadius" min="0" max="36" step="2" value="0" class="cl-range" aria-label="Card radius">
     </div>
 
     <div class="rail-ctrl">
       <span class="lbl">Padding</span>
       <div class="rail-segs">
+        <button class="cl-seg" data-pad="10">XS 10</button>
         <button class="cl-seg" data-pad="12">S 12</button>
         <button class="cl-seg active" data-pad="16">M 16</button>
-        <button class="cl-seg" data-pad="24">L 24</button>
+        <button class="cl-seg" data-pad="32">L 32</button>
         <button class="cl-seg" data-pad="40">XL 40</button>
       </div>
     </div>
@@ -253,6 +271,41 @@ tailwind.config = { theme: { extend: {
     segGroup('data-cta', function(v){ lab.setAttribute('data-cta', v); });
     // default active states
     document.querySelector('.cl-seg[data-border="0"]').classList.add('active');
+  })();
+
+  /* ---- enhance every card: 8px heading/subheading frame, star placeholders, number, copy ---- */
+  (function(){
+    function snippet(card){
+      var cs=getComputedStyle(document.getElementById('cardlab'));
+      var r=cs.getPropertyValue('--cl-radius').trim()||'0px', pad=cs.getPropertyValue('--cl-pad').trim()||'16px', bw=cs.getPropertyValue('--cl-bw').trim()||'0px';
+      var cta=document.getElementById('cardlab').getAttribute('data-cta')||'arrow';
+      var clone=card.cloneNode(true);
+      clone.querySelectorAll('.cl-badge,.cl-copy').forEach(function(e){e.remove();});
+      var inner=clone.innerHTML.replace(/\s+$/,'');
+      var css='.card{font-family:Inter,system-ui,sans-serif;background:#fff;color:#161616;border:'+bw+' solid #e4e4e0;border-radius:'+r+';padding:'+pad+';aspect-ratio:3/4;display:flex;flex-direction:column;gap:12px;overflow:hidden}\n'+
+        '.card .cl-group{display:flex;flex-direction:column;gap:12px}\n.card .cl-headsub{display:flex;flex-direction:column;gap:8px}\n.card .cl-grow{flex:1}\n'+
+        '.card .cl-ph{flex:1;background:#dcdcd9;border-radius:calc('+r+' * .6);display:grid;place-items:center}\n.card .cl-mark{width:30%;max-width:58px;color:#161616}\n'+
+        '.card .cl-eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#6b6b66;font-weight:500}\n'+
+        '.card .cl-title{font-weight:500;font-size:19px;letter-spacing:-.02em;line-height:1.14}\n.card .cl-text{font-size:16px;line-height:1.3;color:#6b6b66}\n'+
+        '.card .cl-num{font-weight:500;font-size:34px;line-height:1;letter-spacing:-.03em}\n.card .cl-row{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #e4e4e0;font-size:13px}\n'+
+        '.card .cl-cta{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:500;align-self:flex-start;'+(cta==='button'?'background:#161616;color:#fff;padding:9px 18px;border-radius:999px;':'color:#161616;')+'}';
+      return '<!-- layout.page card · radius '+r+' · padding '+pad+' · border '+bw+' · Inter -->\n<style>\n'+css+'\n</style>\n<article class="card">'+inner+'</article>';
+    }
+    document.querySelectorAll('.cardlab .cl-card').forEach(function(card,i){
+      card.querySelectorAll('.cl-group').forEach(function(g){
+        var t=g.querySelector(':scope > .cl-title'), x=g.querySelector(':scope > .cl-text');
+        if(t&&x){ var hs=document.createElement('div'); hs.className='cl-headsub'; g.insertBefore(hs,t); hs.appendChild(t); hs.appendChild(x); }
+      });
+      card.querySelectorAll('.cl-ph').forEach(function(ph){ if(!ph.querySelector('.cl-mark')){ var m=document.createElement('i'); m.setAttribute('data-lucide','asterisk'); m.className='cl-mark'; ph.appendChild(m); } });
+      var badge=document.createElement('span'); badge.className='cl-badge'; badge.textContent=('0'+(i+1)).slice(-2); card.appendChild(badge);
+      var copy=document.createElement('button'); copy.type='button'; copy.className='cl-copy'; copy.innerHTML='<i data-lucide="clipboard" style="width:13px;height:13px"></i> Copy'; card.appendChild(copy);
+      copy.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation();
+        if(navigator.clipboard) navigator.clipboard.writeText(snippet(card));
+        var o=copy.innerHTML; copy.classList.add('copied'); copy.textContent='✓ Copied';
+        setTimeout(function(){ copy.classList.remove('copied'); copy.innerHTML=o; if(window.lucide) lucide.createIcons({attrs:{'stroke-width':1.5,width:13,height:13}}); },1200);
+      });
+    });
+    if(window.lucide) lucide.createIcons({attrs:{'stroke-width':1.5,width:16,height:16}});
   })();
 </script>
 </body>
