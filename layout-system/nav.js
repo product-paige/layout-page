@@ -9,6 +9,7 @@
     {type:'section', label:'Library'},
     {type:'link', page:'sections',    href:'section-library.html', label:'Browse Sections', icon:'layout-grid'},
     {type:'link', page:'styles',      href:'style-systems.html',   label:'Design Systems',  icon:'swatch-book'},
+    {type:'link', page:'components',  href:'components.html',      label:'Components',      icon:'component'},
     {type:'link', page:'layouts',     href:'page-layouts.html',    label:'Page Layouts',    icon:'layout-template'},
     {type:'section', label:'Resources', foot:true},
     {type:'link', page:'docs',        href:'docs.html',            label:'Docs',            icon:'book-open'},
