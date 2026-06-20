@@ -1,8 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
-import { Asterisk, CornerDownRight, Code, Bookmark, BookmarkCheck } from "lucide-react";
+import { Asterisk, CornerDownRight, Code, Bookmark, BookmarkCheck, ChevronDown } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import "./cards.css";
 
@@ -20,11 +19,86 @@ type Cta = "button" | "arrow" | "none";
 const ASTERISK_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="cl-mark"><path d="M12 6v12"/><path d="M17.196 9 6.804 15"/><path d="m6.804 9 10.392 6"/></svg>';
 
+const ICON_COLORS = [
+  { name: "Ink", value: "#1a1a1a" },
+  { name: "White", value: "#ffffff" },
+  { name: "Royal", value: "#4337FF" },
+];
+const ICON_BGS = [
+  { name: "Lime", value: "#E4F222" },
+  { name: "Royal", value: "#4337FF" },
+  { name: "Ink", value: "#1a1a1a" },
+  { name: "Grey", value: "#E6E5E0" },
+];
+const FONTS = [
+  { name: "Inter", value: "var(--font-inter)" },
+  { name: "Funnel", value: "var(--font-funnel)" },
+  { name: "Mono", value: "var(--font-geist-mono)" },
+];
+
+function RailGroup({
+  title,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="rail-group">
+      <button
+        type="button"
+        className="rail-group-head"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+      >
+        <span className="lbl">{title}</span>
+        <ChevronDown className={"rail-chevron" + (open ? " open" : "")} size={15} strokeWidth={1.75} />
+      </button>
+      {open && <div className="rail-group-body">{children}</div>}
+    </div>
+  );
+}
+
+function Swatches({
+  options,
+  value,
+  onChange,
+}: {
+  options: { name: string; value: string }[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="rail-swatches">
+      {options.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          className={"cl-swatch" + (value === o.value ? " active" : "")}
+          style={{ background: o.value }}
+          onClick={() => onChange(o.value)}
+          aria-label={o.name}
+          title={o.name}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function CardsLab() {
   const [radius, setRadius] = useState(0);
   const [pad, setPad] = useState("16");
   const [border, setBorder] = useState("0");
   const [cta, setCta] = useState<Cta>("arrow");
+  const [iconColor, setIconColor] = useState("#1a1a1a");
+  const [iconBg, setIconBg] = useState("#E4F222");
+  const [iconSize, setIconSize] = useState(36);
+  const [iconPad, setIconPad] = useState(26);
+  const [font, setFont] = useState("var(--font-inter)");
+  const [bodySize, setBodySize] = useState(16);
 
   // refs to every card so we can read its own inner markup when copying
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
@@ -35,6 +109,12 @@ export default function CardsLab() {
     "--cl-radius": radius + "px",
     "--cl-pad": pad + "px",
     "--cl-bw": border + "px",
+    "--cl-icon-color": iconColor,
+    "--cl-icon-bg": iconBg,
+    "--cl-icon-size": iconSize + "px",
+    "--cl-icon-pad": iconPad + "px",
+    "--cl-font": font,
+    "--cl-body": bodySize + "px",
   } as React.CSSProperties;
 
   function clearStyles() {
@@ -42,6 +122,12 @@ export default function CardsLab() {
     setPad("16");
     setBorder("0");
     setCta("arrow");
+    setIconColor("#1a1a1a");
+    setIconBg("#E4F222");
+    setIconSize(36);
+    setIconPad(26);
+    setFont("var(--font-inter)");
+    setBodySize(16);
   }
 
   function buildSnippet(card: HTMLElement) {
@@ -165,92 +251,161 @@ export default function CardsLab() {
     <div className="cardlab-page lp-shell">
       {/* ============================ CONTEXTUAL LEFT RAIL ============================ */}
       <aside className="lp-rail">
-        <div className="lbl" style={{ marginBottom: 8 }}>
-          Components
-        </div>
-        <nav className="rail-nav">
-          <Link href="/components/cards" className="active">
-            Cards
-          </Link>
-          <Link href="/components/buttons">Buttons</Link>
-        </nav>
-        <div className="lbl" style={{ margin: "18px 0 14px" }}>
-          Controls — Cards
+        <div className="lbl rail-title" style={{ color: "var(--muted)" }}>
+          Controls
         </div>
 
-        <div className="rail-ctrl">
-          <div className="rail-head">
-            <span className="lbl">Radius</span>
-            <span className="cl-val">{radius}px</span>
+        <RailGroup title="Card" defaultOpen>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Radius</span>
+              <span className="cl-val">{radius}px</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={36}
+              step={2}
+              value={radius}
+              onChange={(e) => setRadius(Number(e.target.value))}
+              className="cl-range"
+              aria-label="Card radius"
+            />
           </div>
-          <input
-            type="range"
-            min={0}
-            max={36}
-            step={2}
-            value={radius}
-            onChange={(e) => setRadius(Number(e.target.value))}
-            className="cl-range"
-            aria-label="Card radius"
-          />
-        </div>
-
-        <div className="rail-ctrl">
-          <span className="lbl">Padding</span>
-          <div className="rail-segs">
-            {PADS.map((p) => (
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Padding</span>
+            <div className="rail-segs">
+              {PADS.map((p) => (
+                <button
+                  key={p.v}
+                  className={"cl-seg" + (pad === p.v ? " active" : "")}
+                  onClick={() => setPad(p.v)}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Borders</span>
+            <div className="rail-segs">
               <button
-                key={p.v}
-                className={"cl-seg" + (pad === p.v ? " active" : "")}
-                onClick={() => setPad(p.v)}
+                className={"cl-seg" + (border === "0" ? " active" : "")}
+                onClick={() => setBorder("0")}
               >
-                {p.label}
+                Off
               </button>
-            ))}
+              <button
+                className={"cl-seg" + (border === "1" ? " active" : "")}
+                onClick={() => setBorder("1")}
+              >
+                On
+              </button>
+            </div>
           </div>
-        </div>
+        </RailGroup>
 
-        <div className="rail-ctrl">
-          <span className="lbl">Borders</span>
-          <div className="rail-segs">
-            <button
-              className={"cl-seg" + (border === "0" ? " active" : "")}
-              onClick={() => setBorder("0")}
-            >
-              Off
-            </button>
-            <button
-              className={"cl-seg" + (border === "1" ? " active" : "")}
-              onClick={() => setBorder("1")}
-            >
-              On
-            </button>
+        <RailGroup title="Action" defaultOpen>
+          <div className="rail-ctrl-inner">
+            <span className="lbl">CTA</span>
+            <div className="rail-segs">
+              <button
+                className={"cl-seg" + (cta === "button" ? " active" : "")}
+                onClick={() => setCta("button")}
+              >
+                Button
+              </button>
+              <button
+                className={"cl-seg" + (cta === "arrow" ? " active" : "")}
+                onClick={() => setCta("arrow")}
+              >
+                Arrow
+              </button>
+              <button
+                className={"cl-seg" + (cta === "none" ? " active" : "")}
+                onClick={() => setCta("none")}
+              >
+                None
+              </button>
+            </div>
           </div>
-        </div>
+        </RailGroup>
 
-        <div className="rail-ctrl">
-          <span className="lbl">Action</span>
-          <div className="rail-segs">
-            <button
-              className={"cl-seg" + (cta === "button" ? " active" : "")}
-              onClick={() => setCta("button")}
-            >
-              Button
-            </button>
-            <button
-              className={"cl-seg" + (cta === "arrow" ? " active" : "")}
-              onClick={() => setCta("arrow")}
-            >
-              Arrow
-            </button>
-            <button
-              className={"cl-seg" + (cta === "none" ? " active" : "")}
-              onClick={() => setCta("none")}
-            >
-              None
-            </button>
+        <RailGroup title="Type">
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Font</span>
+            <div className="rail-segs">
+              {FONTS.map((f) => (
+                <button
+                  key={f.name}
+                  className={"cl-seg" + (font === f.value ? " active" : "")}
+                  onClick={() => setFont(f.value)}
+                >
+                  {f.name}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Body size</span>
+              <span className="cl-val">{bodySize}px</span>
+            </div>
+            <input
+              type="range"
+              min={14}
+              max={18}
+              step={1}
+              value={bodySize}
+              onChange={(e) => setBodySize(Number(e.target.value))}
+              className="cl-range"
+              aria-label="Body size"
+            />
+          </div>
+        </RailGroup>
+
+        <RailGroup title="Icon">
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Color</span>
+            <Swatches options={ICON_COLORS} value={iconColor} onChange={setIconColor} />
+          </div>
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Background</span>
+            <Swatches options={ICON_BGS} value={iconBg} onChange={setIconBg} />
+          </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Size</span>
+              <span className="cl-val">{iconSize}px</span>
+            </div>
+            <input
+              type="range"
+              min={20}
+              max={56}
+              step={2}
+              value={iconSize}
+              onChange={(e) => setIconSize(Number(e.target.value))}
+              className="cl-range"
+              aria-label="Icon size"
+            />
+          </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Tile padding</span>
+              <span className="cl-val">{iconPad}px</span>
+            </div>
+            <input
+              type="range"
+              min={8}
+              max={44}
+              step={2}
+              value={iconPad}
+              onChange={(e) => setIconPad(Number(e.target.value))}
+              className="cl-range"
+              aria-label="Tile padding"
+            />
+          </div>
+        </RailGroup>
 
         <button className="rail-clear" onClick={clearStyles}>
           Clear styles
@@ -274,7 +429,9 @@ export default function CardsLab() {
                 Adjust the controls on the left — every card updates live.
               </p>
             </div>
-            <span className="lbl">Inter · Lorem ipsum</span>
+            <span className="lbl">
+              {(FONTS.find((f) => f.value === font)?.name ?? "Inter")} · Lorem ipsum
+            </span>
           </div>
 
           <div className="cardlab" data-cta={cta} style={labStyle}>
