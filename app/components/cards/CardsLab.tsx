@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { Asterisk, CornerDownRight, Code, Bookmark, BookmarkCheck } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import "./cards.css";
 
 const PADS = [
@@ -259,6 +260,13 @@ export default function CardsLab() {
       {/* ============================ MAIN ============================ */}
       <main className="flex-1 min-w-0">
         <div className="stack stack-3 px-8 py-9" id="cards">
+          <Breadcrumbs
+            items={[
+              { label: "Overview", href: "/" },
+              { label: "Components", href: "/components" },
+              { label: "Cards" },
+            ]}
+          />
           <div className="flex items-end justify-between flex-wrap gap-3">
             <div className="stack stack-1">
               <h1 className="ts-section-lg">Cards</h1>

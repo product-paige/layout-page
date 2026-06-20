@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Square, Image, Asterisk, ArrowRight, Tag, FormInput } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import "./components.css";
 
 export const metadata = { title: "Components · layout.page" };
@@ -7,7 +8,8 @@ export const metadata = { title: "Components · layout.page" };
 export default function ComponentsHub() {
   return (
     <main className="px-8 py-10">
-      <div className="stack stack-2 mb-8">
+      <Breadcrumbs items={[{ label: "Overview", href: "/" }, { label: "Components" }]} />
+      <div className="stack stack-2 mb-8 mt-5">
         <h1 className="ts-page-hero">Components</h1>
         <p className="lp-hero-support" style={{ maxWidth: "60ch" }}>
           Interactive building blocks. Open a component to tune it live — radius, padding, borders,

@@ -12,6 +12,7 @@ import {
   Check,
   type LucideIcon,
 } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import "./buttons.css";
 
 type Variant = "fill" | "outline" | "ghost";
@@ -309,6 +310,13 @@ export default function ButtonsLab() {
 
       <main className="flex-1 min-w-0">
         <div className="stack stack-3 px-8 py-9">
+          <Breadcrumbs
+            items={[
+              { label: "Overview", href: "/" },
+              { label: "Components", href: "/components" },
+              { label: "Buttons" },
+            ]}
+          />
           <div className="stack stack-1">
             <h1 className="ts-section-lg">Buttons</h1>
             <p className="text-[16px]" style={{ color: "var(--muted)" }}>

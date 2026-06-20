@@ -129,6 +129,14 @@ svg.lucide{stroke-width:1.25}
 .lp-hero-text{display:flex;flex-direction:column;gap:6px}
 .lp-hero-support{font-size:16px;line-height:1.5;color:var(--muted);max-width:62ch}
 
+/* ---- breadcrumbs ---- */
+.lp-crumbs{display:flex;align-items:center;flex-wrap:wrap;font-family:var(--font-geist-mono),ui-monospace,monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;line-height:1.35}
+.lp-crumbs-item{display:inline-flex;align-items:center}
+.lp-crumb{color:var(--muted);transition:color .12s}
+a.lp-crumb:hover{color:var(--royal)}
+.lp-crumb-current{color:var(--ink)}
+.lp-crumb-sep{padding:0 10px;color:var(--muted);opacity:.5}
+
 /* ============================================================
    SHARED FOOTER
    ============================================================ */
