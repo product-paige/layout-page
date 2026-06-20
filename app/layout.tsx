@@ -4,6 +4,7 @@ import "./globals.css";
 import "./system.css";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
+import { DesignSystemProvider } from "@/components/DesignSystemProvider";
 
 const funnel = Funnel_Sans({ subsets: ["latin"], variable: "--font-funnel", display: "swap" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
@@ -31,11 +32,13 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="antialiased">
-        <TopNav />
-        <div className="mx-auto w-full max-w-[1440px]">
-          {children}
-          <Footer />
-        </div>
+        <DesignSystemProvider>
+          <TopNav />
+          <div className="mx-auto w-full max-w-[1440px]">
+            {children}
+            <Footer />
+          </div>
+        </DesignSystemProvider>
       </body>
     </html>
   );

@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/design-systems", label: "Design Systems" },
   { href: "/components", label: "Components" },
   { href: "/page-layouts", label: "Page Layouts" },
+  { href: "/your-system", label: "Your System" },
 ];
 
 export default function TopNav() {

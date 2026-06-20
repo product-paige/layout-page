@@ -1,0 +1,11 @@
+/* Your System page — aggregated design system */
+.your-system-page .ys-empty{display:flex;flex-direction:column;align-items:flex-start;gap:16px;border:1px solid var(--line);background:var(--card);padding:32px}
+.your-system-page .ys-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.your-system-page .ys-card{display:flex;flex-direction:column;gap:14px;border:1px solid var(--line);background:var(--card);padding:18px}
+.your-system-page .ys-card .btnlab{min-height:auto;gap:0;padding:6px 0;justify-content:flex-start}
+.your-system-page .ys-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.your-system-page .ys-name{font-family:var(--font-inter),sans-serif;font-size:14px;font-weight:500;color:var(--ink)}
+.your-system-page .ys-del{display:inline-flex;padding:6px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;transition:.12s}
+.your-system-page .ys-del:hover{color:var(--ink);border-color:var(--line)}
+.your-system-page .ys-export{display:flex;flex-direction:column;gap:10px}
+.your-system-page .ys-code{background:var(--panel);border:1px solid var(--line);padding:16px;font-family:var(--font-geist-mono),monospace;font-size:12.5px;line-height:1.55;color:var(--ink);white-space:pre-wrap;overflow:auto;max-height:420px}
