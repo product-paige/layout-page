@@ -1,0 +1,7 @@
+.DS_Store
+*.log
+.vercel
+node_modules/
+
+# internal — never publish
+BUSINESS-PLAN.md

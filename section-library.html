@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Section Library · layout.page</title>
+<script>(function(){try{if(localStorage.getItem('lp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(localStorage.getItem('lp-nav-collapsed')==='1')document.documentElement.classList.add('nav-collapsed');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<link href="layout-system/site.css" rel="stylesheet">
+<link href="layout-system/system.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { surface:'var(--bg)', ink:'var(--ink)', muted:'var(--muted)', line:'var(--line)', card:'var(--card)', panel:'var(--panel)', royal:'#4337FF' },
+  fontFamily: { sans:['Funnel Sans','system-ui','sans-serif'], mono:['Geist Mono','ui-monospace','Menlo','monospace'] }
+} } }
+</script>
+<style>
+  body{font-family:'Funnel Sans','system-ui',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.45}
+  /* page-specific only — shared shell (incl. .chip) lives in site.css */
+  /* always a 2-column grid (All + categories) */
+  .grid-cat{grid-template-columns:1fr;align-items:start}
+  @media(min-width:760px){ .grid-cat{grid-template-columns:repeat(2,minmax(0,1fr))} }
+  /* scaled live preview thumbnail — height fits the scaled section (set in JS) */
+  .thumb{position:relative;overflow:hidden;background:var(--bg);border-bottom:1px solid var(--line)}
+  .thumb-inner{width:1100px;transform-origin:top left;pointer-events:none}
+  .card{border-bottom:1px solid var(--line);display:flex;flex-direction:column}
+  /* section-card tags grey; the View button is the bright-blue outline */
+  .card .tag{color:var(--muted);border-color:var(--line)}
+  .card .lpbtn--secondary{color:var(--royal);border-color:var(--royal)}
+  .card .lpbtn--secondary:hover{background:var(--royal);border-color:var(--royal);color:#fff}
+  @media(min-width:760px){ .grid-cat .card:nth-child(odd){border-right:1px solid var(--line)} }
+  .copied{color:#4337FF !important;border-color:#4337FF !important}
+</style>
+</head>
+<body class="antialiased" data-page="sections" data-title="Section Library">
+<div class="flex min-h-screen max-w-[1600px] mx-auto">
+
+  <aside id="lp-nav" class="lp-nav hidden md:flex"></aside>
+
+  <main class="flex-1 min-w-0 border-l border-line">
+    <!-- top bar injected by nav.js (shared template) -->
+
+    <!-- page hero -->
+    <section class="lp-hero">
+      <h1 class="ts-page-hero">Section Library</h1>
+      <div class="lp-hero-text">
+        <p class="lp-hero-support" style="max-width:44ch">Preview any section in a Design System and Mode, then copy clean HTML or a Claude prompt.</p>
+      </div>
+    </section>
+
+    <!-- ===================== FILTERS ===================== -->
+    <div class="stack stack-3 px-10 pt-7 pb-7 border-b border-line">
+      <div class="stack stack-1"><div class="lbl">Category</div><div class="flex flex-wrap gap-2" id="catChips"></div></div>
+      <div class="flex flex-wrap gap-x-12 gap-y-5">
+        <div class="stack stack-1"><div class="lbl">Design System</div><div class="flex flex-wrap gap-2" id="sysChips"></div></div>
+      </div>
+    </div>
+
+    <!-- result count + Mode switcher -->
+    <div class="px-10 py-4 border-b border-line flex items-center justify-between gap-4 flex-wrap">
+      <span class="lbl" id="count"></span>
+      <div class="flex items-center gap-3">
+        <span class="lbl">Mode</span>
+        <div class="flex flex-wrap gap-2" id="modeChips"></div>
+      </div>
+    </div>
+
+    <!-- ===================== CATALOG GRID ===================== -->
+    <section class="grid grid-cat" id="grid"></section>
+  </main>
+</div>
+
+<script src="layout-system/sections-data.js"></script>
+<script>
+  const SECTIONS = window.LP_SECTIONS;
+  const grid = document.getElementById('grid');
+  const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+  // ---- build filter chips from data ----
+  const cats = ['all', ...new Set(SECTIONS.map(s=>s.category))];
+  const active = { cat:'all' };
+  let mode = 'neutral';
+  let system = 'structured-editorial';
+
+  function chip(group, value, label, on){
+    const b = el('button','chip'+(on?' active':''), label);
+    b.dataset.group=group; b.dataset.filter=value;
+    return b;
+  }
+  const catWrap=document.getElementById('catChips');
+  cats.forEach(c=>catWrap.appendChild(chip('cat',c,c==='all'?'All':c,c==='all')));
+  // Design System (only Structured Editorial active; others are coming soon)
+  const sysWrap=document.getElementById('sysChips');
+  sysWrap.appendChild(chip('sys','structured-editorial','Structured Editorial',true));
+  sysWrap.appendChild(chip('sys','scion','Scion',false));
+  ['Commerce Clean'].forEach(n=>{const b=chip('sys','soon',n,false);b.classList.add('sysoff');b.disabled=true;sysWrap.appendChild(b);});
+  // Mode
+  const modeWrap=document.getElementById('modeChips');
+  [['neutral','Light'],['dark','Dark'],['color','Color']].forEach(([v,l])=>modeWrap.appendChild(chip('mode',v,l,v==='neutral')));
+
+  // ---- render cards ----
+  function card(s){
+    const c = el('article','card');
+    c.dataset.cat=s.category; c.dataset.struct=s.structureTags.join(' ');
+    const tags = s.tags.map(t=>'<span class="tag">'+t+'</span>').join('');
+    const href = 'section.html?id='+s.id;
+    c.innerHTML =
+      '<a href="'+href+'" style="display:block">'+
+        '<div class="thumb"><div class="thumb-inner sx-canvas" data-system="'+system+'" data-mode="'+mode+'">'+s.html+'</div></div></a>'+
+      '<div class="p-5 stack stack-2">'+
+        '<div class="flex items-center justify-between gap-3"><a href="'+href+'" class="ts-card-sm hover:text-royal">'+s.title+'</a><span class="meta-pill">'+s.category+'</span></div>'+
+        '<p class="text-[14px]" style="color:var(--muted)">'+s.description+'</p>'+
+        '<div class="flex flex-wrap gap-1.5">'+tags+'</div>'+
+        '<a class="lpbtn lpbtn--secondary lpbtn--sm lpbtn--full mt-1" href="'+href+'"><i data-lucide="corner-down-right" class="ico"></i> View section</a>'+
+      '</div>';
+    return c;
+  }
+  SECTIONS.forEach(s=>grid.appendChild(card(s)));
+
+  // ---- scale thumbnails to fit ----
+  function scaleThumbs(){
+    document.querySelectorAll('.thumb').forEach(t=>{
+      const inner=t.querySelector('.thumb-inner');
+      const s = t.clientWidth/1100;
+      inner.style.transform='scale('+s+')';
+      t.style.height = Math.round(inner.offsetHeight * s) + 'px';
+    });
+  }
+  // ---- filtering ----
+  function apply(){
+    let n=0;
+    document.querySelectorAll('#grid .card').forEach(c=>{
+      const show = active.cat==='all' || c.dataset.cat===active.cat;
+      c.style.display = show?'':'none';
+      if(show) n++;
+    });
+    document.getElementById('count').textContent = n + (n===1?' section':' sections');
+    scaleThumbs();
+  }
+  // chip clicks (cat/structure filter; mode re-skin; sys is single)
+  document.addEventListener('click', e=>{
+    const b = e.target.closest('.chip'); if(!b||b.disabled) return;
+    const g = b.dataset.group;
+    if(g==='cat'){
+      document.querySelectorAll('.chip[data-group="cat"]').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); active.cat=b.dataset.filter; apply();
+    } else if(g==='mode'){
+      document.querySelectorAll('.chip[data-group="mode"]').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); mode=b.dataset.filter;
+      document.querySelectorAll('.thumb-inner').forEach(t=>t.setAttribute('data-mode',mode));
+      scaleThumbs();
+    } else if(g==='sys'){
+      document.querySelectorAll('.chip[data-group="sys"]').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); system=b.dataset.filter;
+      document.querySelectorAll('.thumb-inner').forEach(t=>t.setAttribute('data-system',system));
+      scaleThumbs();
+    }
+  });
+  // deep-link: section-library.html?cat=Hero
+  (function(){
+    const cat=new URLSearchParams(location.search).get('cat');
+    if(cat){ const chip=[...document.querySelectorAll('.chip[data-group="cat"]')].find(c=>c.dataset.filter===cat); if(chip) chip.click(); }
+  })();
+  apply();
+  window.addEventListener('resize', scaleThumbs);
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="layout-system/nav.js"></script>
+<script>lucide.createIcons({ attrs: { 'stroke-width': 1.25, width: 16, height: 16 } }); setTimeout(scaleThumbs,60);</script>
+</body>
+</html>

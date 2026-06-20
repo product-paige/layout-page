@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Docs · layout.page</title>
+<script>(function(){try{if(localStorage.getItem('lp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(localStorage.getItem('lp-nav-collapsed')==='1')document.documentElement.classList.add('nav-collapsed');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="layout-system/site.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { surface:'var(--bg)', ink:'var(--ink)', muted:'var(--muted)', line:'var(--line)', card:'var(--card)', panel:'var(--panel)', royal:'#4337FF' },
+  fontFamily: { sans:['Funnel Sans','system-ui','sans-serif'], mono:['Geist Mono','ui-monospace','Menlo','monospace'] }
+} } }
+</script>
+<style>
+  body{font-family:'Funnel Sans','system-ui',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.45}
+  .dcard{transition:.12s}.dcard:hover{background:var(--panel)}
+</style>
+</head>
+<body class="antialiased" data-page="docs" data-title="Docs">
+<div class="flex min-h-screen max-w-[1600px] mx-auto">
+  <aside id="lp-nav" class="lp-nav hidden md:flex"></aside>
+
+  <main class="flex-1 min-w-0 border-l border-line">
+    <!-- top bar injected by nav.js -->
+
+    <section class="lp-hero">
+      <h1 class="ts-page-hero">Docs</h1>
+      <div class="lp-hero-text">
+        <p class="subhead">Guides for building with layout.page.</p>
+        <p class="lp-hero-support">Copy-ready prompts and step-by-step workflows for assembling a site from sections, page layouts, and Design Systems.</p>
+      </div>
+    </section>
+
+    <section class="grid sm:grid-cols-2 border-t border-l border-line" id="docs-grid"></section>
+  </main>
+</div>
+
+<script>
+  const DOCS = [
+    { cat:'Guide', title:'Build a Website with Claude', href:'docs-build-a-website.html',
+      desc:'Set up a Next.js project, add a Design System, choose a page layout, and add sections one at a time — with copy-ready prompts for every step.',
+      meta:'10 steps · Next.js + GitHub + Vercel' }
+  ];
+  const SOON = [
+    { cat:'Guide', title:'Customize a Design System', desc:'Override the token set to give a system its own personality without changing structure.' },
+    { cat:'Reference', title:'Section copy-fit notes', desc:'Headline, body, and CTA length guidance for fitting your copy to each section.' }
+  ];
+  const grid = document.getElementById('docs-grid');
+  DOCS.forEach(d=>{
+    const a = document.createElement('a');
+    a.href = d.href;
+    a.className = 'dcard border-r border-b border-line block p-7 stack stack-3';
+    a.innerHTML =
+      '<span class="meta-pill" style="width:fit-content">'+d.cat+'</span>'+
+      '<h2 style="font-size:var(--lp-heading-sm)">'+d.title+'</h2>'+
+      '<p class="text-[16px]" style="color:var(--muted)">'+d.desc+'</p>'+
+      '<span class="lbl">'+d.meta+'</span>'+
+      '<span class="lpbtn lpbtn--primary lpbtn--sm lpbtn--full"><i data-lucide="corner-down-right" class="ico"></i> Read doc</span>';
+    grid.appendChild(a);
+  });
+  SOON.forEach(d=>{
+    const div = document.createElement('div');
+    div.className = 'border-r border-b border-line p-7 stack stack-3';
+    div.style.minHeight = '260px';
+    div.innerHTML =
+      '<span class="meta-pill" style="width:fit-content;color:var(--royal);background:transparent;border:1px solid var(--royal)">Coming soon</span>'+
+      '<h2 style="font-size:var(--lp-heading-sm);color:var(--muted)">'+d.title+'</h2>'+
+      '<p class="text-[16px]" style="color:var(--muted);max-width:40ch">'+d.desc+'</p>';
+    grid.appendChild(div);
+  });
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="layout-system/nav.js"></script>
+<script>lucide.createIcons({ attrs: { 'stroke-width': 1.25, width: 16, height: 16 } });</script>
+</body>
+</html>

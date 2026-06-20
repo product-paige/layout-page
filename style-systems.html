@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Design Systems · layout.page</title>
+<script>(function(){try{if(localStorage.getItem('lp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(localStorage.getItem('lp-nav-collapsed')==='1')document.documentElement.classList.add('nav-collapsed');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<link href="layout-system/site.css" rel="stylesheet">
+<link href="layout-system/system.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { surface:'var(--bg)', ink:'var(--ink)', muted:'var(--muted)', line:'var(--line)', linesoft:'var(--linesoft)', card:'var(--card)', panel:'var(--panel)', royal:'#4337FF', tint:'#C9C5FF' },
+  fontFamily: { sans:['Funnel Sans','system-ui','sans-serif'], mono:['Geist Mono','ui-monospace','Menlo','monospace'] }
+} } }
+</script>
+<style>
+  /* page-specific only — shared shell lives in site.css */
+  .viewlink{display:inline-flex;align-items:center;gap:6px;font-family:'Geist Mono',monospace;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#4337FF}.viewlink:hover{text-decoration:underline}
+  .sscard{transition:.12s}.sscard:hover{background:var(--panel)}
+</style>
+</head>
+<body class="antialiased" data-page="styles" data-title="Design Systems">
+<div class="flex min-h-screen max-w-[1600px] mx-auto">
+
+  <aside id="lp-nav" class="lp-nav hidden md:flex"></aside>
+
+  <main class="flex-1 min-w-0 border-l border-line">
+    <!-- top bar injected by nav.js (shared template) -->
+
+    <section class="lp-hero">
+      <h1 class="ts-page-hero">Design Systems</h1>
+      <div class="lp-hero-text">
+        <p class="subhead">Complete visual systems for every section.</p>
+        <p class="lp-hero-support">Each system defines type, spacing, color, and components. Apply one to preview and copy any section.</p>
+      </div>
+    </section>
+
+    <section class="grid sm:grid-cols-2 border-t border-l border-line" id="ss-grid"></section>
+  </main>
+</div>
+
+<script src="layout-system/style-systems-data.js"></script>
+<script>
+  const grid=document.getElementById('ss-grid');
+  window.LP_STYLE_SYSTEMS.forEach(s=>{
+    const a=document.createElement('a');
+    a.href=s.href||(s.id+'.html');
+    a.className='sscard border-r border-b border-line p-7 block';
+    const tags=s.tags.slice(0,4).map(t=>'<span class="tag">'+t+'</span>').join('');
+    a.innerHTML=
+      '<div class="sx-canvas border border-line mb-6" data-system="'+s.id+'" data-mode="neutral" style="padding:var(--sx-space-5) var(--sx-space-5)">'+
+        '<p class="sx-eyebrow">[ '+s.name+' ]</p>'+
+        '<div class="sx-display" style="font-size:clamp(26px,3vw,34px);margin-top:14px">Aa</div>'+
+        '<div class="sx-cta" style="margin-top:18px"><span class="sx-btn sx-btn--primary" style="height:34px;padding-inline:18px;font-size:13px">Primary</span><span class="sx-btn sx-btn--secondary" style="height:34px;padding-inline:18px;font-size:13px">Secondary</span></div>'+
+      '</div>'+
+      '<h2 class="text-[22px] mb-2">'+s.name+'</h2>'+
+      '<p class="text-[14px] mb-4" style="color:var(--muted)">'+s.description+'</p>'+
+      '<div class="flex flex-wrap gap-1.5 mb-5">'+tags+'</div>'+
+      '<span class="lpbtn lpbtn--primary lpbtn--sm lpbtn--full"><i data-lucide="corner-down-right" class="ico"></i> View system</span>';
+    grid.appendChild(a);
+  });
+  // coming-soon placeholders
+  [
+    { n:'Minimal Product', b:'Clean, compact rules for SaaS, tools, and product-led pages.' },
+    { n:'Commerce Clean',  b:'A structured system for product pages, collections, stores, and modern ecommerce.' }
+  ].forEach(({n,b})=>{
+    const d=document.createElement('div');
+    d.className='border-r border-b border-line p-7 flex flex-col justify-center items-start';
+    d.style.minHeight='320px';
+    d.innerHTML='<div class="lbl mb-3" style="color:var(--royal)">Coming soon</div><h2 class="text-[22px] mb-2" style="color:var(--muted)">'+n+'</h2><p class="text-[14px] max-w-[34ch]" style="color:var(--muted)">'+b+'</p>';
+    grid.appendChild(d);
+  });
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="layout-system/nav.js"></script>
+<script>lucide.createIcons({ attrs: { 'stroke-width': 1.5, width: 16, height: 16 } });</script>
+</body>
+</html>

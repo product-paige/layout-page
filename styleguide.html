@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Style Guide · layout.page</title>
+<script>(function(){try{if(localStorage.getItem('lp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(localStorage.getItem('lp-nav-collapsed')==='1')document.documentElement.classList.add('nav-collapsed');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="layout-system/site.css" rel="stylesheet">
+<link href="layout-system/system.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { surface:'var(--bg)', ink:'var(--ink)', muted:'var(--muted)', line:'var(--line)', card:'var(--card)', panel:'var(--panel)', royal:'#4337FF', navy:'#010086', cream:'#FBFAF6' },
+  fontFamily: { sans:['Funnel Sans','system-ui','sans-serif'], mono:['Geist Mono','ui-monospace','Menlo','monospace'] }
+} } }
+</script>
+<style>
+  body{font-family:'Funnel Sans','system-ui',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.45}
+  .sg-sec{padding:36px 40px;border-bottom:1px solid var(--line)}
+  .sg-note{font-size:13px;line-height:1.5;color:var(--muted);border-left:2px solid #4337FF;padding-left:12px;max-width:80ch}
+  .sg-flag{color:#4337FF;font-weight:500}
+  .swatch{display:flex;flex-direction:column;gap:8px}
+  .swatch .chip-box{height:64px;border:1px solid var(--line)}
+  .specimen-label{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted)}
+</style>
+</head>
+<body class="antialiased" data-page="styleguide" data-title="Style Guide">
+<div class="flex min-h-screen max-w-[1600px] mx-auto">
+  <aside id="lp-nav" class="lp-nav hidden md:flex"></aside>
+
+  <main class="flex-1 min-w-0 border-l border-line">
+    <!-- top bar injected by nav.js -->
+
+    <section class="lp-hero">
+      <h1 class="ts-page-hero">Style Guide</h1>
+      <div class="lp-hero-text">
+        <p class="subhead">Internal reference for reviewing the design system.</p>
+        <p class="lp-hero-support">Every shared token and component on one page, so visual inconsistencies (buttons, links, labels) are easy to spot and fix.</p>
+      </div>
+    </section>
+
+    <!-- COLORS -->
+    <section class="sg-sec stack stack-4">
+      <h2>Color tokens</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4" id="sg-colors"></div>
+    </section>
+
+    <!-- TYPE -->
+    <section class="sg-sec stack stack-4">
+      <h2>Type scale</h2>
+      <div class="stack stack-3" id="sg-type"></div>
+    </section>
+
+    <!-- LABELS + PILLS -->
+    <section class="sg-sec stack stack-4">
+      <h2>Labels &amp; pills</h2>
+      <div class="flex flex-wrap items-center gap-4">
+        <span class="lbl">.lbl label</span>
+        <span class="tag">.tag</span>
+        <span class="meta-pill">.meta-pill</span>
+        <span class="navsection">.navsection</span>
+      </div>
+      <p class="sg-note">All mono, uppercase, weight 400, <span class="sg-flag">0.05em</span> letter-spacing. <code>.lbl</code>/<code>.tag</code> are 13px, filters/pills are 12px.</p>
+    </section>
+
+    <!-- BUTTONS -->
+    <section class="sg-sec stack stack-4">
+      <h2>Buttons</h2>
+      <p class="sg-note">One canonical button — <code>.lpbtn</code> — with <code>--primary</code> (solid bright blue), <code>--secondary</code> (outline), plus <code>--sm</code> and <code>--full</code> modifiers. Mono, uppercase, 13px, <span class="sg-flag">0.05em</span>, 44px tall (36px for <code>--sm</code>). Preferred CTAs lead with a <code>corner-down-right</code> arrow.</p>
+      <div class="stack stack-2">
+        <span class="specimen-label">Primary (solid bright blue) · secondary (outline)</span>
+        <div class="flex flex-wrap items-center gap-4">
+          <a class="lpbtn lpbtn--primary"><i data-lucide="corner-down-right" class="ico"></i> Get started</a>
+          <a class="lpbtn lpbtn--secondary"><i data-lucide="corner-down-right" class="ico"></i> View section</a>
+        </div>
+      </div>
+      <div class="stack stack-2">
+        <span class="specimen-label">Small (--sm) · copy / inline card actions</span>
+        <div class="flex flex-wrap items-center gap-4">
+          <button class="lpbtn lpbtn--primary lpbtn--sm"><i data-lucide="copy" class="ico"></i> Copy HTML</button>
+          <button class="lpbtn lpbtn--secondary lpbtn--sm"><i data-lucide="sparkles" class="ico"></i> Copy for Claude</button>
+        </div>
+      </div>
+      <div class="stack stack-2">
+        <span class="specimen-label">Full-width (--full) · solid card CTAs (View layout / View system)</span>
+        <div style="max-width:300px">
+          <a class="lpbtn lpbtn--primary lpbtn--sm lpbtn--full"><i data-lucide="corner-down-right" class="ico"></i> View layout</a>
+        </div>
+      </div>
+      <div class="stack stack-2">
+        <span class="specimen-label">In-example buttons — Structured Editorial system, scoped to previews only</span>
+        <div class="flex flex-wrap gap-4">
+          <a class="sx-btn sx-btn--primary" data-system="structured-editorial" style="height:44px;padding-inline:22px;font-size:14px">Primary action</a>
+          <a class="sx-btn sx-btn--secondary" data-system="structured-editorial" style="height:44px;padding-inline:22px;font-size:14px">Secondary</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINKS -->
+    <section class="sg-sec stack stack-4">
+      <h2>Links</h2>
+      <div class="flex flex-wrap items-center gap-8">
+        <a href="#" class="lplink">Inline link · .lplink</a>
+        <span class="text-[15px]" style="color:var(--muted)">In body copy: <a href="#" class="lplink">read the docs</a> for details.</span>
+      </div>
+      <p class="sg-note">Inline text links use <code>.lplink</code> (royal, underline on hover). Navigation affordances ("View …") are <code>.lpbtn</code> buttons, not text links. Sidebar nav, the top-bar breadcrumb (<code>.lp-crumb</code>), and footer columns keep their own contextual link styles.</p>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="sg-sec stack stack-4">
+      <h2>Filters (chips)</h2>
+      <div class="flex flex-wrap gap-2">
+        <button class="chip active">All</button><button class="chip">Header</button><button class="chip">Hero</button><button class="chip">Features</button>
+      </div>
+    </section>
+
+    <!-- BROWSER CHROME -->
+    <section class="sg-sec stack stack-4">
+      <h2>Section example frame</h2>
+      <div class="browser" style="max-width:560px">
+        <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-addr"></span></div>
+        <div class="sx-canvas browser-body" data-system="structured-editorial" data-mode="neutral" style="padding:28px">
+          <p class="sx-eyebrow">[ Example ]</p>
+          <h3 class="sx-heading" style="margin-top:12px">Sections preview inside a browser frame.</h3>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="layout-system/style-systems-data.js"></script>
+<script>
+  // colors
+  const COLORS=[['--bg','Background'],['--ink','Ink'],['--muted','Muted'],['--line','Line'],['--card','Card'],['--panel','Panel'],['#4337FF','Royal'],['#010086','Navy'],['#FBFAF6','Cream'],['#C9C5FF','Tint']];
+  const cw=document.getElementById('sg-colors');
+  COLORS.forEach(([v,n])=>{const val=v.startsWith('--')?'var('+v+')':v;cw.innerHTML+='<div class="swatch"><div class="chip-box" style="background:'+val+'"></div><span class="specimen-label">'+n+'</span><span class="specimen-label" style="color:var(--ink)">'+v+'</span></div>';});
+  // type scale
+  const TYPE=[['ts-display-xl','Display XL'],['ts-page-hero','Page hero'],['ts-heading-xl','Heading XL (hero h1)'],['ts-section-xl','Section XL'],['ts-section-lg','Section LG'],['ts-card-lg','Card LG'],['ts-card-sm','Card SM'],['subhead','Subhead'],['ts-body','Body']];
+  const tw=document.getElementById('sg-type');
+  TYPE.forEach(([c,n])=>{const r=document.createElement('div');r.className='flex items-baseline gap-5 border-t border-line pt-3';r.innerHTML='<span class="specimen-label" style="width:160px;flex-shrink:0">'+n+'</span><span class="'+c+'">The quick brown fox</span>';tw.appendChild(r);});
+  // h2/h3 element defaults
+  const h2r=document.createElement('div');h2r.className='flex items-baseline gap-5 border-t border-line pt-3';h2r.innerHTML='<span class="specimen-label" style="width:160px;flex-shrink:0">h2 default</span><h2>The quick brown fox</h2>';tw.appendChild(h2r);
+  const h3r=document.createElement('div');h3r.className='flex items-baseline gap-5 border-t border-line pt-3';h3r.innerHTML='<span class="specimen-label" style="width:160px;flex-shrink:0">h3 default</span><h3>The quick brown fox</h3>';tw.appendChild(h3r);
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="layout-system/nav.js"></script>
+<script>lucide.createIcons({ attrs: { 'stroke-width': 1.25, width: 16, height: 16 } });</script>
+</body>
+</html>

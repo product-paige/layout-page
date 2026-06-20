@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FAQ — layout.page</title>
+<script>(function(){try{if(localStorage.getItem('lp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(localStorage.getItem('lp-nav-collapsed')==='1')document.documentElement.classList.add('nav-collapsed');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { surface:'var(--bg)', ink:'var(--ink)', muted:'var(--muted)', line:'var(--line)', linesoft:'var(--linesoft)',
+    card:'var(--card)', panel:'var(--panel)', cream:'#FBFAF6', royal:'#4337FF', navy:'#010086', tint:'#C9C5FF' },
+  fontFamily: { sans:['Funnel Sans','system-ui','sans-serif'], mono:['Geist Mono','ui-monospace','Menlo','monospace'] }
+} } }
+</script>
+<style>
+  /* page-specific only — shared shell lives in site.css */
+  :root{ --wf-bg:#FCFCFB;--wf-border:#E4E4DF;--bar:#E2E2DD;--bar-strong:#CFCFC9;--media:#ECECE7;--media-border:#DEDED8 }
+  [data-theme="dark"]{ --wf-bg:#1A1A1E;--wf-border:rgba(255,255,255,.13);--bar:rgba(255,255,255,.17);--bar-strong:rgba(255,255,255,.34);--media:rgba(255,255,255,.08);--media-border:rgba(255,255,255,.13) }
+  .wf{background:var(--wf-bg);border:1px solid var(--wf-border)}
+  .bar{background:var(--bar)}
+  .bar-strong{background:var(--bar-strong)}
+  .row{border:1px solid var(--wf-border);background:var(--card)}
+  .plus{color:var(--bar-strong)}
+  .copybtn{position:absolute;top:16px;right:16px;z-index:5;display:inline-flex;align-items:center;gap:6px;
+    font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.05rem;text-transform:uppercase;
+    color:#4337FF;border:1px solid var(--line);padding:5px 10px;background:var(--bg);opacity:0;transition:.12s}
+  .card:hover .copybtn{opacity:1}
+  .viewlink{display:inline-flex;align-items:center;gap:6px;font-family:'Geist Mono',ui-monospace,monospace;
+    font-size:12px;letter-spacing:.05rem;text-transform:uppercase;color:#4337FF}
+  .viewlink:hover{text-decoration:underline}
+  .card:nth-child(2n){border-right:none}
+</style>
+<link href="layout-system/site.css" rel="stylesheet">
+</head>
+<body class="antialiased" data-page="sections" data-title="FAQ">
+<div class="flex min-h-screen max-w-[1600px] mx-auto">
+
+  <!-- ============================ LEFT NAV (shared — see layout-system/nav.js) ============================ -->
+  <aside id="lp-nav" class="lp-nav hidden md:flex"></aside>
+
+  <!-- ============================ MAIN ============================ -->
+  <main class="flex-1 min-w-0 border-l border-line">
+
+    <!-- top bar injected by nav.js (shared template) -->
+
+    <section class="px-10 pt-10 pb-7 flex items-end justify-between">
+      <div>
+        <h1 class="text-[clamp(30px,4vw,40px)]">FAQ</h1>
+        <!-- subhead: subheading under an H1 — 20px regular -->
+        <p class="subhead text-muted mt-3 max-w-[54ch]">Answer the objections before they bounce. Structures only — neutral and unstyled, so you choose the arrangement that fits your content depth.</p>
+      </div>
+      <span class="lbl hidden lg:block">12 layouts</span>
+    </section>
+
+    <div class="px-10 pb-6 border-b border-line">
+      <div class="flex flex-wrap gap-2 items-center">
+        <span class="lbl mr-1">Filter</span>
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="accordion">Accordion</button>
+        <button class="chip" data-filter="grid">Grid</button>
+        <button class="chip" data-filter="two-col">Two-column</button>
+        <button class="chip" data-filter="search">With search</button>
+        <span class="lbl ml-auto" id="count">5 shown</span>
+      </div>
+    </div>
+
+    <section class="grid sm:grid-cols-2" id="grid">
+
+      <!-- 1. Accordion — has a live detail page -->
+      <article class="card group relative border-r border-b border-line bg-surface" data-tags="accordion">
+        <button class="copybtn"><i data-lucide="copy" class="ico"></i> Copy</button>
+        <a href="faq-accordion.html" class="block p-5">
+          <div class="wf aspect-[16/9] p-6 flex flex-col gap-2 justify-center">
+            <div class="row h-7 flex items-center justify-between px-3"><div class="bar h-1.5 w-[55%]"></div><span class="plus text-sm">+</span></div>
+            <div class="row h-7 flex items-center justify-between px-3"><div class="bar h-1.5 w-[45%]"></div><span class="plus text-sm">+</span></div>
+            <div class="row h-7 flex items-center justify-between px-3"><div class="bar h-1.5 w-[60%]"></div><span class="plus text-sm">+</span></div>
+            <div class="row h-7 flex items-center justify-between px-3"><div class="bar h-1.5 w-[40%]"></div><span class="plus text-sm">+</span></div>
+          </div>
+        </a>
+        <div class="px-5 pb-5 -mt-1 flex items-end justify-between">
+          <div>
+            <div class="flex items-center gap-2"><span class="text-base font-medium">Accordion</span><span class="lbl">F·01</span><span class="lbl text-royal">● live</span></div>
+            <div class="flex gap-1.5 mt-2.5"><span class="tag">accordion</span><span class="tag">compact</span></div>
+          </div>
+          <a href="faq-accordion.html" class="viewlink">View <i data-lucide="arrow-right" class="ico"></i></a>
+        </div>
+      </article>
+
+      <!-- 2. Two-column -->
+      <article class="card group relative border-r border-b border-line bg-surface" data-tags="two-col">
+        <button class="copybtn"><i data-lucide="copy" class="ico"></i> Copy</button>
+        <a href="#" class="block p-5">
+          <div class="wf aspect-[16/9] p-6 flex gap-5">
+            <div class="w-[38%] flex flex-col gap-2">
+              <div class="bar-strong h-3 w-[80%]"></div><div class="bar h-1.5 w-[90%] mt-1"></div><div class="bar h-1.5 w-[70%]"></div>
+            </div>
+            <div class="flex-1 flex flex-col gap-2.5">
+              <div class="row h-6 flex items-center justify-between px-2"><div class="bar h-1.5 w-[50%]"></div><span class="plus text-xs">+</span></div>
+              <div class="row h-6 flex items-center justify-between px-2"><div class="bar h-1.5 w-[60%]"></div><span class="plus text-xs">+</span></div>
+              <div class="row h-6 flex items-center justify-between px-2"><div class="bar h-1.5 w-[40%]"></div><span class="plus text-xs">+</span></div>
+            </div>
+          </div>
+        </a>
+        <div class="px-5 pb-5 -mt-1 flex items-end justify-between">
+          <div>
+            <div class="flex items-center gap-2"><span class="text-base font-medium">Two-column</span><span class="lbl">F·02</span></div>
+            <div class="flex gap-1.5 mt-2.5"><span class="tag">two-col</span><span class="tag">heading</span></div>
+          </div>
+          <a href="#" class="viewlink">View <i data-lucide="arrow-right" class="ico"></i></a>
+        </div>
+      </article>
+
+      <!-- 3. Grid 2x2 -->
+      <article class="card group relative border-r border-b border-line bg-surface" data-tags="grid">
+        <button class="copybtn"><i data-lucide="copy" class="ico"></i> Copy</button>
+        <a href="#" class="block p-5">
+          <div class="wf aspect-[16/9] p-6 grid grid-cols-2 gap-3">
+            <div class="flex flex-col gap-1.5"><div class="bar-strong h-2.5 w-[70%]"></div><div class="bar h-1.5 w-full"></div><div class="bar h-1.5 w-[80%]"></div></div>
+            <div class="flex flex-col gap-1.5"><div class="bar-strong h-2.5 w-[60%]"></div><div class="bar h-1.5 w-full"></div><div class="bar h-1.5 w-[75%]"></div></div>
+            <div class="flex flex-col gap-1.5"><div class="bar-strong h-2.5 w-[65%]"></div><div class="bar h-1.5 w-full"></div><div class="bar h-1.5 w-[70%]"></div></div>
+            <div class="flex flex-col gap-1.5"><div class="bar-strong h-2.5 w-[55%]"></div><div class="bar h-1.5 w-full"></div><div class="bar h-1.5 w-[85%]"></div></div>
+          </div>
+        </a>
+        <div class="px-5 pb-5 -mt-1 flex items-end justify-between">
+          <div>
+            <div class="flex items-center gap-2"><span class="text-base font-medium">Grid · 2×2</span><span class="lbl">F·03</span></div>
+            <div class="flex gap-1.5 mt-2.5"><span class="tag">grid</span><span class="tag">open</span></div>
+          </div>
+          <a href="#" class="viewlink">View <i data-lucide="arrow-right" class="ico"></i></a>
+        </div>
+      </article>
+
+      <!-- 4. Centered stack -->
+      <article class="card group relative border-r border-b border-line bg-surface" data-tags="accordion">
+        <button class="copybtn"><i data-lucide="copy" class="ico"></i> Copy</button>
+        <a href="#" class="block p-5">
+          <div class="wf aspect-[16/9] p-6 flex flex-col items-center gap-2.5 justify-center">
+            <div class="bar-strong h-3 w-[40%]"></div>
+            <div class="row h-6 w-[70%] flex items-center justify-between px-3 mt-1"><div class="bar h-1.5 w-[50%]"></div><span class="plus text-xs">+</span></div>
+            <div class="row h-6 w-[70%] flex items-center justify-between px-3"><div class="bar h-1.5 w-[60%]"></div><span class="plus text-xs">+</span></div>
+            <div class="row h-6 w-[70%] flex items-center justify-between px-3"><div class="bar h-1.5 w-[45%]"></div><span class="plus text-xs">+</span></div>
+          </div>
+        </a>
+        <div class="px-5 pb-5 -mt-1 flex items-end justify-between">
+          <div>
+            <div class="flex items-center gap-2"><span class="text-base font-medium">Centered stack</span><span class="lbl">F·04</span></div>
+            <div class="flex gap-1.5 mt-2.5"><span class="tag">accordion</span><span class="tag">centered</span></div>
+          </div>
+          <a href="#" class="viewlink">View <i data-lucide="arrow-right" class="ico"></i></a>
+        </div>
+      </article>
+
+      <!-- 5. With search -->
+      <article class="card group relative border-r border-b border-line bg-surface" data-tags="search accordion">
+        <button class="copybtn"><i data-lucide="copy" class="ico"></i> Copy</button>
+        <a href="#" class="block p-5">
+          <div class="wf aspect-[16/9] p-6 flex flex-col gap-2 justify-center">
+            <div class="row h-7 flex items-center px-3 gap-2 mb-1"><i data-lucide="search" class="plus" style="width:12px;height:12px"></i><div class="bar h-1.5 w-[40%]"></div></div>
+            <div class="row h-6 flex items-center justify-between px-3"><div class="bar h-1.5 w-[55%]"></div><span class="plus text-xs">+</span></div>
+            <div class="row h-6 flex items-center justify-between px-3"><div class="bar h-1.5 w-[48%]"></div><span class="plus text-xs">+</span></div>
+            <div class="row h-6 flex items-center justify-between px-3"><div class="bar h-1.5 w-[62%]"></div><span class="plus text-xs">+</span></div>
+          </div>
+        </a>
+        <div class="px-5 pb-5 -mt-1 flex items-end justify-between">
+          <div>
+            <div class="flex items-center gap-2"><span class="text-base font-medium">With search</span><span class="lbl">F·05</span></div>
+            <div class="flex gap-1.5 mt-2.5"><span class="tag">search</span><span class="tag">large set</span></div>
+          </div>
+          <a href="#" class="viewlink">View <i data-lucide="arrow-right" class="ico"></i></a>
+        </div>
+      </article>
+
+    </section>
+
+    <div class="px-10 py-10 lbl">Showing 5 of 12 — <a href="index.html#pricing" class="text-royal hover:underline inline-flex items-center gap-1.5">Unlock all with Pro <i data-lucide="arrow-right" class="ico"></i></a></div>
+  </main>
+</div>
+
+<script>
+  const chips=[...document.querySelectorAll('.chip')];
+  const cards=[...document.querySelectorAll('.card')];
+  const count=document.getElementById('count');
+  chips.forEach(c=>c.addEventListener('click',()=>{
+    chips.forEach(x=>x.classList.remove('active')); c.classList.add('active');
+    const f=c.dataset.filter; let n=0;
+    cards.forEach(card=>{ const show=f==='all'||card.dataset.tags.split(' ').includes(f);
+      card.style.display=show?'':'none'; if(show)n++; });
+    count.textContent=n+' shown';
+  }));
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="layout-system/nav.js"></script>
+<script>lucide.createIcons({ attrs: { 'stroke-width': 1.5, width: 16, height: 16 } });</script>
+</body>
+</html>
