@@ -21,28 +21,16 @@ tailwind.config = { theme: { extend: {
   /* page-specific only — shared shell lives in site.css */
   .modebtn{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05rem;padding:7px 13px;border:1px solid var(--line);color:var(--muted);cursor:pointer;background:transparent;transition:.12s}
   .modebtn:hover{color:var(--ink);border-color:var(--ink)}.modebtn.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-  /* preview controls bar — navy, like the top bar nav */
-  .sebar{display:flex;flex-wrap:wrap;align-items:center;gap:14px 32px;background:var(--navy);border-bottom:1px solid var(--line);padding:11px 32px}
+  /* preview controls bar — light; Example on the left, Mode floats right */
+  .sebar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 32px;border-bottom:1px solid var(--line);padding:12px 32px}
   .sebar-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .sebar-lbl{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05rem;color:rgba(251,250,246,.55)}
-  .sebar .modebtn{border-color:rgba(251,250,246,.28);color:#FBFAF6}
-  .sebar .modebtn:hover{color:#FBFAF6;border-color:#FBFAF6}
-  .sebar .modebtn.active{background:#FBFAF6;color:#010086;border-color:#FBFAF6}
+  .sebar-lbl{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05rem;color:var(--muted)}
+  .sebar .modebtn.active{background:var(--royal);color:#fff;border-color:var(--royal)}
   .ptab{font-family:'Funnel Sans',sans-serif;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;background:none;border:none;padding:4px 0;border-bottom:2px solid transparent;white-space:nowrap}
   .ptab:hover{color:var(--ink)}.ptab.active{color:var(--ink);border-bottom-color:var(--ink)}
   .copied{color:#4337FF !important}
-  #codeView{font-family:'Geist Mono',monospace;font-size:12px;line-height:1.65;white-space:pre;overflow:auto;height:100%;color:var(--ink)}
+  #codeView{font-family:'Geist Mono',monospace;font-size:12px;line-height:1.65;white-space:pre;color:var(--ink)}
   #codeView .h{color:#4337FF}#codeView .q{color:var(--muted)}
-  #seGrid{position:relative}
-  #seCodeToggle{display:none}
-  @media(min-width:1024px){
-    #seCodeToggle{display:inline-flex;align-items:center;justify-content:center;position:absolute;top:96px;left:calc(55% - 15px);
-      z-index:25;width:30px;height:30px;border-radius:50% !important;background:var(--ink);color:var(--bg);border:none;cursor:pointer;transition:left .18s ease,opacity .12s}
-    #seCodeToggle:hover{opacity:.85}
-    #seGrid.codeoff{grid-template-columns:1fr}
-    #seGrid.codeoff .se-codepanel{display:none}
-    #seGrid.codeoff #seCodeToggle{left:auto;right:14px}
-  }
   /* sticky jump nav */
   html{scroll-behavior:smooth}
   [data-jump]{scroll-margin-top:104px}
@@ -53,9 +41,12 @@ tailwind.config = { theme: { extend: {
   .jtab.active{color:var(--cream)}
   .jtab.active::before{opacity:1}
   /* specimen helpers */
-  .spec{padding:var(--sx-space-5)}
+  .spec{padding:var(--sx-space-6) var(--sx-space-5)}
   .spec-row{display:flex;flex-direction:column;gap:var(--sx-space-3)}
   .spec-cap{color:var(--sx-text-soft)}
+  /* calmer specimens: drop the per-row rules, let spacing do the separating */
+  .spec .sx-divider{display:none}
+  .spec > .stack{gap:var(--sx-space-6) !important}
   .se-state{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:16px}
 </style>
 </head>
@@ -69,19 +60,32 @@ tailwind.config = { theme: { extend: {
   <main class="flex-1 min-w-0 border-l border-line">
     <!-- top bar injected by nav.js (shared template) -->
 
-    <div class="grid lg:grid-cols-[55%_45%] items-start" id="seGrid">
-      <button id="seCodeToggle" aria-label="Toggle code panel"><i data-lucide="chevron-right" class="ico"></i></button>
+    <div id="seGrid" class="min-w-0">
 
-      <!-- ===================== LEFT: visual specimens (Structured Editorial system) ===================== -->
-      <div class="border-r border-line min-w-0">
+      <!-- name + meta -->
+      <div class="stack stack-3 px-8 py-9 border-b border-line">
+        <h1 class="ts-heading-xl text-ink">Structured Editorial</h1>
+        <div class="flex flex-wrap gap-1.5" id="se-tags"></div>
+        <p class="subhead" style="color:var(--muted)">A complete grayscale-first Design System for structure-led websites.</p>
+        <p class="text-[16px] leading-[1.55] max-w-[60ch]" style="color:var(--muted)">Type, spacing, color, components, and states in one grayscale-first system. Light by default; dark and color are optional.</p>
+      </div>
 
-        <!-- name + meta (template chrome — site CSS, not the SE example styling) -->
-        <div class="stack stack-3 px-8 py-9 border-b border-line">
-          <h1 class="ts-heading-xl text-ink">Structured Editorial</h1>
-          <div class="flex flex-wrap gap-1.5" id="se-tags"></div>
-          <p class="subhead" style="color:var(--muted)">A complete grayscale-first Design System for structure-led websites.</p>
-          <p class="text-[16px] leading-[1.55] max-w-[52ch]" style="color:var(--muted)">Type, spacing, color, components, and states in one grayscale-first system. Light by default; dark and color are optional.</p>
+      <!-- Add to your site — install once; full width, first thing after the header -->
+      <div class="stack stack-3 px-8 py-9 border-b border-line">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div class="stack stack-1">
+            <div class="lbl">Add to your site</div>
+            <p class="text-[16px]" style="color:var(--muted);max-width:60ch">Install the system once — paste into Claude, or drop in the CSS. Then every section you add inherits it.</p>
+          </div>
+          <button class="lpbtn lpbtn--primary lpbtn--sm" id="copyCode"><i data-lucide="sparkles" class="ico"></i> Copy</button>
         </div>
+        <div class="flex gap-6 overflow-x-auto">
+          <button class="ptab active" data-tab="claude">Claude prompt</button>
+          <button class="ptab" data-tab="css">Design System CSS</button>
+          <button class="ptab" data-tab="tailwind">Tailwind</button>
+        </div>
+        <div class="border border-line" style="background:var(--card);max-height:380px;overflow:auto"><div id="codeView" class="px-6 py-5"></div></div>
+      </div>
 
         <!-- preview controls — navy bar styled like the top bar nav -->
         <div class="sebar">
@@ -413,28 +417,6 @@ tailwind.config = { theme: { extend: {
           <div class="flex items-end justify-between"><h3>Best practices</h3><span class="lbl">Use it well</span></div>
           <ul class="stack stack-3" id="se-best"></ul>
         </div>
-      </div>
-
-      <!-- ===================== RIGHT: sticky reference / code panel ===================== -->
-      <div class="lg:sticky lg:top-0 lg:h-screen flex flex-col min-w-0 se-codepanel">
-        <div class="px-8 pt-7 stack stack-3 border-b border-line">
-          <div class="flex items-start justify-between gap-4">
-            <div class="stack stack-1">
-              <div class="lbl">Add to your site</div>
-              <p class="text-[16px]" style="color:var(--muted);max-width:38ch">Install the system once — paste into Claude, or drop in the CSS. Then every section you add inherits it.</p>
-            </div>
-            <button class="lpbtn lpbtn--primary lpbtn--sm" id="copyCode"><i data-lucide="sparkles" class="ico"></i> Copy</button>
-          </div>
-          <div class="flex gap-6 overflow-x-auto">
-            <button class="ptab active" data-tab="claude">Claude prompt</button>
-            <button class="ptab" data-tab="css">Design System CSS</button>
-            <button class="ptab" data-tab="tailwind">Tailwind</button>
-          </div>
-        </div>
-        <div class="flex-1 overflow-hidden px-8 py-6" style="background:var(--card)">
-          <div id="codeView"></div>
-        </div>
-      </div>
 
     </div>
   </main>
@@ -532,12 +514,6 @@ tailwind.config = { theme: { extend: {
   document.querySelectorAll('.ptab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('active'));b.classList.add('active');tab=b.dataset.tab;render();}));
   function flashBtn(btn,label){const o=btn.innerHTML;btn.innerHTML='✓ '+label;btn.classList.add('copied');setTimeout(()=>{btn.innerHTML=o;btn.classList.remove('copied');if(window.lucide)lucide.createIcons({attrs:{'stroke-width':1.25,width:15,height:15}});},1300);}
   document.getElementById('copyCode').addEventListener('click',e=>{navigator.clipboard?.writeText(currentText());flashBtn(e.currentTarget,'Copied');});
-  // collapse / expand the code panel (floating round toggle on the divider line)
-  document.getElementById('seCodeToggle').addEventListener('click',()=>{
-    const off=document.getElementById('seGrid').classList.toggle('codeoff');
-    document.getElementById('seCodeToggle').innerHTML='<i data-lucide="'+(off?'chevron-left':'chevron-right')+'" class="ico"></i>';
-    if(window.lucide)lucide.createIcons({attrs:{'stroke-width':1.25,width:16,height:16}});
-  });
   // ---- tabbed section examples (Mode reskins whichever example is active) ----
   function feat(icon,title,body){return '<div class="sx-feature"><i data-lucide="'+icon+'" class="sx-icon"></i><h4 class="sx-feature-title">'+title+'</h4><p class="sx-body" style="font-size:var(--sx-body-sm);color:var(--sx-text-muted)">'+body+'</p></div>';}
   function exCard(title,body){return '<div class="sx-card"><h4 class="sx-feature-title">'+title+'</h4><p class="sx-body" style="font-size:var(--sx-body-sm);color:var(--sx-text-muted);margin-top:var(--sx-space-2)">'+body+'</p></div>';}
