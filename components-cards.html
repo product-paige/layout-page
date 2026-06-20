@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Components · layout.page</title>
+<script>(function(){try{if(localStorage.getItem('lp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="layout-system/site.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { surface:'var(--bg)', ink:'var(--ink)', muted:'var(--muted)', line:'var(--line)', card:'var(--card)', panel:'var(--panel)', royal:'#4337FF' },
+  fontFamily: { sans:['Funnel Sans','system-ui','sans-serif'], mono:['Geist Mono','ui-monospace','Menlo','monospace'] }
+} } }
+</script>
+<style>
+  body{font-family:'Funnel Sans','system-ui',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.45;animation:lp-page-in .35s ease both}
+  /* playground canvas: grey so white cards pop (darker in dark mode for the same reason) */
+  html:not([data-theme="dark"]){--bg:#ECEBE6}
+  html[data-theme="dark"]{--bg:#171717}
+  .rail-nav{display:flex;flex-direction:column;gap:1px;margin-bottom:6px}
+  .rail-nav a{font-family:'Funnel Sans',sans-serif;font-size:15px;font-weight:500;color:var(--ink);opacity:.62;padding:6px 8px;transition:.12s}
+  .rail-nav a:hover{opacity:1;color:var(--royal)}
+  .rail-nav a.active{opacity:1;color:var(--royal);background:rgba(67,55,255,.08)}
+
+  /* ===== global TOP NAV (prototype) ===== */
+  .lp-topnav{display:flex;align-items:stretch;height:54px;padding-left:24px;background:var(--navy);position:sticky;top:0;z-index:60}
+  .lp-topnav .lp-logo{display:flex;align-items:center;gap:11px;flex-shrink:0;padding-right:6px}
+  .lp-topnav .lp-logo-mark{width:16px;height:16px}
+  .lp-topnav .lp-logo .logo{color:var(--cream)}
+  .lp-topnav-links{display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow-x:auto;padding-left:14px}
+  .lp-topnav-links a{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:rgba(251,250,246,.6);padding:8px 14px;white-space:nowrap;transition:.12s}
+  .lp-topnav-links a:hover{color:var(--cream)}
+  .lp-topnav-links a.active{color:var(--cream)}
+  .lp-topnav-actions{display:flex;align-items:stretch;flex-shrink:0}
+  .lp-topnav-actions a{display:inline-flex;align-items:center;padding:0 22px;border-left:1px solid rgba(251,250,246,.22);color:var(--cream);font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;white-space:nowrap}
+  .lp-topnav-actions .lp-tbi{display:inline-flex;align-items:center;gap:11px;transition:transform .2s cubic-bezier(.4,0,.2,1)}
+  .lp-topnav-actions a:hover .lp-tbi{transform:translateX(-4px)}
+  .lp-topnav .themebtn{display:inline-flex;align-items:center;justify-content:center;width:54px;border-left:1px solid rgba(251,250,246,.22);color:var(--cream);background:transparent;cursor:pointer;flex-shrink:0}
+  .lp-topnav .themebtn:hover{background:rgba(251,250,246,.08)}
+
+  /* ===== contextual LEFT RAIL (controls) ===== */
+  .lp-shell{display:flex;align-items:flex-start;max-width:1600px;margin:0 auto}
+  .lp-rail{width:256px;flex-shrink:0;border-right:1px solid var(--line);padding:24px 20px;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto}
+  .rail-ctrl{display:flex;flex-direction:column;gap:10px;padding:16px 0;border-top:1px solid var(--line)}
+  .rail-ctrl:first-of-type{border-top:0;padding-top:6px}
+  .rail-head{display:flex;align-items:center;justify-content:space-between}
+  .rail-segs{display:flex;flex-wrap:wrap;gap:6px}
+
+  /* ===== Cards playground (Inter) ===== */
+  .cl-range{width:100%;accent-color:var(--royal);cursor:pointer}
+  .cl-val{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)}
+  .cl-seg{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:11px;letter-spacing:.04em;padding:4px 8px;border:1px solid var(--line);color:var(--muted);background:transparent;cursor:pointer;transition:.12s;white-space:nowrap}
+  .cl-seg:hover{color:var(--ink);border-color:var(--ink)}
+  .cl-seg.active{background:var(--royal);color:#fff;border-color:var(--royal)}
+  .cardlab{--cl-radius:0px;--cl-pad:16px;--cl-bw:0px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+  @media(min-width:1000px){ .cardlab{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  /* card = a vertical auto-layout frame; nested frames carry their own gap */
+  .cl-card{position:relative;font-family:'Inter',system-ui,sans-serif;background:var(--card);color:var(--ink);
+    border:var(--cl-bw) solid var(--line);border-radius:var(--cl-radius) !important;padding:var(--cl-pad);
+    aspect-ratio:3/4;display:flex;flex-direction:column;gap:12px;overflow:hidden;
+    transition:border-radius .18s ease,padding .18s ease,border-width .18s ease,background .2s ease}
+  .cl-card *{font-family:'Inter',system-ui,sans-serif}
+  .cl-group{display:flex;flex-direction:column;gap:12px}      /* eyebrow + heading group: 12px */
+  .cl-headsub{display:flex;flex-direction:column;gap:8px}     /* heading + subheading pair: 8px */
+  /* grey image placeholder — dotted texture + asterisk mark, theme-aware */
+  .cl-ph{background-color:#dcdcd9;border-radius:calc(var(--cl-radius) * .6) !important;flex-shrink:0;
+    background-image:radial-gradient(rgba(120,120,120,.4) 1px,transparent 1.6px);background-size:26px 26px;display:grid;place-items:center}
+  [data-theme="dark"] .cl-ph{background-color:#191919}
+  .cl-mark{width:30%;max-width:58px;min-width:32px;height:auto;color:var(--ink)}
+  .cl-grow{flex:1;min-height:0}
+  .cl-eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500}
+  .cl-title{font-weight:500;font-size:19px;letter-spacing:-.02em;line-height:1.14;color:var(--ink)}
+  .cl-num{font-weight:500;font-size:34px;letter-spacing:-.03em;line-height:1;color:var(--ink)}
+  .cl-text{font-size:16px;line-height:1.3;color:var(--muted)}
+  .cl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13px;color:var(--ink)}
+  .cl-overlay .cl-cap{position:absolute;left:0;right:0;bottom:0;padding:14px;background:linear-gradient(transparent,rgba(0,0,0,.55));border-radius:0 0 calc(var(--cl-radius) * .6) calc(var(--cl-radius) * .6) !important}
+  .cl-overlay .cl-title{color:#fff}
+  /* card number badge + per-card copy */
+  .cl-badge{position:absolute;top:calc(var(--cl-pad) + 4px);right:calc(var(--cl-pad) + 6px);z-index:3;font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);opacity:.85;pointer-events:none;transition:opacity .12s}
+  .cl-card:hover .cl-badge{opacity:0}
+  .cl-copy{position:absolute;top:8px;right:8px;z-index:4;display:inline-flex;align-items:center;gap:6px;font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:11px;letter-spacing:.04em;padding:5px 9px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;opacity:0;transition:opacity .12s}
+  .cl-card:hover .cl-copy{opacity:1}
+  .cl-copy.copied{color:var(--royal);border-color:var(--royal)}
+
+  /* ===== Action control: Button / Arrow / None ===== */
+  .cl-cta{display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;cursor:pointer;align-self:flex-start}
+  .cl-cta .cl-cta-arrow{width:16px;height:16px;flex-shrink:0;display:none}
+  /* arrow mode (default) */
+  .cardlab[data-cta="arrow"] .cl-cta{color:var(--ink);background:none;padding:0;border-radius:0 !important}
+  .cardlab[data-cta="arrow"] .cl-cta .cl-cta-arrow{display:inline-flex}
+  /* button mode */
+  .cardlab[data-cta="button"] .cl-cta{color:var(--bg);background:var(--ink);padding:9px 18px;border-radius:999px !important}
+  /* none */
+  .cardlab[data-cta="none"] .cl-cta{display:none}
+</style>
+</head>
+<body class="antialiased" data-page="components" data-title="Components">
+
+<!-- ============================ GLOBAL TOP NAV (prototype) ============================ -->
+<header class="lp-topnav">
+  <a class="lp-logo" href="index.html" aria-label="layout.page home"><span class="lp-logo-mark"></span><span class="logo">LAYOUT.PAGE</span></a>
+  <nav class="lp-topnav-links">
+    <a href="index.html">Overview</a>
+    <a href="section-library.html">Browse Sections</a>
+    <a href="style-systems.html">Design Systems</a>
+    <a href="components.html" class="active">Components</a>
+    <a href="page-layouts.html">Page Layouts</a>
+  </nav>
+  <div class="lp-topnav-actions">
+    <a href="mailto:hello@productpaige.com?subject=Section%20request"><span class="lp-tbi"><i data-lucide="corner-down-right" class="ico"></i>Request a section</span></a>
+    <a href="index.html#pricing"><span class="lp-tbi"><i data-lucide="corner-down-right" class="ico"></i>Start free</span></a>
+  </div>
+  <button class="themebtn" id="themeToggle" aria-label="Toggle theme"><i data-lucide="moon" class="ico"></i></button>
+</header>
+
+<div class="lp-shell">
+
+  <!-- ============================ CONTEXTUAL LEFT RAIL ============================ -->
+  <aside class="lp-rail">
+    <div class="lbl" style="margin-bottom:8px">Components</div>
+    <nav class="rail-nav">
+      <a href="components-cards.html" class="active">Cards</a>
+      <a href="components-buttons.html">Buttons</a>
+    </nav>
+    <div class="lbl" style="margin:18px 0 14px">Controls — Cards</div>
+
+    <div class="rail-ctrl">
+      <div class="rail-head"><span class="lbl">Radius</span><span class="cl-val" id="clRadiusVal">0px</span></div>
+      <input type="range" id="clRadius" min="0" max="36" step="2" value="0" class="cl-range" aria-label="Card radius">
+    </div>
+
+    <div class="rail-ctrl">
+      <span class="lbl">Padding</span>
+      <div class="rail-segs">
+        <button class="cl-seg" data-pad="10">XS 10</button>
+        <button class="cl-seg" data-pad="12">S 12</button>
+        <button class="cl-seg active" data-pad="16">M 16</button>
+        <button class="cl-seg" data-pad="32">L 32</button>
+        <button class="cl-seg" data-pad="40">XL 40</button>
+      </div>
+    </div>
+
+    <div class="rail-ctrl">
+      <span class="lbl">Borders</span>
+      <div class="rail-segs">
+        <button class="cl-seg" data-border="0">Off</button>
+        <button class="cl-seg" data-border="1">On</button>
+      </div>
+    </div>
+
+    <div class="rail-ctrl">
+      <span class="lbl">Action</span>
+      <div class="rail-segs">
+        <button class="cl-seg" data-cta="button">Button</button>
+        <button class="cl-seg active" data-cta="arrow">Arrow</button>
+        <button class="cl-seg" data-cta="none">None</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================ MAIN ============================ -->
+  <main class="flex-1 min-w-0">
+    <div class="stack stack-3 px-8 py-9" id="cards">
+      <div class="flex items-end justify-between flex-wrap gap-3">
+        <div class="stack stack-1"><h1 class="ts-section-lg">Cards</h1><p class="text-[16px]" style="color:var(--muted)">Adjust the controls on the left — every card updates live.</p></div>
+        <span class="lbl">Inter · Lorem ipsum</span>
+      </div>
+
+      <div class="cardlab" id="cardlab" data-cta="arrow">
+        <!-- 1 · media + mark + CTA -->
+        <article class="cl-card">
+          <div class="cl-ph cl-ph--dots cl-grow"><i data-lucide="asterisk" class="cl-mark"></i></div>
+          <div class="cl-group">
+            <div class="cl-title">Lorem ipsum dolor</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet — consectetur adipiscing elit, sed do eiusmod tempor.</div>
+          </div>
+          <span class="cl-cta">Learn more<i data-lucide="corner-down-right" class="cl-cta-arrow"></i></span>
+        </article>
+        <!-- 2 · media top + CTA -->
+        <article class="cl-card">
+          <div class="cl-ph cl-grow"></div>
+          <div class="cl-group">
+            <div class="cl-title">Lorem ipsum</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+          </div>
+          <span class="cl-cta">Learn more<i data-lucide="corner-down-right" class="cl-cta-arrow"></i></span>
+        </article>
+        <!-- 3 · list + CTA -->
+        <article class="cl-card">
+          <div class="cl-group">
+            <div class="cl-eyebrow">Lorem</div>
+            <div class="cl-title">Dolor sit amet</div>
+          </div>
+          <div class="cl-grow" style="display:flex;flex-direction:column;justify-content:flex-end">
+            <div class="cl-row">Lorem ipsum</div>
+            <div class="cl-row">Dolor sit amet</div>
+            <div class="cl-row">Consectetur elit</div>
+          </div>
+          <span class="cl-cta">Learn more<i data-lucide="corner-down-right" class="cl-cta-arrow"></i></span>
+        </article>
+        <!-- 4 · stat -->
+        <article class="cl-card">
+          <div class="cl-eyebrow">Lorem</div>
+          <div class="cl-num">2 dies</div>
+          <div class="cl-grow" style="display:flex;align-items:flex-start;justify-content:flex-end"><span class="cl-num" style="font-size:clamp(40px,7vw,72px);color:var(--line)">3</span></div>
+          <div class="cl-group">
+            <div class="cl-title">Lorem ipsum</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet adipiscing.</div>
+          </div>
+        </article>
+        <!-- 5 · media bottom + CTA -->
+        <article class="cl-card">
+          <div class="cl-group">
+            <div class="cl-eyebrow">Lorem</div>
+            <div class="cl-title">Adipiscing elit</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet.</div>
+          </div>
+          <span class="cl-cta">Learn more<i data-lucide="corner-down-right" class="cl-cta-arrow"></i></span>
+          <div class="cl-ph cl-grow"></div>
+        </article>
+        <!-- 6 · overlay -->
+        <article class="cl-card cl-overlay">
+          <div class="cl-ph cl-grow"></div>
+          <div class="cl-cap"><div class="cl-title">Lorem ipsum</div></div>
+        </article>
+        <!-- 7 · two media -->
+        <article class="cl-card">
+          <div class="cl-group">
+            <div class="cl-title">Sed do eiusmod</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet.</div>
+          </div>
+          <div class="cl-grow" style="display:flex;gap:10px"><div class="cl-ph" style="flex:1"></div><div class="cl-ph" style="flex:1"></div></div>
+        </article>
+        <!-- 8 · split media + content -->
+        <article class="cl-card">
+          <div class="cl-ph" style="height:42%"></div>
+          <div class="cl-group">
+            <div class="cl-eyebrow">Lorem</div>
+            <div class="cl-title">Tempor incididunt</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do.</div>
+          </div>
+        </article>
+        <!-- 9 · quote -->
+        <article class="cl-card">
+          <div class="cl-num" style="font-size:48px;line-height:.8;color:var(--line)">&ldquo;</div>
+          <div class="cl-title cl-grow" style="font-weight:500;font-size:17px;display:flex;align-items:center">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+          <div class="cl-eyebrow">Lorem ipsum</div>
+        </article>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons({ attrs: { 'stroke-width': 1.5, width: 16, height: 16 } });
+
+  /* ---- theme toggle ---- */
+  (function(){
+    var root=document.documentElement, btn=document.getElementById('themeToggle');
+    function sync(){ var dark=root.getAttribute('data-theme')==='dark'; btn.innerHTML='<i data-lucide="'+(dark?'sun':'moon')+'" class="ico"></i>'; if(window.lucide) lucide.createIcons({attrs:{'stroke-width':1.5,width:16,height:16}}); }
+    btn.addEventListener('click',function(){ var dark=root.getAttribute('data-theme')==='dark'; if(dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark'); try{localStorage.setItem('lp-theme',dark?'light':'dark');}catch(e){} sync(); });
+    sync();
+  })();
+
+  /* ---- card controls: radius / padding / borders / action ---- */
+  (function(){
+    var lab=document.getElementById('cardlab'); if(!lab) return;
+    var r=document.getElementById('clRadius'), rv=document.getElementById('clRadiusVal');
+    if(r) r.addEventListener('input',function(){ lab.style.setProperty('--cl-radius', r.value+'px'); rv.textContent=r.value+'px'; });
+    function segGroup(attr, apply){
+      document.querySelectorAll('.cl-seg['+attr+']').forEach(function(b){ b.addEventListener('click',function(){
+        document.querySelectorAll('.cl-seg['+attr+']').forEach(function(x){x.classList.remove('active');}); b.classList.add('active');
+        apply(b.getAttribute(attr));
+      });});
+    }
+    segGroup('data-pad', function(v){ lab.style.setProperty('--cl-pad', v+'px'); });
+    segGroup('data-border', function(v){ lab.style.setProperty('--cl-bw', v+'px'); });
+    segGroup('data-cta', function(v){ lab.setAttribute('data-cta', v); });
+    // default active states
+    document.querySelector('.cl-seg[data-border="0"]').classList.add('active');
+  })();
+
+  /* ---- enhance every card: 8px heading/subheading frame, star placeholders, number, copy ---- */
+  (function(){
+    function snippet(card){
+      var cs=getComputedStyle(document.getElementById('cardlab'));
+      var r=cs.getPropertyValue('--cl-radius').trim()||'0px', pad=cs.getPropertyValue('--cl-pad').trim()||'16px', bw=cs.getPropertyValue('--cl-bw').trim()||'0px';
+      var cta=document.getElementById('cardlab').getAttribute('data-cta')||'arrow';
+      var clone=card.cloneNode(true);
+      clone.querySelectorAll('.cl-badge,.cl-copy').forEach(function(e){e.remove();});
+      var inner=clone.innerHTML.replace(/\s+$/,'');
+      var css='.card{font-family:Inter,system-ui,sans-serif;background:#fff;color:#161616;border:'+bw+' solid #e4e4e0;border-radius:'+r+';padding:'+pad+';aspect-ratio:3/4;display:flex;flex-direction:column;gap:12px;overflow:hidden}\n'+
+        '.card .cl-group{display:flex;flex-direction:column;gap:12px}\n.card .cl-headsub{display:flex;flex-direction:column;gap:8px}\n.card .cl-grow{flex:1}\n'+
+        '.card .cl-ph{flex:1;background:#dcdcd9;border-radius:calc('+r+' * .6);display:grid;place-items:center}\n.card .cl-mark{width:30%;max-width:58px;color:#161616}\n'+
+        '.card .cl-eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#6b6b66;font-weight:500}\n'+
+        '.card .cl-title{font-weight:500;font-size:19px;letter-spacing:-.02em;line-height:1.14}\n.card .cl-text{font-size:16px;line-height:1.3;color:#6b6b66}\n'+
+        '.card .cl-num{font-weight:500;font-size:34px;line-height:1;letter-spacing:-.03em}\n.card .cl-row{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #e4e4e0;font-size:13px}\n'+
+        '.card .cl-cta{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:500;align-self:flex-start;'+(cta==='button'?'background:#161616;color:#fff;padding:9px 18px;border-radius:999px;':'color:#161616;')+'}';
+      return '<!-- layout.page card · radius '+r+' · padding '+pad+' · border '+bw+' · Inter -->\n<style>\n'+css+'\n</style>\n<article class="card">'+inner+'</article>';
+    }
+    document.querySelectorAll('.cardlab .cl-card').forEach(function(card,i){
+      card.querySelectorAll('.cl-group').forEach(function(g){
+        var t=g.querySelector(':scope > .cl-title'), x=g.querySelector(':scope > .cl-text');
+        if(t&&x){ var hs=document.createElement('div'); hs.className='cl-headsub'; g.insertBefore(hs,t); hs.appendChild(t); hs.appendChild(x); }
+      });
+      card.querySelectorAll('.cl-ph').forEach(function(ph){ if(!ph.querySelector('.cl-mark')){ var m=document.createElement('i'); m.setAttribute('data-lucide','asterisk'); m.className='cl-mark'; ph.appendChild(m); } });
+      var badge=document.createElement('span'); badge.className='cl-badge'; badge.textContent=('0'+(i+1)).slice(-2); card.appendChild(badge);
+      var copy=document.createElement('button'); copy.type='button'; copy.className='cl-copy'; copy.innerHTML='<i data-lucide="clipboard" style="width:13px;height:13px"></i> Copy'; card.appendChild(copy);
+      copy.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation();
+        if(navigator.clipboard) navigator.clipboard.writeText(snippet(card));
+        var o=copy.innerHTML; copy.classList.add('copied'); copy.textContent='✓ Copied';
+        setTimeout(function(){ copy.classList.remove('copied'); copy.innerHTML=o; if(window.lucide) lucide.createIcons({attrs:{'stroke-width':1.5,width:13,height:13}}); },1200);
+      });
+    });
+    if(window.lucide) lucide.createIcons({attrs:{'stroke-width':1.5,width:16,height:16}});
+  })();
+</script>
+</body>
+</html>
