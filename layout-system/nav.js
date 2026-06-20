@@ -117,7 +117,7 @@
         var items = actions.split(',');
         right = '<div class="lp-topbar-actions">' + items.map(function(a){
           var p = a.split('|'); var label = (p[0]||'').trim(); var href = (p[1]||'#').trim();
-          return '<a class="lp-topbar-btn" href="'+href+'"><i data-lucide="corner-down-right" class="ico"></i>'+label+'</a>';
+          return '<a class="lp-topbar-btn" href="'+href+'"><span class="lp-tbi"><i data-lucide="corner-down-right" class="ico"></i>'+label+'</span></a>';
         }).join('') + '</div>';
       }
       tb.innerHTML = '<div class="lp-topbar-left">'+left+'</div>' + right;
@@ -153,4 +153,33 @@
   mount.addEventListener('click', function(e){ if(e.target.closest('a')) closeNav(); });
 
   syncThemeIcon(); draw(); applyCollapseRot(false);
+
+  /* ---- motion: soft page-leave fade ---- */
+  var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+  // safety: clear the leaving state on load AND on bfcache restore (back button), so a page is never stuck invisible
+  window.addEventListener('pageshow', function(){ root.classList.remove('lp-leaving'); document.body.style.opacity=''; });
+  document.addEventListener('click', function(e){
+    if(reduceMotion || e.defaultPrevented || e.button!==0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest('a'); if(!a) return;
+    var href = a.getAttribute('href'); if(!href) return;
+    if(a.target==='_blank' || a.hasAttribute('download') || /^(#|mailto:|tel:|javascript:)/i.test(href)) return;
+    var url; try{ url = new URL(a.href, location.href); }catch(_){ return; }
+    if(url.origin!==location.origin) return;
+    if(url.pathname===location.pathname && url.search===location.search && url.hash) return; // in-page anchor
+    e.preventDefault();
+    root.classList.add('lp-leaving');
+    setTimeout(function(){ location.href = a.href; }, 150);
+  });
+
+  /* ---- motion: scroll reveal (JS-adds the class, so content is never hidden without JS) ---- */
+  if(!reduceMotion && 'IntersectionObserver' in window){
+    var targets = main ? main.querySelectorAll(':scope > section, :scope > div > section') : [];
+    if(targets.length){
+      var ro = new IntersectionObserver(function(ents){
+        ents.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); ro.unobserve(en.target); } });
+      }, {rootMargin:'0px 0px -8% 0px', threshold:.04});
+      targets.forEach(function(s){ s.classList.add('lp-reveal'); ro.observe(s); });
+      setTimeout(function(){ targets.forEach(function(s){ s.classList.add('in'); }); }, 1500); // safety net
+    }
+  }
 })();

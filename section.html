@@ -23,15 +23,15 @@ tailwind.config = { theme: { extend: {
   .metarow{display:grid;grid-template-columns:104px 1fr;gap:14px;padding:7px 0;border-top:1px solid var(--line);align-items:start}
   .metarow:first-child{border-top:none;padding-top:0}
   .metakey{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;font-weight:400;letter-spacing:0.05em;color:var(--muted);line-height:1.3}
-  .metaval{font-size:14px;line-height:1.3;color:var(--ink)}
-  /* navy preview-controls bar (like the breadcrumb bar) */
-  .sxbar{display:flex;align-items:center;gap:32px;flex-wrap:wrap;min-height:52px;padding:9px 40px;background:var(--navy);border-bottom:1px solid var(--line)}
-  .sxbar-group{display:flex;align-items:center;gap:12px}
-  .barlbl{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:0.05em;color:rgba(255,255,255,.55)}
-  .barbtn{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:0.05em;padding:4px 11px;border:1px solid rgba(255,255,255,.28);color:#FBFAF6;background:transparent;cursor:pointer;transition:.12s;white-space:nowrap}
-  .barbtn:hover:not(:disabled){border-color:#FBFAF6}
-  .barbtn.active{background:#FBFAF6;color:#010086;border-color:#FBFAF6}
-  .barbtn:disabled{opacity:.38;cursor:not-allowed}
+  .metaval{font-size:16px;line-height:1.35;color:var(--ink)}
+  /* light preview-controls bar — no fill; the two groups spread to fill the row */
+  .sxbar{display:flex;align-items:center;justify-content:space-between;gap:24px 32px;flex-wrap:wrap;min-height:52px;padding:11px 40px;border-bottom:1px solid var(--line)}
+  .sxbar-group{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .barlbl{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:0.05em;color:var(--muted)}
+  .barbtn{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:0.05em;padding:5px 12px;border:1px solid var(--line);color:var(--muted);background:transparent;cursor:pointer;transition:.12s;white-space:nowrap}
+  .barbtn:hover:not(:disabled){color:var(--ink);border-color:var(--ink)}
+  .barbtn.active{background:var(--royal);color:#fff;border-color:var(--royal)}
+  .barbtn:disabled{opacity:.4;cursor:not-allowed}
   /* implementation toggle */
   .implseg{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:0.05em;padding:10px 16px;border:1px solid var(--line);color:var(--muted);background:transparent;cursor:pointer;transition:.12s}
   .implseg:hover{color:var(--ink)}.implseg.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -50,7 +50,7 @@ tailwind.config = { theme: { extend: {
       <div class="stack stack-2">
         <h1 class="ts-section-lg" id="secTitle">Section</h1>
         <p class="text-[16px]" id="secDesc" style="color:var(--muted);max-width:52ch"></p>
-        <p class="text-[15px]" style="color:var(--muted);font-style:normal">Preview the system. Then copy it your way.</p>
+        <p class="text-[16px]" style="color:var(--muted);font-style:normal">Preview the system. Then copy it your way.</p>
       </div>
       <div id="secMeta"></div>
     </section>
@@ -74,7 +74,7 @@ tailwind.config = { theme: { extend: {
         </div>
       </div>
     </div>
-    <div class="px-10 pt-4"><p class="text-[13px]" style="color:var(--muted);max-width:80ch">Design Systems are complete visual systems for sections — type, spacing, buttons, cards, labels, and states. The preview shows the section through the selected system and mode.</p></div>
+    <div class="px-10 pt-4"><p class="text-[16px]" style="color:var(--muted);max-width:80ch">Design Systems are complete visual systems for sections — type, spacing, buttons, cards, labels, and states. The preview shows the section through the selected system and mode.</p></div>
 
     <!-- PREVIEW -->
     <div class="px-10 pt-5 pb-10 border-b border-line">
@@ -88,7 +88,7 @@ tailwind.config = { theme: { extend: {
     <section class="px-10 py-9 stack stack-4">
       <div class="stack stack-2">
         <div class="lbl">Implementation</div>
-        <p class="text-[15px]" style="color:var(--muted);max-width:76ch">Add a <a href="structured-editorial.html" class="lplink">Design System</a> to your site once, then drop in sections as plain structure. The Claude prompt does it for you — it installs the system if it's missing, or adapts the section to your existing styles.</p>
+        <p class="text-[16px]" style="color:var(--muted);max-width:76ch">Add a <a href="structured-editorial.html" class="lplink">Design System</a> to your site once, then drop in sections as plain structure. The Claude prompt does it for you — it installs the system if it's missing, or adapts the section to your existing styles.</p>
       </div>
       <div class="flex items-center justify-between gap-4 flex-wrap">
         <div class="flex gap-2">

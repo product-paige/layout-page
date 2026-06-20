@@ -43,6 +43,15 @@ tailwind.config = { theme: { extend: {
     #seGrid.codeoff .se-codepanel{display:none}
     #seGrid.codeoff #seCodeToggle{left:auto;right:14px}
   }
+  /* sticky jump nav */
+  html{scroll-behavior:smooth}
+  [data-jump]{scroll-margin-top:104px}
+  .se-jumpbar{position:sticky;top:0;z-index:20;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.12)}
+  .jtab{display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:rgba(251,250,246,.6);white-space:nowrap;padding:6px 0;border:0;cursor:pointer;background:none;text-decoration:none}
+  .jtab::before{content:"";width:6px;height:6px;border-radius:999px !important;background:currentColor;opacity:0;transition:opacity .15s ease;flex-shrink:0}
+  .jtab:hover{color:var(--cream)}
+  .jtab.active{color:var(--cream)}
+  .jtab.active::before{opacity:1}
   /* specimen helpers */
   .spec{padding:var(--sx-space-5)}
   .spec-row{display:flex;flex-direction:column;gap:var(--sx-space-3)}
@@ -101,6 +110,23 @@ tailwind.config = { theme: { extend: {
           <div class="browser">
             <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-addr"></span></div>
             <div class="sx-canvas browser-body" data-system="structured-editorial" data-mode="neutral" id="sePreview" style="padding:var(--sx-space-7) var(--sx-space-6)"></div>
+          </div>
+        </div>
+
+        <!-- sticky jump nav (section anchors) -->
+        <div class="se-jumpbar px-8 py-3">
+          <div class="flex gap-5 overflow-x-auto" id="jumpTabs">
+            <a class="jtab active" href="#type" data-jumpto="type">Type</a>
+            <a class="jtab" href="#color" data-jumpto="color">Color</a>
+            <a class="jtab" href="#spacing" data-jumpto="spacing">Spacing</a>
+            <a class="jtab" href="#buttons" data-jumpto="buttons">Buttons</a>
+            <a class="jtab" href="#labels" data-jumpto="labels">Labels &amp; Tags</a>
+            <a class="jtab" href="#cards" data-jumpto="cards">Cards</a>
+            <a class="jtab" href="#forms" data-jumpto="forms">Forms</a>
+            <a class="jtab" href="#links" data-jumpto="links">Links &amp; Nav</a>
+            <a class="jtab" href="#media" data-jumpto="media">Media</a>
+            <a class="jtab" href="#icons" data-jumpto="icons">Icons</a>
+            <a class="jtab" href="#states" data-jumpto="states">States</a>
           </div>
         </div>
 
@@ -395,7 +421,7 @@ tailwind.config = { theme: { extend: {
           <div class="flex items-start justify-between gap-4">
             <div class="stack stack-1">
               <div class="lbl">Add to your site</div>
-              <p class="text-[13px]" style="color:var(--muted);max-width:38ch">Install the system once — paste into Claude, or drop in the CSS. Then every section you add inherits it.</p>
+              <p class="text-[16px]" style="color:var(--muted);max-width:38ch">Install the system once — paste into Claude, or drop in the CSS. Then every section you add inherits it.</p>
             </div>
             <button class="lpbtn lpbtn--primary lpbtn--sm" id="copyCode"><i data-lucide="sparkles" class="ico"></i> Copy</button>
           </div>
@@ -560,6 +586,21 @@ tailwind.config = { theme: { extend: {
 
   /* ---- specimen / example links are demos — never navigate ---- */
   document.addEventListener('click',e=>{ const a=e.target.closest('.sx-canvas a'); if(a) e.preventDefault(); });
+
+  /* ---- jump tabs: click-to-scroll + scroll-spy ---- */
+  const jtabs=Array.from(document.querySelectorAll('.jtab'));
+  function setActiveTab(id){jtabs.forEach(t=>t.classList.toggle('active',t.dataset.jumpto===id));}
+  jtabs.forEach(t=>t.addEventListener('click',e=>{
+    e.preventDefault();
+    setActiveTab(t.dataset.jumpto);
+    const target=document.getElementById(t.dataset.jumpto);
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+  }));
+  const spy=new IntersectionObserver(entries=>{
+    const vis=entries.filter(en=>en.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);
+    if(vis.length)setActiveTab(vis[0].target.id);
+  },{rootMargin:'-110px 0px -55% 0px',threshold:0});
+  document.querySelectorAll('[data-jump]').forEach(s=>spy.observe(s));
 </script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="layout-system/nav.js"></script>
