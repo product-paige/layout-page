@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Components · layout.page</title>
-<script>(function(){try{if(localStorage.getItem('lp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(localStorage.getItem('lp-nav-collapsed')==='1')document.documentElement.classList.add('nav-collapsed');}catch(e){}})();</script>
+<script>(function(){try{if(localStorage.getItem('lp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,24 +17,41 @@ tailwind.config = { theme: { extend: {
 } } }
 </script>
 <style>
-  body{font-family:'Funnel Sans','system-ui',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.45}
+  body{font-family:'Funnel Sans','system-ui',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.45;animation:lp-page-in .35s ease both}
 
-  /* ===== Cards playground (Inter; live radius / padding / borders) ===== */
-  .cl-controls{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;padding:14px 18px;border:1px solid var(--line);background:var(--panel)}
-  .cl-ctrl{display:flex;align-items:center;gap:10px}
-  .cl-range{width:130px;accent-color:var(--royal);cursor:pointer}
-  .cl-val{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);min-width:40px}
-  .cl-seg{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05em;padding:5px 12px;border:1px solid var(--line);color:var(--muted);background:transparent;cursor:pointer;transition:.12s}
+  /* ===== global TOP NAV (prototype) ===== */
+  .lp-topnav{display:flex;align-items:center;gap:28px;height:60px;padding:0 24px;border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:60}
+  .lp-topnav .lp-logo-mark{width:16px;height:16px}
+  .lp-topnav-links{display:flex;align-items:center;gap:4px;flex:1;overflow-x:auto}
+  .lp-topnav-links a{font-family:'Funnel Sans',sans-serif;font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink);opacity:.66;padding:7px 12px;white-space:nowrap;transition:.12s}
+  .lp-topnav-links a:hover{opacity:1;color:var(--royal)}
+  .lp-topnav-links a.active{color:var(--royal);opacity:1}
+  .lp-topnav .themebtn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--line);color:var(--ink);background:transparent;cursor:pointer;flex-shrink:0}
+  .lp-topnav .themebtn:hover{border-color:var(--ink)}
+
+  /* ===== contextual LEFT RAIL (controls) ===== */
+  .lp-shell{display:flex;align-items:flex-start;max-width:1600px;margin:0 auto}
+  .lp-rail{width:256px;flex-shrink:0;border-right:1px solid var(--line);padding:24px 20px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+  .rail-ctrl{display:flex;flex-direction:column;gap:10px;padding:16px 0;border-top:1px solid var(--line)}
+  .rail-ctrl:first-of-type{border-top:0;padding-top:6px}
+  .rail-head{display:flex;align-items:center;justify-content:space-between}
+  .rail-segs{display:flex;flex-wrap:wrap;gap:6px}
+
+  /* ===== Cards playground (Inter) ===== */
+  .cl-range{width:100%;accent-color:var(--royal);cursor:pointer}
+  .cl-val{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)}
+  .cl-seg{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05em;padding:6px 12px;border:1px solid var(--line);color:var(--muted);background:transparent;cursor:pointer;transition:.12s}
   .cl-seg:hover{color:var(--ink);border-color:var(--ink)}
   .cl-seg.active{background:var(--royal);color:#fff;border-color:var(--royal)}
   .cardlab{--cl-radius:0px;--cl-pad:16px;--cl-bw:0px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-  @media(min-width:860px){ .cardlab{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  @media(min-width:1000px){ .cardlab{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  /* card = a vertical auto-layout frame; groups inside are nested frames with their own gap */
   .cl-card{font-family:'Inter',system-ui,sans-serif;background:var(--card);color:var(--ink);
     border:var(--cl-bw) solid var(--line);border-radius:var(--cl-radius) !important;padding:var(--cl-pad);
-    aspect-ratio:3/4;display:flex;flex-direction:column;gap:12px;overflow:hidden;
-    transition:border-radius .18s ease,padding .18s ease,border-width .18s ease}
+    aspect-ratio:3/4;display:flex;flex-direction:column;gap:16px;overflow:hidden;
+    transition:border-radius .18s ease,padding .18s ease,border-width .18s ease,background .2s ease}
   .cl-card *{font-family:'Inter',system-ui,sans-serif}
-  /* grey image placeholder — theme-aware (darker than the card in both modes) */
+  .cl-group{display:flex;flex-direction:column;gap:12px}            /* heading + subheading frame */
   .cl-ph{background-color:#dcdcd9;border-radius:calc(var(--cl-radius) * .6) !important;flex-shrink:0}
   [data-theme="dark"] .cl-ph{background-color:#191919}
   .cl-ph--dots{background-image:radial-gradient(rgba(120,120,120,.45) 1px,transparent 1.6px);background-size:26px 26px;display:grid;place-items:center}
@@ -45,109 +62,159 @@ tailwind.config = { theme: { extend: {
   .cl-num{font-weight:600;font-size:34px;letter-spacing:-.03em;line-height:1;color:var(--ink)}
   .cl-text{font-size:16px;line-height:1.3;color:var(--muted)}
   .cl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:14px;color:var(--ink)}
-  .cl-btn{align-self:flex-start;font-size:14px;font-weight:500;color:var(--bg);background:var(--ink);padding:8px 16px;border-radius:999px !important}
-  .cl-link{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer}
-  .cl-link svg,.cl-link i{width:16px;height:16px}
   .cl-overlay{position:relative}
   .cl-overlay .cl-cap{position:absolute;left:0;right:0;bottom:0;padding:14px;background:linear-gradient(transparent,rgba(0,0,0,.55));border-radius:0 0 calc(var(--cl-radius) * .6) calc(var(--cl-radius) * .6) !important}
   .cl-overlay .cl-title{color:#fff}
-  /* section jump nav */
-  .cl-jumpbar{position:sticky;top:0;z-index:20;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.12)}
-  .cl-jtab{display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:rgba(251,250,246,.6);white-space:nowrap;padding:6px 0;border:0;cursor:pointer;background:none;text-decoration:none}
-  .cl-jtab::before{content:"";width:6px;height:6px;border-radius:999px !important;background:currentColor;opacity:0;transition:opacity .15s ease;flex-shrink:0}
-  .cl-jtab.active{color:var(--cream)}.cl-jtab.active::before{opacity:1}
-  .cl-jtab:hover{color:var(--cream)}
+
+  /* ===== Action control: Button / Arrow / None ===== */
+  .cl-cta{display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:15px;font-weight:500;cursor:pointer;align-self:flex-start}
+  .cl-cta .cl-cta-arrow{width:16px;height:16px;flex-shrink:0;display:none}
+  /* arrow mode (default) */
+  .cardlab[data-cta="arrow"] .cl-cta{color:var(--ink);background:none;padding:0;border-radius:0 !important}
+  .cardlab[data-cta="arrow"] .cl-cta .cl-cta-arrow{display:inline-flex}
+  /* button mode */
+  .cardlab[data-cta="button"] .cl-cta{color:var(--bg);background:var(--ink);padding:9px 18px;border-radius:999px !important}
+  /* none */
+  .cardlab[data-cta="none"] .cl-cta{display:none}
 </style>
 </head>
 <body class="antialiased" data-page="components" data-title="Components">
-<div class="flex min-h-screen max-w-[1600px] mx-auto">
 
-  <aside id="lp-nav" class="lp-nav hidden md:flex"></aside>
+<!-- ============================ GLOBAL TOP NAV (prototype) ============================ -->
+<header class="lp-topnav">
+  <a class="lp-logo" href="index.html" aria-label="layout.page home"><span class="lp-logo-mark"></span><span class="logo">LAYOUT.PAGE</span></a>
+  <nav class="lp-topnav-links">
+    <a href="index.html">Overview</a>
+    <a href="section-library.html">Browse Sections</a>
+    <a href="style-systems.html">Design Systems</a>
+    <a href="components.html" class="active">Components</a>
+    <a href="page-layouts.html">Page Layouts</a>
+  </nav>
+  <button class="themebtn" id="themeToggle" aria-label="Toggle theme"><i data-lucide="moon" class="ico"></i></button>
+</header>
 
-  <main class="flex-1 min-w-0 border-l border-line">
-    <!-- top bar injected by nav.js (shared template) -->
+<div class="lp-shell">
 
-    <section class="lp-hero">
-      <h1 class="ts-page-hero">Components</h1>
-      <div class="lp-hero-text">
-        <p class="lp-hero-support" style="max-width:52ch">Interactive building blocks. Adjust radius, padding, and borders live to see how a pattern feels, then build it into your sections.</p>
-      </div>
-    </section>
+  <!-- ============================ CONTEXTUAL LEFT RAIL ============================ -->
+  <aside class="lp-rail">
+    <div class="lbl" style="margin-bottom:14px">Controls — Cards</div>
 
-    <!-- section nav -->
-    <div class="cl-jumpbar px-8 py-3">
-      <div class="flex gap-5 overflow-x-auto" id="clJump">
-        <a class="cl-jtab active" href="#cards" data-jumpto="cards">Cards</a>
+    <div class="rail-ctrl">
+      <div class="rail-head"><span class="lbl">Radius</span><span class="cl-val" id="clRadiusVal">0px</span></div>
+      <input type="range" id="clRadius" min="0" max="36" value="0" class="cl-range" aria-label="Card radius">
+    </div>
+
+    <div class="rail-ctrl">
+      <span class="lbl">Padding</span>
+      <div class="rail-segs">
+        <button class="cl-seg" data-pad="12">S 12</button>
+        <button class="cl-seg active" data-pad="16">M 16</button>
+        <button class="cl-seg" data-pad="24">L 24</button>
+        <button class="cl-seg" data-pad="40">XL 40</button>
       </div>
     </div>
 
-    <!-- ===== Cards ===== -->
-    <div class="stack stack-3 px-8 py-9 border-b border-line" id="cards" data-jump style="scroll-margin-top:104px">
-      <div class="flex items-end justify-between"><h2 class="ts-section-lg">Cards</h2><span class="lbl">Inter · live controls</span></div>
-      <div class="cl-controls">
-        <div class="cl-ctrl"><span class="lbl">Radius</span><input type="range" id="clRadius" min="0" max="36" value="0" class="cl-range" aria-label="Card radius"><span class="cl-val" id="clRadiusVal">0px</span></div>
-        <div class="cl-ctrl"><span class="lbl">Padding</span><div class="flex gap-1.5"><button class="cl-seg" data-pad="12">S 12</button><button class="cl-seg active" data-pad="16">M 16</button><button class="cl-seg" data-pad="24">L 24</button><button class="cl-seg" data-pad="40">XL 40</button></div></div>
-        <div class="cl-ctrl"><span class="lbl">Borders</span><button class="cl-seg" id="clBorder">Off</button></div>
+    <div class="rail-ctrl">
+      <span class="lbl">Borders</span>
+      <div class="rail-segs">
+        <button class="cl-seg" data-border="0">Off</button>
+        <button class="cl-seg" data-border="1">On</button>
       </div>
-      <div class="cardlab" id="cardlab">
-        <!-- 0 · media + mark + learn-more (reference) -->
+    </div>
+
+    <div class="rail-ctrl">
+      <span class="lbl">Action</span>
+      <div class="rail-segs">
+        <button class="cl-seg" data-cta="button">Button</button>
+        <button class="cl-seg active" data-cta="arrow">Arrow</button>
+        <button class="cl-seg" data-cta="none">None</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================ MAIN ============================ -->
+  <main class="flex-1 min-w-0">
+    <div class="stack stack-3 px-8 py-9" id="cards">
+      <div class="flex items-end justify-between flex-wrap gap-3">
+        <div class="stack stack-1"><h1 class="ts-section-lg">Cards</h1><p class="text-[16px]" style="color:var(--muted)">Adjust the controls on the left — every card updates live.</p></div>
+        <span class="lbl">Inter · Lorem ipsum</span>
+      </div>
+
+      <div class="cardlab" id="cardlab" data-cta="arrow">
+        <!-- 1 · media + mark + CTA -->
         <article class="cl-card">
           <div class="cl-ph cl-ph--dots cl-grow"><i data-lucide="asterisk" class="cl-mark"></i></div>
-          <div class="cl-title">Lorem ipsum dolor</div>
-          <div class="cl-text">Lorem ipsum dolor sit amet — consectetur adipiscing elit, sed do eiusmod tempor incididunt.</div>
-          <span class="cl-link"><i data-lucide="corner-down-right"></i> Learn more</span>
+          <div class="cl-group">
+            <div class="cl-title">Lorem ipsum dolor</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet — consectetur adipiscing elit, sed do eiusmod tempor.</div>
+          </div>
+          <span class="cl-cta">Learn more<i data-lucide="corner-down-right" class="cl-cta-arrow"></i></span>
         </article>
-        <!-- 1 · media top -->
+        <!-- 2 · media top + CTA -->
         <article class="cl-card">
           <div class="cl-ph cl-grow"></div>
-          <div class="cl-title">Lorem ipsum</div>
-          <div class="cl-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+          <div class="cl-group">
+            <div class="cl-title">Lorem ipsum</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+          </div>
+          <span class="cl-cta">Learn more<i data-lucide="corner-down-right" class="cl-cta-arrow"></i></span>
         </article>
-        <!-- 2 · list + action -->
+        <!-- 3 · list + CTA -->
         <article class="cl-card">
-          <div class="cl-eyebrow">Lorem</div>
-          <div class="cl-title">Dolor sit amet</div>
+          <div class="cl-group">
+            <div class="cl-eyebrow">Lorem</div>
+            <div class="cl-title">Dolor sit amet</div>
+          </div>
           <div class="cl-grow" style="display:flex;flex-direction:column;justify-content:flex-end">
             <div class="cl-row">Lorem ipsum</div>
             <div class="cl-row">Dolor sit amet</div>
             <div class="cl-row">Consectetur elit</div>
           </div>
-          <button class="cl-btn">Lorem ipsum</button>
+          <span class="cl-cta">Learn more<i data-lucide="corner-down-right" class="cl-cta-arrow"></i></span>
         </article>
-        <!-- 3 · stat -->
+        <!-- 4 · stat -->
         <article class="cl-card">
           <div class="cl-eyebrow">Lorem</div>
           <div class="cl-num">2 dies</div>
           <div class="cl-grow" style="display:flex;align-items:flex-start;justify-content:flex-end"><span class="cl-num" style="font-size:clamp(40px,7vw,72px);color:var(--line)">3</span></div>
-          <div class="cl-title">Lorem ipsum</div>
-          <div class="cl-text">Lorem ipsum dolor sit amet adipiscing.</div>
+          <div class="cl-group">
+            <div class="cl-title">Lorem ipsum</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet adipiscing.</div>
+          </div>
         </article>
-        <!-- 4 · media bottom -->
+        <!-- 5 · media bottom + CTA -->
         <article class="cl-card">
-          <div class="cl-eyebrow">Lorem</div>
-          <div class="cl-title">Adipiscing elit</div>
-          <div class="cl-text">Lorem ipsum dolor sit amet.</div>
+          <div class="cl-group">
+            <div class="cl-eyebrow">Lorem</div>
+            <div class="cl-title">Adipiscing elit</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet.</div>
+          </div>
+          <span class="cl-cta">Learn more<i data-lucide="corner-down-right" class="cl-cta-arrow"></i></span>
           <div class="cl-ph cl-grow"></div>
         </article>
-        <!-- 5 · overlay -->
+        <!-- 6 · overlay -->
         <article class="cl-card cl-overlay">
           <div class="cl-ph cl-grow"></div>
           <div class="cl-cap"><div class="cl-title">Lorem ipsum</div></div>
         </article>
-        <!-- 6 · two media -->
+        <!-- 7 · two media -->
         <article class="cl-card">
-          <div class="cl-title">Sed do eiusmod</div>
-          <div class="cl-text">Lorem ipsum dolor sit amet.</div>
+          <div class="cl-group">
+            <div class="cl-title">Sed do eiusmod</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet.</div>
+          </div>
           <div class="cl-grow" style="display:flex;gap:10px"><div class="cl-ph" style="flex:1"></div><div class="cl-ph" style="flex:1"></div></div>
         </article>
-        <!-- 7 · split media + content -->
+        <!-- 8 · split media + content -->
         <article class="cl-card">
           <div class="cl-ph" style="height:42%"></div>
-          <div class="cl-eyebrow">Lorem</div>
-          <div class="cl-title">Tempor incididunt</div>
-          <div class="cl-text cl-grow">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod.</div>
+          <div class="cl-group">
+            <div class="cl-eyebrow">Lorem</div>
+            <div class="cl-title">Tempor incididunt</div>
+            <div class="cl-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do.</div>
+          </div>
         </article>
-        <!-- 8 · quote / text only -->
+        <!-- 9 · quote -->
         <article class="cl-card">
           <div class="cl-num" style="font-size:48px;line-height:.8;color:var(--line)">&ldquo;</div>
           <div class="cl-title cl-grow" style="font-weight:500;font-size:17px;display:flex;align-items:center">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
@@ -155,40 +222,37 @@ tailwind.config = { theme: { extend: {
         </article>
       </div>
     </div>
-
-    <!-- more component playgrounds (buttons, tags, forms…) land here next -->
-
   </main>
 </div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="layout-system/nav.js"></script>
 <script>
-  lucide.createIcons({ attrs: { 'stroke-width': 1.25, width: 16, height: 16 } });
+  lucide.createIcons({ attrs: { 'stroke-width': 1.5, width: 16, height: 16 } });
 
-  /* ---- Cards playground: radius slider / padding switcher / borders toggle apply to all cards ---- */
+  /* ---- theme toggle ---- */
+  (function(){
+    var root=document.documentElement, btn=document.getElementById('themeToggle');
+    function sync(){ var dark=root.getAttribute('data-theme')==='dark'; btn.innerHTML='<i data-lucide="'+(dark?'sun':'moon')+'" class="ico"></i>'; if(window.lucide) lucide.createIcons({attrs:{'stroke-width':1.5,width:16,height:16}}); }
+    btn.addEventListener('click',function(){ var dark=root.getAttribute('data-theme')==='dark'; if(dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark'); try{localStorage.setItem('lp-theme',dark?'light':'dark');}catch(e){} sync(); });
+    sync();
+  })();
+
+  /* ---- card controls: radius / padding / borders / action ---- */
   (function(){
     var lab=document.getElementById('cardlab'); if(!lab) return;
     var r=document.getElementById('clRadius'), rv=document.getElementById('clRadiusVal');
     if(r) r.addEventListener('input',function(){ lab.style.setProperty('--cl-radius', r.value+'px'); rv.textContent=r.value+'px'; });
-    document.querySelectorAll('.cl-seg[data-pad]').forEach(function(b){ b.addEventListener('click',function(){
-      document.querySelectorAll('.cl-seg[data-pad]').forEach(function(x){x.classList.remove('active');}); b.classList.add('active');
-      lab.style.setProperty('--cl-pad', b.dataset.pad+'px');
-    });});
-    var bt=document.getElementById('clBorder'), bon=false;
-    if(bt) bt.addEventListener('click',function(){ bon=!bon; bt.classList.toggle('active',bon); bt.textContent=bon?'On':'Off'; lab.style.setProperty('--cl-bw', bon?'1px':'0px'); });
-  })();
-
-  /* ---- section nav: click-to-scroll + scroll-spy ---- */
-  (function(){
-    var jtabs=Array.prototype.slice.call(document.querySelectorAll('.cl-jtab'));
-    if(!jtabs.length) return;
-    function setActive(id){ jtabs.forEach(function(t){ t.classList.toggle('active', t.dataset.jumpto===id); }); }
-    jtabs.forEach(function(t){ t.addEventListener('click',function(e){ e.preventDefault(); setActive(t.dataset.jumpto); var el=document.getElementById(t.dataset.jumpto); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }); });
-    if('IntersectionObserver' in window){
-      var spy=new IntersectionObserver(function(ents){ var vis=ents.filter(function(en){return en.isIntersecting;}).sort(function(a,b){return a.boundingClientRect.top-b.boundingClientRect.top;}); if(vis.length) setActive(vis[0].target.id); },{rootMargin:'-110px 0px -55% 0px',threshold:0});
-      document.querySelectorAll('[data-jump]').forEach(function(s){ spy.observe(s); });
+    function segGroup(attr, apply){
+      document.querySelectorAll('.cl-seg['+attr+']').forEach(function(b){ b.addEventListener('click',function(){
+        document.querySelectorAll('.cl-seg['+attr+']').forEach(function(x){x.classList.remove('active');}); b.classList.add('active');
+        apply(b.getAttribute(attr));
+      });});
     }
+    segGroup('data-pad', function(v){ lab.style.setProperty('--cl-pad', v+'px'); });
+    segGroup('data-border', function(v){ lab.style.setProperty('--cl-bw', v+'px'); });
+    segGroup('data-cta', function(v){ lab.setAttribute('data-cta', v); });
+    // default active states
+    document.querySelector('.cl-seg[data-border="0"]').classList.add('active');
   })();
 </script>
 </body>
