@@ -27,25 +27,36 @@ tailwind.config = { theme: { extend: {
   .cl-seg{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05em;padding:5px 12px;border:1px solid var(--line);color:var(--muted);background:transparent;cursor:pointer;transition:.12s}
   .cl-seg:hover{color:var(--ink);border-color:var(--ink)}
   .cl-seg.active{background:var(--royal);color:#fff;border-color:var(--royal)}
-  .cardlab{--cl-radius:14px;--cl-pad:22px;--cl-bw:1px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-  @media(min-width:760px){ .cardlab{grid-template-columns:repeat(3,minmax(0,1fr))} }
-  @media(min-width:1200px){ .cardlab{grid-template-columns:repeat(4,minmax(0,1fr))} }
+  .cardlab{--cl-radius:0px;--cl-pad:16px;--cl-bw:0px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  @media(min-width:860px){ .cardlab{grid-template-columns:repeat(3,minmax(0,1fr))} }
   .cl-card{font-family:'Inter',system-ui,sans-serif;background:var(--card);color:var(--ink);
     border:var(--cl-bw) solid var(--line);border-radius:var(--cl-radius) !important;padding:var(--cl-pad);
     aspect-ratio:3/4;display:flex;flex-direction:column;gap:12px;overflow:hidden;
     transition:border-radius .18s ease,padding .18s ease,border-width .18s ease}
   .cl-card *{font-family:'Inter',system-ui,sans-serif}
-  .cl-ph{background:#d7d7d4;border-radius:calc(var(--cl-radius) * .6) !important;flex-shrink:0}
+  /* grey image placeholder — theme-aware (darker than the card in both modes) */
+  .cl-ph{background-color:#dcdcd9;border-radius:calc(var(--cl-radius) * .6) !important;flex-shrink:0}
+  [data-theme="dark"] .cl-ph{background-color:#191919}
+  .cl-ph--dots{background-image:radial-gradient(rgba(120,120,120,.45) 1px,transparent 1.6px);background-size:26px 26px;display:grid;place-items:center}
+  .cl-ph--dots .cl-mark{width:64px;height:64px;color:var(--ink)}
   .cl-grow{flex:1;min-height:0}
   .cl-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:500}
   .cl-title{font-weight:600;font-size:19px;letter-spacing:-.02em;line-height:1.12;color:var(--ink)}
   .cl-num{font-weight:600;font-size:34px;letter-spacing:-.03em;line-height:1;color:var(--ink)}
-  .cl-text{font-size:13px;line-height:1.45;color:var(--muted)}
-  .cl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13px;color:var(--ink)}
-  .cl-btn{align-self:flex-start;font-size:13px;font-weight:500;color:#fff;background:var(--ink);padding:8px 16px;border-radius:999px !important}
+  .cl-text{font-size:16px;line-height:1.3;color:var(--muted)}
+  .cl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:14px;color:var(--ink)}
+  .cl-btn{align-self:flex-start;font-size:14px;font-weight:500;color:var(--bg);background:var(--ink);padding:8px 16px;border-radius:999px !important}
+  .cl-link{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:500;color:var(--ink);cursor:pointer}
+  .cl-link svg,.cl-link i{width:16px;height:16px}
   .cl-overlay{position:relative}
   .cl-overlay .cl-cap{position:absolute;left:0;right:0;bottom:0;padding:14px;background:linear-gradient(transparent,rgba(0,0,0,.55));border-radius:0 0 calc(var(--cl-radius) * .6) calc(var(--cl-radius) * .6) !important}
   .cl-overlay .cl-title{color:#fff}
+  /* section jump nav */
+  .cl-jumpbar{position:sticky;top:0;z-index:20;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.12)}
+  .cl-jtab{display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:rgba(251,250,246,.6);white-space:nowrap;padding:6px 0;border:0;cursor:pointer;background:none;text-decoration:none}
+  .cl-jtab::before{content:"";width:6px;height:6px;border-radius:999px !important;background:currentColor;opacity:0;transition:opacity .15s ease;flex-shrink:0}
+  .cl-jtab.active{color:var(--cream)}.cl-jtab.active::before{opacity:1}
+  .cl-jtab:hover{color:var(--cream)}
 </style>
 </head>
 <body class="antialiased" data-page="components" data-title="Components">
@@ -63,15 +74,29 @@ tailwind.config = { theme: { extend: {
       </div>
     </section>
 
+    <!-- section nav -->
+    <div class="cl-jumpbar px-8 py-3">
+      <div class="flex gap-5 overflow-x-auto" id="clJump">
+        <a class="cl-jtab active" href="#cards" data-jumpto="cards">Cards</a>
+      </div>
+    </div>
+
     <!-- ===== Cards ===== -->
-    <div class="stack stack-3 px-8 py-9 border-b border-line" id="cards">
+    <div class="stack stack-3 px-8 py-9 border-b border-line" id="cards" data-jump style="scroll-margin-top:104px">
       <div class="flex items-end justify-between"><h2 class="ts-section-lg">Cards</h2><span class="lbl">Inter · live controls</span></div>
       <div class="cl-controls">
-        <div class="cl-ctrl"><span class="lbl">Radius</span><input type="range" id="clRadius" min="0" max="36" value="14" class="cl-range" aria-label="Card radius"><span class="cl-val" id="clRadiusVal">14px</span></div>
-        <div class="cl-ctrl"><span class="lbl">Padding</span><div class="flex gap-1.5"><button class="cl-seg" data-pad="14">S</button><button class="cl-seg active" data-pad="22">M</button><button class="cl-seg" data-pad="32">L</button></div></div>
-        <div class="cl-ctrl"><span class="lbl">Borders</span><button class="cl-seg active" id="clBorder">On</button></div>
+        <div class="cl-ctrl"><span class="lbl">Radius</span><input type="range" id="clRadius" min="0" max="36" value="0" class="cl-range" aria-label="Card radius"><span class="cl-val" id="clRadiusVal">0px</span></div>
+        <div class="cl-ctrl"><span class="lbl">Padding</span><div class="flex gap-1.5"><button class="cl-seg" data-pad="12">S 12</button><button class="cl-seg active" data-pad="16">M 16</button><button class="cl-seg" data-pad="24">L 24</button><button class="cl-seg" data-pad="40">XL 40</button></div></div>
+        <div class="cl-ctrl"><span class="lbl">Borders</span><button class="cl-seg" id="clBorder">Off</button></div>
       </div>
       <div class="cardlab" id="cardlab">
+        <!-- 0 · media + mark + learn-more (reference) -->
+        <article class="cl-card">
+          <div class="cl-ph cl-ph--dots cl-grow"><i data-lucide="asterisk" class="cl-mark"></i></div>
+          <div class="cl-title">Lorem ipsum dolor</div>
+          <div class="cl-text">Lorem ipsum dolor sit amet — consectetur adipiscing elit, sed do eiusmod tempor incididunt.</div>
+          <span class="cl-link"><i data-lucide="corner-down-right"></i> Learn more</span>
+        </article>
         <!-- 1 · media top -->
         <article class="cl-card">
           <div class="cl-ph cl-grow"></div>
@@ -150,8 +175,20 @@ tailwind.config = { theme: { extend: {
       document.querySelectorAll('.cl-seg[data-pad]').forEach(function(x){x.classList.remove('active');}); b.classList.add('active');
       lab.style.setProperty('--cl-pad', b.dataset.pad+'px');
     });});
-    var bt=document.getElementById('clBorder'), bon=true;
+    var bt=document.getElementById('clBorder'), bon=false;
     if(bt) bt.addEventListener('click',function(){ bon=!bon; bt.classList.toggle('active',bon); bt.textContent=bon?'On':'Off'; lab.style.setProperty('--cl-bw', bon?'1px':'0px'); });
+  })();
+
+  /* ---- section nav: click-to-scroll + scroll-spy ---- */
+  (function(){
+    var jtabs=Array.prototype.slice.call(document.querySelectorAll('.cl-jtab'));
+    if(!jtabs.length) return;
+    function setActive(id){ jtabs.forEach(function(t){ t.classList.toggle('active', t.dataset.jumpto===id); }); }
+    jtabs.forEach(function(t){ t.addEventListener('click',function(e){ e.preventDefault(); setActive(t.dataset.jumpto); var el=document.getElementById(t.dataset.jumpto); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }); });
+    if('IntersectionObserver' in window){
+      var spy=new IntersectionObserver(function(ents){ var vis=ents.filter(function(en){return en.isIntersecting;}).sort(function(a,b){return a.boundingClientRect.top-b.boundingClientRect.top;}); if(vis.length) setActive(vis[0].target.id); },{rootMargin:'-110px 0px -55% 0px',threshold:0});
+      document.querySelectorAll('[data-jump]').forEach(function(s){ spy.observe(s); });
+    }
   })();
 </script>
 </body>
