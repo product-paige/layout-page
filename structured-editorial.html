@@ -43,15 +43,7 @@ tailwind.config = { theme: { extend: {
     #seGrid.codeoff .se-codepanel{display:none}
     #seGrid.codeoff #seCodeToggle{left:auto;right:14px}
   }
-  /* jump nav + specimen helpers */
-  html{scroll-behavior:smooth}
-  [data-jump]{scroll-margin-top:104px}
-  .se-jumpbar{position:sticky;top:0;z-index:20;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.12)}
-  .jtab{display:inline-flex;align-items:center;gap:7px;font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:rgba(251,250,246,.6);white-space:nowrap;padding:6px 0;border:0;cursor:pointer;background:none;text-decoration:none}
-  .jtab::before{content:"";width:6px;height:6px;border-radius:999px !important;background:currentColor;opacity:0;transition:opacity .15s ease;flex-shrink:0}
-  .jtab:hover{color:var(--cream)}
-  .jtab.active{color:var(--cream)}
-  .jtab.active::before{opacity:1}
+  /* specimen helpers */
   .spec{padding:var(--sx-space-5)}
   .spec-row{display:flex;flex-direction:column;gap:var(--sx-space-3)}
   .spec-cap{color:var(--sx-text-soft)}
@@ -112,23 +104,6 @@ tailwind.config = { theme: { extend: {
           </div>
         </div>
 
-        <!-- sticky jump nav (section anchors) -->
-        <div class="se-jumpbar px-8 py-3">
-          <div class="flex gap-5 overflow-x-auto" id="jumpTabs">
-            <a class="jtab active" href="#type" data-jumpto="type">Type</a>
-            <a class="jtab" href="#color" data-jumpto="color">Color</a>
-            <a class="jtab" href="#spacing" data-jumpto="spacing">Spacing</a>
-            <a class="jtab" href="#buttons" data-jumpto="buttons">Buttons</a>
-            <a class="jtab" href="#labels" data-jumpto="labels">Labels &amp; Tags</a>
-            <a class="jtab" href="#cards" data-jumpto="cards">Cards</a>
-            <a class="jtab" href="#forms" data-jumpto="forms">Forms</a>
-            <a class="jtab" href="#links" data-jumpto="links">Links &amp; Nav</a>
-            <a class="jtab" href="#media" data-jumpto="media">Media</a>
-            <a class="jtab" href="#icons" data-jumpto="icons">Icons</a>
-            <a class="jtab" href="#states" data-jumpto="states">States</a>
-          </div>
-        </div>
-
         <!-- typography specimens (rendered in the Structured Editorial type system) -->
         <div class="stack stack-3 px-8 py-9 border-b border-line" id="type" data-jump>
           <div class="flex items-end justify-between"><h3>Typography</h3><span class="lbl">Funnel Sans</span></div>
@@ -141,10 +116,38 @@ tailwind.config = { theme: { extend: {
           <div id="se-swatches" class="stack stack-4"></div>
         </div>
 
-        <!-- spacing -->
+        <!-- spacing — real applied layout spacing, not abstract rulers -->
         <div class="stack stack-3 px-8 py-9 border-b border-line" id="spacing" data-jump>
           <div class="flex items-end justify-between"><h3>Spacing</h3><span class="lbl">6px rhythm</span></div>
-          <div id="se-spacing" class="stack stack-1"></div>
+          <div class="sx-canvas spec border border-line" data-system="structured-editorial" data-mode="neutral">
+            <div class="stack" style="gap:var(--sx-space-6)">
+              <div class="spec-row">
+                <span class="sx-label spec-cap">Grid gap · --sx-space-4 · 24px</span>
+                <div class="sx-grid sx-grid-3">
+                  <div class="sx-card" style="height:56px"></div><div class="sx-card" style="height:56px"></div><div class="sx-card" style="height:56px"></div>
+                </div>
+              </div>
+              <hr class="sx-divider" />
+              <div class="spec-row">
+                <span class="sx-label spec-cap">Stack rhythm · --sx-space-3 · 18px</span>
+                <div style="display:flex;flex-direction:column;gap:var(--sx-space-3)">
+                  <div class="sx-card" style="height:22px"></div><div class="sx-card" style="height:22px"></div><div class="sx-card" style="height:22px"></div>
+                </div>
+              </div>
+              <hr class="sx-divider" />
+              <div class="spec-row">
+                <span class="sx-label spec-cap">Section padding · --sx-space-7 · 72px</span>
+                <div style="border:1px dashed var(--sx-border)">
+                  <div class="sx-card" style="margin:var(--sx-space-7) var(--sx-space-6);display:flex;align-items:center;justify-content:center"><span class="sx-label" style="color:var(--sx-text-soft)">Content</span></div>
+                </div>
+              </div>
+              <hr class="sx-divider" />
+              <div class="spec-row">
+                <span class="sx-label spec-cap">Scale · 6px base</span>
+                <div id="se-spacing" style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- ===== Component specimens (rendered live in the Structured Editorial system; reskin with Mode) ===== -->
@@ -232,20 +235,20 @@ tailwind.config = { theme: { extend: {
             <div class="sx-grid sx-grid-2">
               <div class="sx-card">
                 <span class="sx-label" style="color:var(--sx-text-soft)">Surface card</span>
-                <h4 class="sx-feature-title" style="margin-top:var(--sx-space-2)">Grouped content</h4>
-                <p class="sx-body" style="font-size:var(--sx-body-sm);color:var(--sx-text-muted);margin-top:var(--sx-space-2)">A bordered surface with consistent padding for related content.</p>
+                <h4 class="sx-feature-title" style="margin:var(--sx-space-2) 0 0">Grouped content</h4>
+                <p class="sx-meta" style="margin-top:var(--sx-space-2)">A bordered surface with steady padding for related content.</p>
               </div>
               <div class="sx-feature">
                 <i data-lucide="layers" class="sx-icon"></i>
-                <h4 class="sx-feature-title">Feature block</h4>
-                <p class="sx-body" style="font-size:var(--sx-body-sm);color:var(--sx-text-muted)">Icon-led tile for benefits, capabilities, and value props.</p>
+                <h4 class="sx-feature-title" style="margin:0">Feature block</h4>
+                <p class="sx-meta">Icon-led tile for benefits, capabilities, and value props.</p>
               </div>
             </div>
             <div class="sx-card" data-clickable="true" style="margin-top:var(--sx-space-4)">
-              <div class="sx-between">
+              <div class="sx-between" style="align-items:center;gap:var(--sx-space-4)">
                 <div>
-                  <h4 class="sx-feature-title">Clickable card</h4>
-                  <p class="sx-body" style="font-size:var(--sx-body-sm);color:var(--sx-text-muted);margin-top:6px">data-clickable="true" — pointer cursor, whole surface is a target.</p>
+                  <h4 class="sx-feature-title" style="margin:0">Clickable card</h4>
+                  <p class="sx-meta" style="margin-top:6px">The whole surface is a target — pointer cursor on hover.</p>
                 </div>
                 <i data-lucide="arrow-up-right" class="sx-icon"></i>
               </div>
@@ -379,13 +382,10 @@ tailwind.config = { theme: { extend: {
             </div>
           </div>
         </div>
-        <!-- guidelines -->
+        <!-- best practices — concise single list (replaces the long Do / Don't grid) -->
         <div class="stack stack-3 px-8 py-9">
-          <h3>Guidelines</h3>
-          <div class="grid sm:grid-cols-2 gap-8">
-            <div class="stack stack-2"><div class="lbl" style="color:var(--ink)">Do</div><ul class="stack stack-1 text-[14px]" id="se-do"></ul></div>
-            <div class="stack stack-2"><div class="lbl" style="color:var(--ink)">Don't</div><ul class="stack stack-1 text-[14px]" id="se-dont"></ul></div>
-          </div>
+          <div class="flex items-end justify-between"><h3>Best practices</h3><span class="lbl">Use it well</span></div>
+          <ul class="stack stack-3" id="se-best"></ul>
         </div>
       </div>
 
@@ -445,12 +445,20 @@ tailwind.config = { theme: { extend: {
       grid.appendChild(cell);});
     g.appendChild(grid); sw.appendChild(g);
   });
-  // spacing
+  // spacing scale — compact reference (the examples above show real applied spacing)
   const sp=document.getElementById('se-spacing');
-  SS.tokens.spacing.forEach(s=>{const r=el('div','flex items-center gap-4');r.innerHTML='<span class="lbl" style="width:110px;flex-shrink:0;font-size:11px">'+s.name+'</span><span style="height:12px;width:'+s.value+'px;background:#4337FF;flex-shrink:0"></span><span style="font-family:Geist Mono,monospace;font-size:11px;color:var(--muted)">'+s.value+'</span>';sp.appendChild(r);});
-  // guidelines
-  SS.guidelines.do.forEach(d=>{const li=el('li','flex gap-2');li.innerHTML='<span class="text-royal">+</span><span style="color:var(--muted)">'+d+'</span>';document.getElementById('se-do').appendChild(li);});
-  SS.guidelines.dont.forEach(d=>{const li=el('li','flex gap-2');li.innerHTML='<span style="color:var(--muted)">&times;</span><span style="color:var(--muted)">'+d+'</span>';document.getElementById('se-dont').appendChild(li);});
+  SS.tokens.spacing.filter(s=>s.value<=96).forEach(s=>{
+    const c=el('div');c.style.cssText='display:flex;flex-direction:column;align-items:center;gap:6px';
+    c.innerHTML='<span style="width:'+s.value+'px;height:10px;background:var(--sx-text);opacity:.85;display:block"></span><span style="font-family:Geist Mono,monospace;font-size:10px;color:var(--sx-text-muted)">'+s.value+'</span>';
+    sp.appendChild(c);
+  });
+  // best practices — a concise single list (curated from the system's guidelines)
+  const best=document.getElementById('se-best');
+  SS.guidelines.do.slice(0,5).forEach(d=>{
+    const li=el('li','flex gap-3 items-start');
+    li.innerHTML='<i data-lucide="check" class="ico" style="color:var(--royal);margin-top:4px;flex-shrink:0"></i><span class="text-[16px]" style="color:var(--ink)">'+d+'</span>';
+    best.appendChild(li);
+  });
   // mode desc
   const setModeDesc=m=>{const el=document.getElementById('modeDesc');if(!el)return;const md=SS.modes.find(x=>x.id===m);el.textContent=md?md.desc:'';};
   setModeDesc('neutral');
@@ -550,20 +558,8 @@ tailwind.config = { theme: { extend: {
     setModeDesc(b.dataset.mode);
   }));
 
-  /* ---- jump tabs: click-to-scroll + scroll-spy ---- */
-  const jtabs=Array.from(document.querySelectorAll('.jtab'));
-  function setActiveTab(id){jtabs.forEach(t=>t.classList.toggle('active',t.dataset.jumpto===id));}
-  jtabs.forEach(t=>t.addEventListener('click',e=>{
-    e.preventDefault();
-    setActiveTab(t.dataset.jumpto);
-    const target=document.getElementById(t.dataset.jumpto);
-    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
-  }));
-  const spy=new IntersectionObserver(entries=>{
-    const vis=entries.filter(en=>en.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top);
-    if(vis.length)setActiveTab(vis[0].target.id);
-  },{rootMargin:'-110px 0px -55% 0px',threshold:0});
-  document.querySelectorAll('[data-jump]').forEach(s=>spy.observe(s));
+  /* ---- specimen / example links are demos — never navigate ---- */
+  document.addEventListener('click',e=>{ const a=e.target.closest('.sx-canvas a'); if(a) e.preventDefault(); });
 </script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="layout-system/nav.js"></script>
