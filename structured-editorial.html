@@ -62,67 +62,39 @@ tailwind.config = { theme: { extend: {
 
     <div id="seGrid" class="min-w-0">
 
-      <!-- name + meta -->
-      <div class="stack stack-3 px-8 py-9 border-b border-line">
-        <h1 class="ts-heading-xl text-ink">Structured Editorial</h1>
-        <div class="flex flex-wrap gap-1.5" id="se-tags"></div>
-        <p class="subhead" style="color:var(--muted)">A complete grayscale-first Design System for structure-led websites.</p>
-        <p class="text-[16px] leading-[1.55] max-w-[60ch]" style="color:var(--muted)">Type, spacing, color, components, and states in one grayscale-first system. Light by default; dark and color are optional.</p>
-      </div>
-
-      <!-- Add to your site — install once; full width, first thing after the header -->
-      <div class="stack stack-3 px-8 py-9 border-b border-line">
-        <div class="flex items-start justify-between gap-4 flex-wrap">
-          <div class="stack stack-1">
-            <div class="lbl">Add to your site</div>
-            <p class="text-[16px]" style="color:var(--muted);max-width:60ch">Install the system once — paste into Claude, or drop in the CSS. Then every section you add inherits it.</p>
-          </div>
-          <button class="lpbtn lpbtn--primary lpbtn--sm" id="copyCode"><i data-lucide="sparkles" class="ico"></i> Copy</button>
+      <!-- hero: name + meta on the left, install / code on the right -->
+      <div class="grid lg:grid-cols-[1fr_minmax(0,460px)] gap-x-12 gap-y-9 px-8 py-9 border-b border-line items-start">
+        <div class="stack stack-3">
+          <h1 class="ts-heading-xl text-ink">Structured Editorial</h1>
+          <div class="flex flex-wrap gap-1.5" id="se-tags"></div>
+          <p class="subhead" style="color:var(--muted)">A complete grayscale-first Design System for structure-led websites.</p>
+          <p class="text-[16px] leading-[1.55] max-w-[52ch]" style="color:var(--muted)">Type, color, spacing, and components in one grayscale-first system. Light by default; dark and color are optional.</p>
         </div>
-        <div class="flex gap-6 overflow-x-auto">
-          <button class="ptab active" data-tab="claude">Claude prompt</button>
-          <button class="ptab" data-tab="css">Design System CSS</button>
-          <button class="ptab" data-tab="tailwind">Tailwind</button>
-        </div>
-        <div class="border border-line" style="background:var(--card);max-height:380px;overflow:auto"><div id="codeView" class="px-6 py-5"></div></div>
-      </div>
-
-        <!-- preview controls — navy bar styled like the top bar nav -->
-        <div class="sebar">
-          <div class="sebar-group">
-            <span class="sebar-lbl">Example</span>
-            <div class="flex flex-wrap gap-2" id="exTabs">
-              <button class="modebtn active" data-ex="hero">Hero</button>
-              <button class="modebtn" data-ex="features">Features</button>
-              <button class="modebtn" data-ex="cards">Cards</button>
-              <button class="modebtn" data-ex="cta">CTA</button>
-              <button class="modebtn" data-ex="footer">Footer</button>
+        <div class="stack stack-3 min-w-0">
+          <div class="flex items-start justify-between gap-4">
+            <div class="stack stack-1">
+              <div class="lbl">Add to your site</div>
+              <p class="text-[16px]" style="color:var(--muted)">Install once — every section you add inherits it.</p>
             </div>
+            <button class="lpbtn lpbtn--primary lpbtn--sm" id="copyCode"><i data-lucide="sparkles" class="ico"></i> Copy</button>
           </div>
-          <div class="sebar-group">
-            <span class="sebar-lbl">Mode</span>
-            <div class="flex gap-2">
-              <button class="modebtn active" data-mode="neutral">Light</button>
-              <button class="modebtn" data-mode="dark">Dark</button>
-              <button class="modebtn" data-mode="color">Color</button>
-            </div>
+          <div class="flex gap-5 overflow-x-auto">
+            <button class="ptab active" data-tab="claude">Claude prompt</button>
+            <button class="ptab" data-tab="css">CSS</button>
+            <button class="ptab" data-tab="tailwind">Tailwind</button>
           </div>
+          <div class="border border-line" style="background:var(--card);max-height:360px;overflow:auto"><div id="codeView" class="px-5 py-4"></div></div>
         </div>
-
-        <!-- live preview — tabbed section examples; Mode reskins the active example -->
-        <div class="px-8 py-8 border-b border-line" style="background:var(--panel)">
-          <div class="browser">
-            <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-addr"></span></div>
-            <div class="sx-canvas browser-body" data-system="structured-editorial" data-mode="neutral" id="sePreview" style="padding:var(--sx-space-7) var(--sx-space-6)"></div>
-          </div>
-        </div>
+      </div>
 
         <!-- sticky jump nav (section anchors) -->
         <div class="se-jumpbar px-8 py-3">
           <div class="flex gap-5 overflow-x-auto" id="jumpTabs">
-            <a class="jtab active" href="#type" data-jumpto="type">Type</a>
+            <a class="jtab active" href="#foundations" data-jumpto="foundations">Foundations</a>
+            <a class="jtab" href="#type" data-jumpto="type">Type</a>
             <a class="jtab" href="#color" data-jumpto="color">Color</a>
             <a class="jtab" href="#spacing" data-jumpto="spacing">Spacing</a>
+            <a class="jtab" href="#components" data-jumpto="components">Components</a>
             <a class="jtab" href="#buttons" data-jumpto="buttons">Buttons</a>
             <a class="jtab" href="#labels" data-jumpto="labels">Labels &amp; Tags</a>
             <a class="jtab" href="#cards" data-jumpto="cards">Cards</a>
@@ -132,6 +104,12 @@ tailwind.config = { theme: { extend: {
             <a class="jtab" href="#icons" data-jumpto="icons">Icons</a>
             <a class="jtab" href="#states" data-jumpto="states">States</a>
           </div>
+        </div>
+
+        <!-- ===== FOUNDATIONS ===== -->
+        <div class="stack stack-2 px-8 py-8 border-b border-line" id="foundations" data-jump>
+          <h2 class="ts-section-lg">Foundations</h2>
+          <p class="text-[16px]" style="color:var(--muted);max-width:60ch">The tokens everything is built from — type, color, and spacing.</p>
         </div>
 
         <!-- typography specimens (rendered in the Structured Editorial type system) -->
@@ -180,7 +158,11 @@ tailwind.config = { theme: { extend: {
           </div>
         </div>
 
-        <!-- ===== Component specimens (rendered live in the Structured Editorial system; reskin with Mode) ===== -->
+        <!-- ===== COMPONENTS ===== -->
+        <div class="stack stack-2 px-8 py-8 border-b border-line" id="components" data-jump>
+          <h2 class="ts-section-lg">Components</h2>
+          <p class="text-[16px]" style="color:var(--muted);max-width:60ch">The building blocks — buttons, tags, cards, forms, links, media, and icons.</p>
+        </div>
 
         <!-- Buttons -->
         <div class="stack stack-3 px-8 py-9 border-b border-line" id="buttons" data-jump>
@@ -429,7 +411,7 @@ tailwind.config = { theme: { extend: {
   const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
   /* ---- LEFT specimens ---- */
-  SS.tags.forEach(t=>document.getElementById('se-tags').appendChild(el('span','tag',t)));
+  SS.tags.slice(0,4).forEach(t=>document.getElementById('se-tags').appendChild(el('span','tag',t)));
   // typography specimens
   const typeWrap=document.getElementById('se-type');
   SS.tokens.typography.forEach((t,i)=>{
@@ -514,52 +496,6 @@ tailwind.config = { theme: { extend: {
   document.querySelectorAll('.ptab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('active'));b.classList.add('active');tab=b.dataset.tab;render();}));
   function flashBtn(btn,label){const o=btn.innerHTML;btn.innerHTML='✓ '+label;btn.classList.add('copied');setTimeout(()=>{btn.innerHTML=o;btn.classList.remove('copied');if(window.lucide)lucide.createIcons({attrs:{'stroke-width':1.25,width:15,height:15}});},1300);}
   document.getElementById('copyCode').addEventListener('click',e=>{navigator.clipboard?.writeText(currentText());flashBtn(e.currentTarget,'Copied');});
-  // ---- tabbed section examples (Mode reskins whichever example is active) ----
-  function feat(icon,title,body){return '<div class="sx-feature"><i data-lucide="'+icon+'" class="sx-icon"></i><h4 class="sx-feature-title">'+title+'</h4><p class="sx-body" style="font-size:var(--sx-body-sm);color:var(--sx-text-muted)">'+body+'</p></div>';}
-  function exCard(title,body){return '<div class="sx-card"><h4 class="sx-feature-title">'+title+'</h4><p class="sx-body" style="font-size:var(--sx-body-sm);color:var(--sx-text-muted);margin-top:var(--sx-space-2)">'+body+'</p></div>';}
-  function fcol(){var a=[].slice.call(arguments);var h=a.shift();return '<nav style="display:flex;flex-direction:column;gap:8px"><p class="sx-eyebrow">'+h+'</p>'+a.map(function(l){return '<a class="sx-navlink" href="#">'+l+'</a>';}).join('')+'</nav>';}
-  const EXAMPLES = {
-    hero:
-      '<p class="sx-eyebrow">[ Structured Editorial ]</p>'+
-      '<h2 class="sx-display" style="font-size:clamp(34px,5vw,56px);margin-top:var(--sx-space-3)">Build pages with rhythm, not decoration.</h2>'+
-      '<p class="sx-body" style="margin-top:var(--sx-space-4);max-width:54ch">Choose a proven layout, keep the hierarchy intact, then add personality through tokens when the structure is right.</p>'+
-      '<div class="sx-cta" style="margin-top:var(--sx-space-5)"><a href="#" class="sx-btn sx-btn--primary" style="height:48px;padding-inline:28px;font-size:14px">Primary action</a><a href="#" class="sx-btn sx-btn--secondary" style="height:48px;padding-inline:28px;font-size:14px">View sections</a></div>'+
-      '<div class="sx-proof" style="margin-top:var(--sx-space-5)">Trusted by builders, designers, and founders shipping faster with structure-first sections.</div>',
-    features:
-      '<p class="sx-eyebrow">[ Features ]</p>'+
-      '<h3 class="sx-heading" style="margin-top:var(--sx-space-3)">Built from the same parts.</h3>'+
-      '<div class="sx-grid sx-grid-3" style="margin-top:var(--sx-space-6)">'+feat('layout-grid','Shared shell','One section, container, and spacing system.')+feat('type','Copy-fit slots','Headlines and CTAs sized to the structure.')+feat('palette','Token styling','Swap the look without touching layout.')+'</div>',
-    cards:
-      '<p class="sx-eyebrow">[ Cards ]</p>'+
-      '<h3 class="sx-heading" style="margin-top:var(--sx-space-3)">Grouped content, consistent rules.</h3>'+
-      '<div class="sx-grid sx-grid-2" style="margin-top:var(--sx-space-6)">'+exCard('Operational clarity','A surface for related content with steady padding and a thin border.')+exCard('Measured rhythm','Every card shares the same spacing, radius, and type scale.')+'</div>',
-    cta:
-      '<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--sx-space-4)">'+
-        '<p class="sx-eyebrow">[ Call to action ]</p>'+
-        '<h3 class="sx-display" style="font-size:clamp(30px,4.5vw,48px)">Ship your next page this week.</h3>'+
-        '<p class="sx-body" style="max-width:46ch">Pick a section, paste it in, and keep the whole site consistent.</p>'+
-        '<div class="sx-cta" style="justify-content:center;margin-top:var(--sx-space-2)"><a href="#" class="sx-btn sx-btn--primary" style="height:48px;padding-inline:28px;font-size:14px">Get started</a><a href="#" class="sx-btn sx-btn--secondary" style="height:48px;padding-inline:28px;font-size:14px">Browse sections</a></div>'+
-      '</div>',
-    footer:
-      '<div class="sx-between" style="align-items:flex-end"><h3 class="sx-heading" style="max-width:18ch">Guiding teams through better systems.</h3><a href="#" class="sx-btn sx-btn--secondary" style="height:44px;padding-inline:22px;font-size:14px">Get in touch</a></div>'+
-      '<hr class="sx-divider" style="margin:var(--sx-space-5) 0">'+
-      '<div class="sx-grid sx-grid-4">'+fcol('Company','About','Careers','Contact')+fcol('Product','Sections','Systems','Pricing')+fcol('Resources','Docs','Guides','Changelog')+fcol('Legal','Terms','Privacy','License')+'</div>'
-  };
-  const sePreview = document.getElementById('sePreview');
-  function renderExample(key){ sePreview.innerHTML = EXAMPLES[key]||EXAMPLES.hero; if(window.lucide) lucide.createIcons({attrs:{'stroke-width':1.25,width:22,height:22}}); }
-  renderExample('hero');
-  document.querySelectorAll('.modebtn[data-ex]').forEach(b=>b.addEventListener('click',()=>{
-    document.querySelectorAll('.modebtn[data-ex]').forEach(x=>x.classList.remove('active')); b.classList.add('active');
-    renderExample(b.dataset.ex);
-  }));
-
-  // mode switcher (scoped to mode buttons) — reskins the active example only
-  document.querySelectorAll('.modebtn[data-mode]').forEach(b=>b.addEventListener('click',()=>{
-    document.querySelectorAll('.modebtn[data-mode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');
-    sePreview.setAttribute('data-mode',b.dataset.mode);
-    setModeDesc(b.dataset.mode);
-  }));
-
   /* ---- specimen / example links are demos — never navigate ---- */
   document.addEventListener('click',e=>{ const a=e.target.closest('.sx-canvas a'); if(a) e.preventDefault(); });
 
