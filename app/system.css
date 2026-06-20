@@ -1,0 +1,543 @@
+/* ============================================================
+   layout.page — STYLE SYSTEM CONTRACT  (--sx-*)
+   Sections and previews reference ONLY the --sx-* contract. A
+   Style System defines its own source tokens (e.g. --se-* for
+   Structured Editorial) and maps them onto --sx-*; a Mode
+   overrides a subset. Re-skin = attribute swap, zero edits.
+   "Same structure. New system."
+   ============================================================ */
+
+/* ---- contract fallbacks (neutral-ish, so unscoped markup still renders) ---- */
+:root{
+  --sx-font-sans:var(--font-funnel),system-ui,sans-serif;
+  --sx-font-mono:var(--font-geist-mono),ui-monospace,SFMono-Regular,Menlo,Monaco,monospace;
+  --sx-bg:#F7F6F1;--sx-surface:#fff;--sx-surface-muted:#ECEAE2;
+  --sx-text:#1F1F1B;--sx-text-muted:rgba(31,31,27,.68);--sx-text-soft:rgba(31,31,27,.44);
+  --sx-border:rgba(31,31,27,.18);--sx-border-strong:rgba(31,31,27,.42);
+  --sx-accent:#1F1F1B;--sx-accent-ink:#F7F6F1;
+  --sx-display-lg:clamp(56px,8vw,96px);--sx-display-lg-line:.92;--sx-display-lg-tracking:-.05em;
+  --sx-heading-lg:clamp(32px,3.5vw,48px);--sx-heading-lg-line:1.05;--sx-heading-lg-tracking:-.035em;
+  --sx-heading-sm:20px;--sx-heading-sm-line:1.2;--sx-heading-sm-tracking:-.015em;
+  --sx-body-lg:20px;--sx-body-lg-line:1.45;--sx-body-md:16px;--sx-body-md-line:1.5;--sx-body-sm:14px;
+  --sx-label:12px;--sx-label-tracking:.04em;
+  --sx-weight-medium:500;--sx-weight-regular:400;
+  --sx-space-4:24px;--sx-space-5:36px;--sx-space-7:72px;
+  --sx-radius-sm:6px;--sx-radius-md:12px;--sx-border-width:1px;
+  --sx-button-height:60px;--sx-button-padding-x:48px;
+}
+
+/* ============================================================
+   STYLE SYSTEM: Structured Editorial
+   Grayscale-first, editorial, structure-led. Inspired by the
+   Lifecycle template's rhythm — NOT a 1:1 clone. Sharper, more
+   generic grayscale so the system is ownable and reusable.
+   These --se-* tokens are the single source of truth; the
+   [data-system] scope below maps them onto the --sx-* contract.
+   ============================================================ */
+:root{
+  /* Fonts */
+  --se-font-sans:var(--font-funnel),system-ui,sans-serif;
+  --se-font-mono:var(--font-geist-mono),ui-monospace,SFMono-Regular,Menlo,Monaco,monospace;
+
+  /* ============================================================
+     COLOR — two source ramps (Tailwind-style numbered scales).
+     Every role maps to a STOP, so Neutral / Dark / Color are just
+     different stop-pickings of the same ramps. Re-theme = swap a
+     ramp's hex values; the role mapping below never changes.
+     ============================================================ */
+  /* Neutral ramp (warm gray) — workhorse for Neutral + Dark */
+  --se-neutral-0:#FFFFFF;
+  --se-neutral-50:#F7F6F1;
+  --se-neutral-100:#ECEAE2;
+  --se-neutral-200:#D6D4CA;
+  --se-neutral-300:#BBB9AE;
+  --se-neutral-400:#9C9A90;
+  --se-neutral-500:#7E7C73;
+  --se-neutral-600:#646460;
+  --se-neutral-700:#46453F;
+  --se-neutral-800:#2A2A25;
+  --se-neutral-900:#1F1F1B;
+  --se-neutral-950:#151512;
+  /* Accent ramp (lime → deep green) — the optional Color personality */
+  --se-accent-50:#EEF5E2;
+  --se-accent-100:#F8FDC3;
+  --se-accent-400:#E5F937;
+  --se-accent-700:#0E3D32;
+  --se-accent-800:#0B382E;
+  --se-accent-900:#09342B;
+  --se-accent-950:#052019;
+
+  /* Roles → stops (Neutral / light) */
+  --se-bg:var(--se-neutral-50);
+  --se-surface:var(--se-neutral-0);
+  --se-surface-muted:var(--se-neutral-100);
+  --se-text:var(--se-neutral-900);
+  --se-text-muted:var(--se-neutral-600);
+  --se-text-soft:var(--se-neutral-400);
+  --se-border:var(--se-neutral-200);
+  --se-border-strong:var(--se-neutral-400);
+  --se-inverse:var(--se-neutral-900);
+  --se-inverse-text:var(--se-neutral-50);
+
+  /* Dark = same ramp, surfaces taken from the dark end */
+  --se-dark-bg:var(--se-neutral-950);
+  --se-dark-surface:var(--se-neutral-900);
+  --se-dark-surface-muted:var(--se-neutral-800);
+  --se-dark-text:var(--se-neutral-50);
+  --se-dark-text-muted:var(--se-neutral-300);
+  --se-dark-text-soft:var(--se-neutral-500);
+  --se-dark-border:var(--se-neutral-800);
+  --se-dark-border-strong:var(--se-neutral-600);
+
+  /* Accent roles (used by Color mode) */
+  --se-accent:var(--se-accent-400);
+  --se-accent-soft:var(--se-accent-100);
+  --se-accent-deep:var(--se-accent-900);
+
+  /* Containers */
+  --se-container-sm:760px;--se-container-md:960px;--se-container-lg:1166px;--se-container-xl:1404px;
+
+  /* Spacing — 6px rhythm */
+  --se-space-0:0;
+  --se-space-1:6px;--se-space-2:12px;--se-space-3:18px;--se-space-4:24px;--se-space-5:36px;
+  --se-space-6:48px;--se-space-7:72px;--se-space-8:96px;--se-space-9:144px;--se-space-10:240px;
+
+  /* Gaps */
+  --se-gap-tight:12px;--se-gap-default:24px;--se-gap-section:72px;
+
+  /* Section padding */
+  --se-section-padding-sm:72px;--se-section-padding:144px;--se-section-padding-lg:240px;--se-section-padding-fullwidth:48px;
+
+  /* Typography */
+  --se-display-xl:clamp(72px,11vw,132px);--se-display-xl-line:.88;--se-display-xl-tracking:-.055em;--se-display-xl-weight:500;
+  --se-display-lg:clamp(56px,8vw,96px);--se-display-lg-line:.92;--se-display-lg-tracking:-.05em;--se-display-lg-weight:500;
+  --se-heading-xl:clamp(42px,5vw,72px);--se-heading-xl-line:.98;--se-heading-xl-tracking:-.04em;--se-heading-xl-weight:500;
+  --se-heading-lg:clamp(32px,3.5vw,48px);--se-heading-lg-line:1.05;--se-heading-lg-tracking:-.035em;--se-heading-lg-weight:500;
+  --se-heading-md:28px;--se-heading-md-line:1.12;--se-heading-md-tracking:-.025em;--se-heading-md-weight:500;
+  --se-heading-sm:20px;--se-heading-sm-line:1.2;--se-heading-sm-tracking:-.015em;--se-heading-sm-weight:500;
+  --se-body-lg:20px;--se-body-lg-line:1.45;--se-body-lg-tracking:-.01em;--se-body-lg-weight:400;
+  --se-body-md:16px;--se-body-md-line:1.5;--se-body-md-tracking:-.005em;--se-body-md-weight:400;
+  --se-body-sm:14px;--se-body-sm-line:1.45;--se-body-sm-tracking:0;--se-body-sm-weight:400;
+  --se-label:12px;--se-label-line:1;--se-label-tracking:.04em;--se-label-weight:500;--se-label-transform:uppercase;
+
+  /* Radius */
+  --se-radius-sm:6px;--se-radius-md:12px;
+
+  /* Borders */
+  --se-border-width:1px;
+
+  /* Components — buttons */
+  --se-button-height:60px;--se-button-sm-height:42px;--se-button-padding-x:48px;--se-button-sm-padding-x:18px;
+  --se-button-radius:var(--se-radius-sm);--se-button-font:var(--se-font-mono);--se-button-font-size:var(--se-label);
+  --se-button-letter-spacing:var(--se-label-tracking);--se-button-font-weight:500;
+  /* labels */
+  --se-label-font:var(--se-font-mono);--se-label-size:12px;
+  /* cards */
+  --se-card-radius:var(--se-radius-md);--se-card-border:1px solid var(--se-border);--se-card-padding:var(--se-space-5);--se-card-gap:var(--se-space-4);
+  /* tags / badges */
+  --se-tag-height:30px;--se-tag-padding-x:12px;--se-tag-radius:var(--se-radius-sm);--se-tag-border:1px solid var(--se-border);--se-tag-font:var(--se-font-mono);--se-tag-font-size:12px;
+  /* forms / inputs */
+  --se-input-height:48px;--se-input-radius:var(--se-radius-sm);--se-input-border:1px solid var(--se-border);--se-input-padding-x:18px;--se-input-font-size:16px;
+  /* links */
+  --se-link-underline-offset:0.18em;--se-link-decoration-thickness:1px;
+  /* navigation */
+  --se-navbar-height:72px;--se-nav-link-font:var(--se-font-mono);--se-nav-link-size:12px;--se-nav-link-tracking:0.04em;
+  /* media frames */
+  --se-media-radius:var(--se-radius-md);--se-media-border:1px solid var(--se-border);
+  /* shadows (mostly none — structural, not decorative) */
+  --se-shadow-none:none;--se-shadow-subtle:none;
+
+  /* Section heights */
+  --se-section-height-md:576px;--se-section-height-lg:768px;--se-section-height-xl:912px;
+
+  /* Decorative rhythm */
+  --se-strip-height-sm:24px;--se-strip-height-md:48px;--se-strip-height-default:72px;--se-line-width:1px;--se-lines-gap:6px;
+
+  /* Interaction — restrained, structural hover (see Hover Behavior) */
+  --se-transition-fast:140ms ease;
+  --se-transition-default:180ms ease;
+  --se-transition-slow:240ms ease;
+  --se-hover-opacity:0.84;
+  --se-hover-lift:0px;
+  --se-hover-border:var(--se-border-strong);
+  --se-hover-surface:var(--se-surface-muted);
+  --se-hover-text:var(--se-text);
+  --se-focus-ring:2px solid var(--se-text);
+  --se-focus-offset:3px;
+  --se-disabled-opacity:0.42;
+}
+
+/* Map Structured Editorial source tokens → --sx-* contract (Neutral mode) */
+[data-system="structured-editorial"]{
+  --sx-font-sans:var(--se-font-sans);
+  --sx-font-mono:var(--se-font-mono);
+
+  /* Neutral surfaces + text */
+  --sx-bg:var(--se-bg);--sx-surface:var(--se-surface);--sx-surface-muted:var(--se-surface-muted);
+  --sx-text:var(--se-text);--sx-text-muted:var(--se-text-muted);--sx-text-soft:var(--se-text-soft);
+  --sx-border:var(--se-border);--sx-border-strong:var(--se-border-strong);
+  --sx-inverse:var(--se-inverse);--sx-inverse-text:var(--se-inverse-text);
+  /* in neutral, "accent" is just the ink — no color */
+  --sx-accent:var(--se-text);--sx-accent-ink:var(--se-bg);
+
+  /* Typography */
+  --sx-display-xl:var(--se-display-xl);--sx-display-xl-line:var(--se-display-xl-line);--sx-display-xl-tracking:var(--se-display-xl-tracking);
+  --sx-display-lg:var(--se-display-lg);--sx-display-lg-line:var(--se-display-lg-line);--sx-display-lg-tracking:var(--se-display-lg-tracking);
+  --sx-heading-xl:var(--se-heading-xl);--sx-heading-xl-line:var(--se-heading-xl-line);--sx-heading-xl-tracking:var(--se-heading-xl-tracking);
+  --sx-heading-lg:var(--se-heading-lg);--sx-heading-lg-line:var(--se-heading-lg-line);--sx-heading-lg-tracking:var(--se-heading-lg-tracking);
+  --sx-heading-md:var(--se-heading-md);--sx-heading-md-line:var(--se-heading-md-line);--sx-heading-md-tracking:var(--se-heading-md-tracking);
+  --sx-heading-sm:var(--se-heading-sm);--sx-heading-sm-line:var(--se-heading-sm-line);--sx-heading-sm-tracking:var(--se-heading-sm-tracking);
+  --sx-body-lg:var(--se-body-lg);--sx-body-lg-line:var(--se-body-lg-line);--sx-body-lg-tracking:var(--se-body-lg-tracking);
+  --sx-body-md:var(--se-body-md);--sx-body-md-line:var(--se-body-md-line);--sx-body-md-tracking:var(--se-body-md-tracking);
+  --sx-body-sm:var(--se-body-sm);--sx-body-sm-line:var(--se-body-sm-line);
+  --sx-label:var(--se-label);--sx-label-line:var(--se-label-line);--sx-label-tracking:var(--se-label-tracking);--sx-label-transform:var(--se-label-transform);
+  --sx-weight-regular:400;--sx-weight-medium:var(--se-display-lg-weight);
+
+  /* Spacing (6px rhythm) */
+  --sx-space-1:var(--se-space-1);--sx-space-2:var(--se-space-2);--sx-space-3:var(--se-space-3);--sx-space-4:var(--se-space-4);--sx-space-5:var(--se-space-5);
+  --sx-space-6:var(--se-space-6);--sx-space-7:var(--se-space-7);--sx-space-8:var(--se-space-8);--sx-space-9:var(--se-space-9);--sx-space-10:var(--se-space-10);
+  --sx-gap-tight:var(--se-gap-tight);--sx-gap-default:var(--se-gap-default);--sx-gap-section:var(--se-gap-section);
+  --sx-container-lg:var(--se-container-lg);
+
+  /* Radius + borders */
+  --sx-radius-sm:var(--se-radius-sm);--sx-radius-md:var(--se-radius-md);--sx-border-width:var(--se-border-width);
+
+  /* Components */
+  --sx-button-height:var(--se-button-height);--sx-button-sm-height:var(--se-button-sm-height);
+  --sx-button-padding-x:var(--se-button-padding-x);--sx-button-sm-padding-x:var(--se-button-sm-padding-x);
+  --sx-button-radius:var(--se-button-radius);--sx-button-font:var(--se-button-font);--sx-button-font-size:var(--se-button-font-size);
+  --sx-button-letter-spacing:var(--se-button-letter-spacing);--sx-button-font-weight:var(--se-button-font-weight);
+  --sx-label-font:var(--se-label-font);--sx-label-size:var(--se-label-size);--sx-label-line:var(--se-label-line);
+  --sx-label-tracking:var(--se-label-tracking);--sx-label-weight:var(--se-label-weight);--sx-label-transform:var(--se-label-transform);
+  --sx-card-radius:var(--se-card-radius);--sx-card-padding:var(--se-card-padding);--sx-card-gap:var(--se-card-gap);--sx-card-border:var(--se-card-border);
+  --sx-tag-height:var(--se-tag-height);--sx-tag-padding-x:var(--se-tag-padding-x);--sx-tag-radius:var(--se-tag-radius);--sx-tag-border:var(--se-tag-border);--sx-tag-font:var(--se-tag-font);--sx-tag-font-size:var(--se-tag-font-size);
+  --sx-input-height:var(--se-input-height);--sx-input-radius:var(--se-input-radius);--sx-input-border:var(--se-input-border);--sx-input-padding-x:var(--se-input-padding-x);--sx-input-font-size:var(--se-input-font-size);
+  --sx-link-underline-offset:var(--se-link-underline-offset);--sx-link-decoration-thickness:var(--se-link-decoration-thickness);
+  --sx-navbar-height:var(--se-navbar-height);--sx-nav-link-font:var(--se-nav-link-font);--sx-nav-link-size:var(--se-nav-link-size);--sx-nav-link-tracking:var(--se-nav-link-tracking);
+  --sx-media-radius:var(--se-media-radius);--sx-media-border:var(--se-media-border);
+  --sx-border-default:1px solid var(--sx-border);
+  --sx-shadow-none:var(--se-shadow-none);--sx-shadow-subtle:var(--se-shadow-subtle);
+
+  /* Interaction (neutral) */
+  --sx-transition-fast:var(--se-transition-fast);--sx-transition-default:var(--se-transition-default);--sx-transition-slow:var(--se-transition-slow);
+  --sx-hover-opacity:var(--se-hover-opacity);--sx-disabled-opacity:var(--se-disabled-opacity);
+  --sx-hover-border:var(--se-border-strong);--sx-hover-surface:var(--se-surface-muted);--sx-hover-text:var(--se-text);
+  --sx-focus-ring:var(--se-focus-ring);--sx-focus-offset:var(--se-focus-offset);
+}
+
+/* Mode: Dark (same rhythm + type, inverted surfaces — layout.page extension) */
+[data-system="structured-editorial"][data-mode="dark"]{
+  --sx-bg:var(--se-dark-bg);--sx-surface:var(--se-dark-surface);--sx-surface-muted:var(--se-dark-surface-muted);
+  --sx-text:var(--se-dark-text);--sx-text-muted:var(--se-dark-text-muted);--sx-text-soft:var(--se-dark-text-soft);
+  --sx-border:var(--se-dark-border);--sx-border-strong:var(--se-dark-border-strong);
+  --sx-accent:var(--se-dark-text);--sx-accent-ink:var(--se-dark-bg);
+  /* hover (dark) */
+  --sx-hover-border:var(--se-dark-border-strong);--sx-hover-surface:var(--se-dark-surface-muted);--sx-hover-text:var(--se-dark-text);
+  --sx-focus-ring:2px solid var(--se-dark-text);
+  /* inverse band flips to light on a dark page so contrast is preserved */
+  --sx-inverse:var(--se-dark-text);--sx-inverse-text:var(--se-dark-bg);
+}
+
+/* Mode: Color Example (optional personality layer — one restrained accent) */
+[data-system="structured-editorial"][data-mode="color"]{
+  /* Color Example — surfaces/text from the accent ramp; the accent stop pops */
+  --sx-bg:var(--se-accent-900);
+  --sx-surface:var(--se-accent-700);--sx-surface-muted:var(--se-accent-800);
+  --sx-text:var(--se-accent-50);--sx-text-muted:rgba(238,245,226,.70);--sx-text-soft:rgba(238,245,226,.44);
+  --sx-border:rgba(238,245,226,.18);--sx-border-strong:rgba(238,245,226,.40);
+  --sx-accent:var(--se-accent-400);--sx-accent-ink:var(--se-accent-900);
+  --sx-accent-soft:var(--se-accent-100);--sx-accent-deep:var(--se-accent-900);
+  --sx-inverse:var(--se-accent-950);--sx-inverse-text:var(--se-accent-50);
+  --sx-hover-surface:var(--se-accent-700);--sx-hover-border:rgba(238,245,226,.40);
+  --sx-focus-ring:2px solid var(--se-accent-400);
+}
+
+/* ============================================================
+   STYLE SYSTEM: Scion  (dark · premium tech / medical)
+   Inspired by the Scion Framer template — Geist + Newsreader,
+   near-black surfaces, electric-blue accent, pill buttons,
+   softly rounded cards. Same --sx-* contract as everything else.
+   ============================================================ */
+:root{
+  --sc-font-sans:"Geist",var(--font-funnel),system-ui,sans-serif;
+  --sc-font-serif:"Newsreader",Georgia,serif;
+
+  /* Neutral ramp (dark) */
+  --sc-neutral-0:#FFFFFF;--sc-neutral-50:#F3F3F1;--sc-neutral-100:#E0E0DD;--sc-neutral-200:#BCBCB9;
+  --sc-neutral-300:#909090;--sc-neutral-400:#6E6E6E;--sc-neutral-500:#4F4F4F;--sc-neutral-600:#3A3A3A;
+  --sc-neutral-700:#2D2D2D;--sc-neutral-800:#242424;--sc-neutral-900:#1C1C1C;--sc-neutral-950:#151515;
+  /* Accent ramp (electric blue) */
+  --sc-accent-50:#E7E7FE;--sc-accent-200:#9C9CF8;--sc-accent-400:#3B3BF1;--sc-accent-500:#0000EE;--sc-accent-700:#0000A6;
+}
+
+/* Map Scion source tokens → --sx-* contract (its default look is dark) */
+[data-system="scion"]{
+  --sx-font-sans:var(--sc-font-sans);
+  --sx-font-mono:var(--sc-font-sans);
+
+  --sx-bg:var(--sc-neutral-900);--sx-surface:var(--sc-neutral-800);--sx-surface-muted:var(--sc-neutral-700);
+  --sx-text:var(--sc-neutral-50);--sx-text-muted:var(--sc-neutral-300);--sx-text-soft:var(--sc-neutral-400);
+  --sx-border:var(--sc-neutral-600);--sx-border-strong:var(--sc-neutral-500);
+  --sx-inverse:var(--sc-neutral-50);--sx-inverse-text:var(--sc-neutral-900);
+  --sx-accent:var(--sc-accent-500);--sx-accent-ink:var(--sc-neutral-0);
+  --sx-accent-soft:var(--sc-accent-200);--sx-accent-deep:var(--sc-accent-700);
+
+  /* typography (Geist) */
+  --sx-display-xl:clamp(64px,9vw,112px);--sx-display-xl-line:1;--sx-display-xl-tracking:-.03em;
+  --sx-display-lg:clamp(48px,6vw,80px);--sx-display-lg-line:1.02;--sx-display-lg-tracking:-.025em;
+  --sx-heading-xl:clamp(38px,4.5vw,60px);--sx-heading-xl-line:1.05;--sx-heading-xl-tracking:-.02em;
+  --sx-heading-lg:clamp(30px,3.2vw,44px);--sx-heading-lg-line:1.1;--sx-heading-lg-tracking:-.02em;
+  --sx-heading-md:26px;--sx-heading-md-line:1.15;--sx-heading-md-tracking:-.015em;
+  --sx-heading-sm:19px;--sx-heading-sm-line:1.25;--sx-heading-sm-tracking:-.01em;
+  --sx-body-lg:19px;--sx-body-lg-line:1.5;--sx-body-lg-tracking:-.005em;
+  --sx-body-md:16px;--sx-body-md-line:1.55;--sx-body-md-tracking:0;
+  --sx-body-sm:14px;--sx-body-sm-line:1.5;
+  --sx-label:12px;--sx-label-line:1;--sx-label-tracking:.14em;--sx-label-transform:uppercase;
+  --sx-weight-regular:400;--sx-weight-medium:500;
+
+  /* spacing (6px rhythm) */
+  --sx-space-1:6px;--sx-space-2:12px;--sx-space-3:18px;--sx-space-4:24px;--sx-space-5:36px;
+  --sx-space-6:48px;--sx-space-7:72px;--sx-space-8:96px;--sx-space-9:144px;--sx-space-10:240px;
+  --sx-gap-tight:12px;--sx-gap-default:24px;--sx-gap-section:72px;--sx-container-lg:1200px;
+
+  /* radius + borders — softly rounded containers, pill controls */
+  --sx-radius-sm:8px;--sx-radius-md:14px;--sx-border-width:1px;
+
+  /* components */
+  --sx-button-height:54px;--sx-button-sm-height:40px;--sx-button-padding-x:34px;--sx-button-sm-padding-x:20px;
+  --sx-button-radius:999px;--sx-button-font:var(--sc-font-sans);--sx-button-font-size:14px;
+  --sx-button-letter-spacing:.02em;--sx-button-font-weight:500;
+  --sx-label-font:var(--sc-font-sans);--sx-label-size:12px;--sx-label-weight:500;
+  --sx-card-radius:14px;--sx-card-padding:var(--sx-space-5);--sx-card-gap:var(--sx-space-4);--sx-card-border:1px solid var(--sx-border);
+  --sx-tag-height:30px;--sx-tag-padding-x:14px;--sx-tag-radius:999px;--sx-tag-border:1px solid var(--sx-border);--sx-tag-font:var(--sc-font-sans);--sx-tag-font-size:12px;
+  --sx-input-height:50px;--sx-input-radius:10px;--sx-input-border:1px solid var(--sx-border);--sx-input-padding-x:20px;--sx-input-font-size:16px;
+  --sx-link-underline-offset:.2em;--sx-link-decoration-thickness:1px;
+  --sx-navbar-height:72px;--sx-nav-link-font:var(--sc-font-sans);--sx-nav-link-size:15px;--sx-nav-link-tracking:0;
+  --sx-media-radius:14px;--sx-media-border:1px solid var(--sx-border);
+  --sx-border-default:1px solid var(--sx-border);
+  --sx-shadow-none:none;--sx-shadow-subtle:0 1px 2px rgba(0,0,0,.4);
+
+  /* interaction */
+  --sx-transition-fast:140ms ease;--sx-transition-default:200ms ease;--sx-transition-slow:260ms ease;
+  --sx-hover-opacity:.88;--sx-disabled-opacity:.42;
+  --sx-hover-border:var(--sc-neutral-400);--sx-hover-surface:var(--sc-neutral-700);--sx-hover-text:var(--sc-neutral-50);
+  --sx-focus-ring:2px solid var(--sc-accent-500);--sx-focus-offset:3px;
+}
+/* Scion signature touches */
+[data-system="scion"] .sx-btn,[data-system="scion"] .sx-button{border-radius:999px}
+[data-system="scion"] .sx-eyebrow{font-family:var(--sc-font-serif);font-style:italic;text-transform:none;letter-spacing:0;font-size:15px}
+
+/* ============================================================
+   PREVIEW / SECTION PRIMITIVES  (consume the contract only)
+   Reusable across every Style System and Mode.
+   ============================================================ */
+.sx-canvas{background:var(--sx-bg);color:var(--sx-text);font-family:var(--sx-font-sans);transition:background .25s ease,color .25s ease}
+.sx-container{max-width:var(--sx-container-lg);margin-inline:auto}
+.sx-stack{display:flex;flex-direction:column;gap:var(--sx-space-4)}
+.sx-eyebrow{font-family:var(--sx-font-mono);font-size:var(--sx-label);letter-spacing:var(--sx-label-tracking);
+  text-transform:uppercase;color:var(--sx-text-muted);line-height:var(--sx-label-line);margin:0}
+.sx-display{font-size:var(--sx-display-lg);line-height:var(--sx-display-lg-line);letter-spacing:var(--sx-display-lg-tracking);
+  font-weight:var(--sx-weight-medium);color:var(--sx-text);margin:0;text-wrap:balance}
+.sx-heading{font-size:var(--sx-heading-lg);line-height:var(--sx-heading-lg-line);letter-spacing:var(--sx-heading-lg-tracking);
+  font-weight:var(--sx-weight-medium);color:var(--sx-text);margin:0}
+.sx-body{font-size:var(--sx-body-lg);line-height:var(--sx-body-lg-line);letter-spacing:var(--sx-body-lg-tracking);
+  font-weight:var(--sx-weight-regular);color:var(--sx-text-muted);margin:0;max-width:54ch}
+.sx-cta{display:flex;flex-wrap:wrap;gap:var(--sx-space-2)}
+.sx-btn{display:inline-flex;align-items:center;justify-content:center;height:var(--sx-button-height);
+  padding-inline:var(--sx-button-padding-x);border-radius:var(--sx-radius-sm);font-family:var(--sx-font-sans);
+  font-size:var(--sx-body-md);font-weight:var(--sx-weight-medium);text-decoration:none;cursor:pointer;
+  border:var(--sx-border-width) solid transparent;line-height:1;
+  transition:background-color var(--sx-transition-fast,.14s ease),color var(--sx-transition-fast,.14s ease),border-color var(--sx-transition-fast,.14s ease),opacity var(--sx-transition-fast,.14s ease)}
+.sx-btn--primary{background:var(--sx-accent);color:var(--sx-accent-ink)}
+.sx-btn--primary:hover{opacity:var(--sx-hover-opacity,.84)}
+.sx-btn--secondary{background:transparent;color:var(--sx-text);border-color:var(--sx-border-strong)}
+.sx-btn--secondary:hover{opacity:var(--sx-hover-opacity)}
+.sx-btn:focus-visible{outline:var(--sx-focus-ring,2px solid var(--sx-text));outline-offset:var(--sx-focus-offset,3px)}
+.sx-proof{font-size:var(--sx-body-sm);color:var(--sx-text-soft);border-top:var(--sx-border-width) solid var(--sx-border);
+  padding-top:var(--sx-space-4)}
+.sx-card{background:var(--sx-surface);border:var(--sx-border-width) solid var(--sx-border);border-radius:var(--sx-radius-md);padding:var(--sx-space-5)}
+.sx-media{background:var(--sx-surface-muted);border:var(--sx-border-width) solid var(--sx-border);border-radius:var(--sx-radius-md);
+  aspect-ratio:4/3;display:grid;place-items:center}
+.sx-divider{height:0;border:0;border-top:var(--sx-border-width) solid var(--sx-border)}
+.sx-logo{height:24px;width:88px;background:var(--sx-text-soft);opacity:.5;border-radius:var(--sx-radius-sm)}
+
+/* ============================================================
+   SECTION PRIMITIVES — compose reusable sections from these.
+   They consume only the --sx-* contract, so a section re-skins
+   across every Style System + Mode with zero per-section CSS.
+   ============================================================ */
+.sx-section{padding:var(--sx-space-8) var(--sx-space-6)}
+.sx-section--tight{padding:var(--sx-space-7) var(--sx-space-6)}
+.sx-wrap{max-width:var(--sx-container-lg);margin-inline:auto;width:100%}
+.sx-wrap--sm{max-width:760px}
+.sx-eyebrow--ink{color:var(--sx-text)}
+.sx-lede{font-size:var(--sx-body-md);line-height:var(--sx-body-md-line);color:var(--sx-text-muted);margin:0;max-width:60ch}
+.sx-meta{font-size:var(--sx-body-sm);color:var(--sx-text-soft);margin:0}
+
+/* layout helpers */
+.sx-grid{display:grid;gap:var(--sx-gap-default)}
+.sx-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sx-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.sx-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.sx-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--sx-space-6);align-items:center}
+.sx-split--text-wide{grid-template-columns:1.1fr .9fr}
+.sx-cluster{display:flex;align-items:center;gap:var(--sx-space-4);flex-wrap:wrap}
+.sx-between{display:flex;align-items:center;justify-content:space-between;gap:var(--sx-space-4);flex-wrap:wrap}
+@media(max-width:760px){.sx-grid-2,.sx-grid-3,.sx-grid-4,.sx-split,.sx-split--text-wide{grid-template-columns:1fr}}
+
+/* nav + pills */
+.sx-nav{display:flex;align-items:center;gap:var(--sx-space-4);flex-wrap:wrap}
+.sx-navlink{font-family:var(--sx-font-sans);font-size:var(--sx-body-sm);color:var(--sx-text);text-decoration:none;opacity:.82;white-space:nowrap;
+  text-underline-offset:0.18em;transition:color var(--sx-transition-fast,.14s ease),opacity var(--sx-transition-fast,.14s ease)}
+.sx-navlink:hover{opacity:1;text-decoration:underline;text-decoration-thickness:1px}
+.sx-navlink[aria-current="page"]{opacity:1;text-decoration:underline;text-underline-offset:0.2em}
+.sx-pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--sx-font-mono);font-size:var(--sx-label);
+  letter-spacing:var(--sx-label-tracking);text-transform:uppercase;color:var(--sx-text-muted);
+  border:var(--sx-border-width) solid var(--sx-border);padding:5px 10px;border-radius:var(--sx-radius-sm)}
+
+/* media + overlay */
+.sx-media--wide{aspect-ratio:16/9}
+.sx-media--tall{aspect-ratio:3/4}
+.sx-media--bleed{aspect-ratio:21/9}
+.sx-overlay{position:relative;isolation:isolate;overflow:hidden}
+.sx-overlay-media{position:absolute;inset:0;z-index:0;background:
+  repeating-linear-gradient(135deg,var(--sx-surface-muted),var(--sx-surface-muted) 22px,transparent 22px,transparent 44px),var(--sx-surface-muted)}
+.sx-overlay-content{position:relative;z-index:1}
+.sx-avatar{width:36px;height:36px;border-radius:50%;background:var(--sx-surface-muted);
+  border:var(--sx-border-width) solid var(--sx-border);flex-shrink:0}
+
+/* lists + features + tiles */
+.sx-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.sx-list-item{display:flex;align-items:center;justify-content:space-between;gap:var(--sx-space-3);
+  padding:var(--sx-space-3) 0;border-top:var(--sx-border-width) solid var(--sx-border);
+  font-size:var(--sx-heading-sm);line-height:1.2;letter-spacing:var(--sx-heading-sm-tracking);color:var(--sx-text)}
+.sx-list-item:last-child{border-bottom:var(--sx-border-width) solid var(--sx-border)}
+.sx-feature{display:flex;flex-direction:column;gap:var(--sx-space-2);padding:var(--sx-space-4);
+  background:var(--sx-surface);border:var(--sx-border-width) solid var(--sx-border);border-radius:var(--sx-radius-md);height:100%}
+.sx-feature-title{font-size:var(--sx-heading-sm);line-height:1.2;letter-spacing:var(--sx-heading-sm-tracking);
+  font-weight:var(--sx-weight-medium);color:var(--sx-text);margin:0}
+.sx-tile{display:flex;flex-direction:column;gap:var(--sx-space-2)}
+.sx-tile-media{aspect-ratio:4/3;background:var(--sx-surface-muted);border:var(--sx-border-width) solid var(--sx-border);
+  border-radius:var(--sx-radius-md);position:relative;overflow:hidden}
+.sx-icon{width:22px;height:22px;color:var(--sx-text);stroke-width:1.25}
+.sx-icon--sm{width:18px;height:18px}
+.sx-icon--lg{width:28px;height:28px}
+/* boxed icon — filled tile with a centered icon (inverse by default) */
+.sx-icon-box{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:var(--sx-radius-md);background:var(--sx-inverse);color:var(--sx-inverse-text);flex-shrink:0}
+.sx-icon-box .sx-icon{color:currentColor}
+.sx-icon-box--sm{width:40px;height:40px;border-radius:var(--sx-radius-sm)}
+.sx-icon-box--lg{width:64px;height:64px}
+.sx-icon-box--soft{background:var(--sx-surface-muted);color:var(--sx-text)}
+.sx-icon-box--accent{background:var(--sx-accent);color:var(--sx-accent-ink)}
+
+/* inverse band (e.g. dark service list / footer) — flips with the mode */
+.sx-band--inverse{background:var(--sx-inverse,#1F1F1B);color:var(--sx-inverse-text,#F7F6F1)}
+.sx-band--inverse .sx-display,.sx-band--inverse .sx-heading,.sx-band--inverse .sx-feature-title,
+.sx-band--inverse .sx-list-item,.sx-band--inverse .sx-icon{color:var(--sx-inverse-text,#F7F6F1)}
+.sx-band--inverse .sx-body,.sx-band--inverse .sx-meta,.sx-band--inverse .sx-navlink{color:var(--sx-inverse-text,#F7F6F1);opacity:.72}
+.sx-band--inverse .sx-eyebrow{color:var(--sx-inverse-text,#F7F6F1);opacity:.6}
+.sx-band--inverse .sx-list-item{border-color:rgba(247,246,241,.16)}
+.sx-band--inverse .sx-overlay-media,.sx-band--inverse .sx-tile-media{background:rgba(247,246,241,.08)}
+.sx-band--inverse .sx-btn--secondary{color:var(--sx-inverse-text,#F7F6F1);border-color:rgba(247,246,241,.4)}
+.sx-band--inverse .sx-acc{border-color:rgba(247,246,241,.16)}
+.sx-band--inverse .sx-acc>summary{color:var(--sx-inverse-text,#F7F6F1)}
+.sx-band--inverse .sx-acc-a{color:var(--sx-inverse-text,#F7F6F1);opacity:.72}
+
+/* ============================================================
+   HOVER + FOCUS — restrained, structural (Structured Editorial).
+   Contrast before motion: borders, opacity, underline, subtle
+   surface shifts. No scale, shadow, lift, glow, or layout shift.
+   Lives in the component layer — never inside section HTML.
+   ============================================================ */
+/* cards — no border or background hover (quiet, structural) */
+/* resource / case tiles — only the arrow nudges 2px */
+.sx-tile .sx-icon{transition:transform var(--sx-transition-fast,.14s ease)}
+.sx-tile:hover .sx-navlink .sx-icon{transform:translateX(2px)}
+/* service rows / accordion — signal selectable, quietly */
+.sx-acc>summary{transition:opacity var(--sx-transition-fast,.14s ease)}
+.sx-acc>summary:hover{opacity:.72}
+.sx-acc[open]>summary{opacity:1}
+/* logo strip — opacity only when clickable */
+a .sx-logo{transition:opacity var(--sx-transition-fast,.14s ease)}
+a:hover .sx-logo{opacity:.64}
+/* disabled */
+.sx-btn:disabled,.sx-btn[aria-disabled="true"],.sx-card[aria-disabled="true"]{opacity:.42;cursor:not-allowed;pointer-events:none}
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .sx-btn,.sx-card,.sx-feature,.sx-tile-media,.sx-navlink,.sx-acc>summary,.sx-megamenu,.sx-megamenu a,.sx-icon{transition:none}
+  .sx-tile:hover .sx-navlink .sx-icon{transform:none}
+}
+
+/* ---- mega menu (header dropdown, CSS-only) ---- */
+.sx-nav-item{position:relative}
+.sx-megamenu{position:absolute;left:0;top:calc(100% + 10px);min-width:560px;z-index:30;
+  display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:var(--sx-space-4);
+  background:var(--sx-surface);border:var(--sx-border-width) solid var(--sx-border);border-radius:var(--sx-radius-md);
+  padding:var(--sx-space-4);opacity:0;visibility:hidden;transform:translateY(-6px);transition:.16s ease}
+.sx-nav-item:hover .sx-megamenu,.sx-nav-item:focus-within .sx-megamenu{opacity:1;visibility:visible;transform:translateY(0)}
+.sx-megamenu-col{display:flex;flex-direction:column;gap:8px}
+.sx-megamenu a{font-size:var(--sx-body-sm);color:var(--sx-text-muted);text-decoration:none;text-underline-offset:0.18em;transition:color var(--sx-transition-fast,.14s ease)}
+.sx-megamenu a:hover{color:var(--sx-text);text-decoration:underline;text-decoration-thickness:1px}
+.sx-megamenu-promo{background:var(--sx-surface-muted);border:var(--sx-border-width) solid var(--sx-border);border-radius:var(--sx-radius-sm);padding:var(--sx-space-3);display:flex;flex-direction:column;gap:8px}
+
+/* ---- accordion (CSS-only, exclusive via [name]) ---- */
+.sx-acc{border-top:var(--sx-border-width) solid var(--sx-border)}
+.sx-acc:last-of-type{border-bottom:var(--sx-border-width) solid var(--sx-border)}
+.sx-acc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:var(--sx-space-3) 0;font-size:var(--sx-heading-sm);line-height:1.2;letter-spacing:var(--sx-heading-sm-tracking);
+  font-weight:var(--sx-weight-medium);color:var(--sx-text)}
+.sx-acc>summary::-webkit-details-marker{display:none}
+.sx-acc>summary::after{content:"+";font-family:var(--sx-font-mono);font-size:18px;color:var(--sx-text-muted);transition:.12s}
+.sx-acc[open]>summary::after{content:"–"}
+.sx-acc-a{padding:0 0 var(--sx-space-3);font-size:var(--sx-body-md);line-height:1.5;color:var(--sx-text-muted);max-width:54ch}
+
+/* ============================================================
+   DESIGN SYSTEM COMPONENTS (canonical classes, token-driven).
+   These are the exportable component rules. .sx-btn etc. above
+   remain as aliases used by the seed sections.
+   ============================================================ */
+.sx-button{min-height:var(--sx-button-height);display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding-inline:var(--sx-button-padding-x);border-radius:var(--sx-button-radius);font-family:var(--sx-button-font);
+  font-size:var(--sx-button-font-size);letter-spacing:var(--sx-button-letter-spacing);font-weight:var(--sx-button-font-weight);
+  text-transform:uppercase;text-decoration:none;cursor:pointer;border:1px solid transparent;
+  transition:background-color var(--sx-transition-fast),color var(--sx-transition-fast),border-color var(--sx-transition-fast),opacity var(--sx-transition-fast)}
+.sx-button--sm{min-height:var(--sx-button-sm-height);padding-inline:var(--sx-button-sm-padding-x)}
+/* icon-only: square by default, add --round for a circle */
+.sx-button-icon{padding-inline:0;width:var(--sx-button-height);min-width:var(--sx-button-height);gap:0}
+.sx-button-icon.sx-button--sm{width:var(--sx-button-sm-height);min-width:var(--sx-button-sm-height)}
+.sx-button--round{border-radius:999px !important}
+/* variants — primary = accent fill · dark = ink solid · outline = bordered */
+.sx-button-primary{background:var(--sx-accent);color:var(--sx-accent-ink);border:1px solid var(--sx-accent)}
+.sx-button-dark{background:var(--sx-text);color:var(--sx-bg);border:1px solid var(--sx-text)}
+.sx-button-outline,.sx-button-secondary{background:transparent;color:var(--sx-text);border:1px solid var(--sx-border-strong)}
+.sx-button-primary:hover,.sx-button-dark:hover,.sx-button-outline:hover,.sx-button-secondary:hover{opacity:var(--sx-hover-opacity)}
+.sx-button .sx-icon{width:18px;height:18px;color:currentColor}
+
+.sx-label{font-family:var(--sx-label-font);font-size:var(--sx-label-size);line-height:var(--sx-label-line);
+  letter-spacing:var(--sx-label-tracking);font-weight:var(--sx-label-weight);text-transform:var(--sx-label-transform);color:var(--sx-text-muted)}
+
+.sx-tag{min-height:var(--sx-tag-height);display:inline-flex;align-items:center;padding-inline:var(--sx-tag-padding-x);
+  border:var(--sx-tag-border);border-radius:var(--sx-tag-radius);font-family:var(--sx-tag-font);font-size:var(--sx-tag-font-size);
+  text-transform:uppercase;letter-spacing:var(--sx-label-tracking);color:var(--sx-text-muted)}
+
+.sx-input{min-height:var(--sx-input-height);width:100%;border:var(--sx-input-border);border-radius:var(--sx-input-radius);
+  padding-inline:var(--sx-input-padding-x);background:var(--sx-surface);color:var(--sx-text);font-size:var(--sx-input-font-size);
+  font-family:var(--sx-font-sans)}
+.sx-input::placeholder{color:var(--sx-text-soft)}
+
+.sx-link{color:var(--sx-text);text-decoration:none;text-underline-offset:var(--sx-link-underline-offset);
+  transition:color var(--sx-transition-fast)}
+.sx-link:hover{text-decoration:underline;text-decoration-thickness:var(--sx-link-decoration-thickness)}
+
+.sx-card[data-clickable="true"]{cursor:pointer}
+
+/* focus */
+.sx-button:focus-visible,.sx-button-primary:focus-visible,.sx-button-secondary:focus-visible,
+.sx-link:focus-visible,.sx-input:focus-visible,.sx-btn:focus-visible,.sx-navlink:focus-visible{
+  outline:var(--sx-focus-ring);outline-offset:var(--sx-focus-offset)}
+/* disabled */
+.sx-button:disabled,.sx-button[aria-disabled="true"],.sx-input:disabled{opacity:var(--sx-disabled-opacity);cursor:not-allowed}
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .sx-button,.sx-card,.sx-link,.sx-input,.sx-tag{transition:none}
+}

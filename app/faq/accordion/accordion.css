@@ -1,0 +1,22 @@
+/* ===== FAQ Accordion demo — page-unique styles. Shared shell lives in globals.css ===== */
+.faq-ac-page .tabbtn{font-family:var(--font-geist-mono),ui-monospace,monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05rem;
+  padding:9px 16px;border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:.12s;background:transparent}
+.faq-ac-page .tabbtn.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.faq-ac-page .btn{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;padding:9px 15px;
+  border:1px solid var(--line);transition:.12s;cursor:pointer;color:var(--ink)}
+.faq-ac-page .btn-primary{background:#4337FF;color:#fff;border-color:#4337FF}
+.faq-ac-page .btn-primary:hover{background:#3329e0}
+.faq-ac-page .btn-ghost:hover{border-color:var(--ink)}
+
+/* ===== THE LIVE EXAMPLE — accordion, built on tokens; flips with theme ===== */
+.faq-ac-page .demo{ --fg:var(--ink); --mut:var(--muted); --rule:var(--line); --dbg:var(--card); background:var(--dbg); color:var(--fg) }
+.faq-ac-page .ac{max-width:680px;margin:0 auto}
+.faq-ac-page .ac-item{border-bottom:1px solid var(--rule)}
+.faq-ac-page .ac-item:first-child{border-top:1px solid var(--rule)}
+.faq-ac-page .ac-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:22px 4px;font-size:17px;font-weight:500;text-align:left;background:none;border:none;cursor:pointer;color:var(--fg)}
+.faq-ac-page .ac-q .chev{transition:transform .22s ease;color:var(--mut);flex-shrink:0}
+.faq-ac-page .ac-item.open .ac-q .chev{transform:rotate(180deg);color:#4337FF}
+.faq-ac-page .ac-a{max-height:0;overflow:hidden;transition:max-height .26s ease}
+.faq-ac-page .ac-a > div{padding:0 4px 22px;font-size:16px;line-height:1.5;color:var(--mut);max-width:60ch}
+.faq-ac-page .copied{color:#4337FF !important}

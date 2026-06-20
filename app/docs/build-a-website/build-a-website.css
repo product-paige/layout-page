@@ -1,0 +1,16 @@
+/* ===== Build a Website doc — page-unique styles. Shared shell lives in globals.css ===== */
+.bw-doc .doc{max-width:760px}
+.bw-doc .doc h2{font-size:var(--lp-heading-lg);margin-top:8px}
+.bw-doc .doc h3{font-size:var(--lp-heading-sm);margin-top:24px}
+.bw-doc .doc p{font-size:16px;line-height:1.6;color:var(--ink)}
+.bw-doc .doc p.muted{color:var(--muted)}
+.bw-doc .doc ul{display:flex;flex-direction:column;gap:6px;padding-left:18px;list-style:disc}
+.bw-doc .doc li{font-size:16px;line-height:1.5}
+.bw-doc .doc-code{font-family:var(--font-geist-mono),ui-monospace,monospace;font-size:13px;line-height:1.65;white-space:pre-wrap;
+  background:var(--panel);border:1px solid var(--line);padding:16px 18px;color:var(--ink);overflow-x:auto}
+.bw-doc .doc-note{font-size:16px;line-height:1.55;color:var(--muted);border-left:2px solid #4337FF;padding-left:14px}
+.bw-doc .doc-step{font-family:var(--font-geist-mono),monospace;text-transform:uppercase;font-size:12px;letter-spacing:0.05em;color:#4337FF}
+.bw-doc .toc{position:sticky;top:24px;align-self:start}
+.bw-doc .toc a{display:block;font-size:13px;line-height:1.5;color:var(--muted);padding:3px 0;text-decoration:none}
+.bw-doc .toc a:hover{color:var(--ink)}
+.bw-doc code.inline{font-family:var(--font-geist-mono),monospace;font-size:13px;background:var(--panel);border:1px solid var(--line);padding:1px 5px}

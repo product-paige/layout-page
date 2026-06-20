@@ -1,0 +1,37 @@
+/* ============================================================
+   Design Systems detail page (Structured Editorial)
+   Page-specific only — shared shell lives in globals.css.
+   ============================================================ */
+
+/* smooth scroll scoped to this page (not on html globally) */
+.design-systems-page{scroll-behavior:smooth}
+.design-systems-page [data-jump]{scroll-margin-top:104px}
+
+/* code tabs (Claude prompt / CSS / Tailwind) */
+.ds-ptab{font-family:var(--font-funnel),sans-serif;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;background:none;border:none;padding:4px 0;border-bottom:2px solid transparent;white-space:nowrap}
+.ds-ptab:hover{color:var(--ink)}
+.ds-ptab.active{color:var(--ink);border-bottom-color:var(--ink)}
+
+/* copied state */
+.ds-copied{color:#4337FF !important}
+
+/* code view panel */
+.ds-codeview{font-family:var(--font-geist-mono),monospace;font-size:12px;line-height:1.65;white-space:pre;color:var(--ink)}
+.ds-codeview .h{color:#4337FF}
+.ds-codeview .q{color:var(--muted)}
+
+/* sticky jump nav (section anchors) */
+.ds-jumpbar{position:sticky;top:0;z-index:20;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.12)}
+.ds-jtab{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-geist-mono),monospace;text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:rgba(251,250,246,.6);white-space:nowrap;padding:6px 0;border:0;cursor:pointer;background:none;text-decoration:none}
+.ds-jtab::before{content:"";width:6px;height:6px;border-radius:999px !important;background:currentColor;opacity:0;transition:opacity .15s ease;flex-shrink:0}
+.ds-jtab:hover{color:var(--cream)}
+.ds-jtab.active{color:var(--cream)}
+.ds-jtab.active::before{opacity:1}
+
+/* specimen helpers (used inside [data-system] canvases) */
+.ds-spec{padding:var(--sx-space-6) var(--sx-space-5)}
+.ds-spec-row{display:flex;flex-direction:column;gap:var(--sx-space-3)}
+.ds-spec-cap{color:var(--sx-text-soft)}
+/* calmer specimens: let spacing do the separating */
+.ds-spec .sx-divider{display:none}
+.ds-spec > .stack{gap:var(--sx-space-6) !important}

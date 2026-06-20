@@ -1,0 +1,21 @@
+/* ===== Page Layouts — listing grid + detail (page-unique styles) ===== */
+/* Shared shell (meta-pill, lpbtn, lbl, browser, sx-canvas, lp-hero) lives in globals.css. */
+
+/* ---- Listing grid ---- */
+.page-layouts-page .pl-grid{display:grid;grid-template-columns:1fr;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+@media(min-width:640px){ .page-layouts-page .pl-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+.page-layouts-page .pcard{transition:.12s;display:flex;flex-direction:column;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.page-layouts-page .pcard:hover{background:var(--panel)}
+
+/* scaled live preview thumbnail — fixed-height cover, preview scaled to width and cropped */
+.page-layouts-page .thumb{position:relative;overflow:hidden;background:var(--bg);height:260px;border-bottom:1px solid var(--line)}
+.page-layouts-page .thumb-inner{width:1100px;transform-origin:top left;pointer-events:none}
+
+/* coming-soon placeholder tile */
+.page-layouts-page .pl-soon{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px;display:flex;flex-direction:column;justify-content:center;min-height:360px}
+
+/* ---- Detail page ---- */
+.page-layout-detail .modebtn{font-family:var(--font-geist-mono),monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05em;padding:7px 13px;border:1px solid var(--line);color:var(--muted);cursor:pointer;background:transparent;transition:.12s}
+.page-layout-detail .modebtn:hover{color:var(--ink);border-color:var(--ink)}
+.page-layout-detail .modebtn.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}

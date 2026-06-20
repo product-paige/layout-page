@@ -1,0 +1,16 @@
+/* ===== FAQ listing — page-unique styles. Shared shell lives in globals.css ===== */
+.faq-page{ --wf-bg:#FCFCFB;--wf-border:#E4E4DF;--bar:#E2E2DD;--bar-strong:#CFCFC9;--media:#ECECE7;--media-border:#DEDED8 }
+[data-theme="dark"] .faq-page{ --wf-bg:#1A1A1E;--wf-border:rgba(255,255,255,.13);--bar:rgba(255,255,255,.17);--bar-strong:rgba(255,255,255,.34);--media:rgba(255,255,255,.08);--media-border:rgba(255,255,255,.13) }
+.faq-page .wf{background:var(--wf-bg);border:1px solid var(--wf-border)}
+.faq-page .bar{background:var(--bar)}
+.faq-page .bar-strong{background:var(--bar-strong)}
+.faq-page .row{border:1px solid var(--wf-border);background:var(--card)}
+.faq-page .plus{color:var(--bar-strong)}
+.faq-page .copybtn{position:absolute;top:16px;right:16px;z-index:5;display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--font-geist-mono),ui-monospace,monospace;font-size:12px;letter-spacing:.05rem;text-transform:uppercase;
+  color:#4337FF;border:1px solid var(--line);padding:5px 10px;background:var(--bg);opacity:0;transition:.12s}
+.faq-page .card:hover .copybtn{opacity:1}
+.faq-page .viewlink{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-geist-mono),ui-monospace,monospace;
+  font-size:12px;letter-spacing:.05rem;text-transform:uppercase;color:#4337FF}
+.faq-page .viewlink:hover{text-decoration:underline}
+.faq-page .card:nth-child(2n){border-right:none}

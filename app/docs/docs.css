@@ -1,0 +1,3 @@
+/* ===== Docs — page-unique styles. Shared shell lives in globals.css ===== */
+.docs-page .dcard{transition:.12s}
+.docs-page .dcard:hover{background:var(--panel)}

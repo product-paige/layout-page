@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Funnel_Sans, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import "./system.css";
 import TopNav from "@/components/TopNav";
 import Footer from "@/components/Footer";
 
