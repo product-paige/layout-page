@@ -474,18 +474,18 @@ export default function ButtonsLab() {
               </p>
             ) : (
               <>
-                <div className="bt-variants">
+                <div className="bt-compare">
                   {variants.map((v) => (
-                    <div className="bt-variant" key={v.id}>
+                    <div className="bt-compare-item" key={v.id}>
                       <ButtonPreview s={v.s} label={v.name} />
-                      <div className="bt-variant-meta">
+                      <div className="bt-compare-cap">
                         <span className="bt-variant-name">{v.name}</span>
                         <div className="bt-variant-actions">
                           <button onClick={() => editVariant(v)} aria-label={`Edit ${v.name}`}>
-                            <Pencil size={15} strokeWidth={1.6} />
+                            <Pencil size={14} strokeWidth={1.6} />
                           </button>
                           <button onClick={() => deleteVariant(v.id)} aria-label={`Delete ${v.name}`}>
-                            <Trash2 size={15} strokeWidth={1.6} />
+                            <Trash2 size={14} strokeWidth={1.6} />
                           </button>
                         </div>
                       </div>

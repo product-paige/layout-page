@@ -49,13 +49,15 @@ html[data-theme="dark"] .btnlab-page{--bg:#171717}
 .btnlab-page .bt-save{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .btnlab-page .bt-name{flex:1;min-width:200px;height:36px;padding:0 12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:var(--font-inter),sans-serif;font-size:14px}
 .btnlab-page .bt-name:focus{outline:none;border-color:var(--royal)}
-.btnlab-page .bt-variants{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-.btnlab-page .bt-variant{display:flex;flex-direction:column;gap:14px;border:1px solid var(--line);background:var(--card);padding:18px}
-.btnlab-page .bt-variant .btnlab{min-height:auto;gap:0;padding:6px 0;justify-content:flex-start}
-.btnlab-page .bt-variant-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:12px}
-.btnlab-page .bt-variant-name{font-family:var(--font-inter),sans-serif;font-size:14px;font-weight:500;color:var(--ink)}
-.btnlab-page .bt-variant-actions{display:flex;gap:4px;flex-shrink:0}
-.btnlab-page .bt-variant-actions button{display:inline-flex;padding:6px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;transition:.12s}
+/* shared compare surface: every saved style on one neutral background, same scale */
+.btnlab-page .bt-compare{display:flex;flex-wrap:wrap;align-items:flex-start;gap:26px 34px;background:var(--card);border:1px solid var(--line);padding:30px}
+.btnlab-page .bt-compare-item{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.btnlab-page .bt-compare-item .btnlab{min-height:auto;gap:0;padding:0;justify-content:flex-start}
+.btnlab-page .bt-compare-cap{display:flex;align-items:center;gap:10px;min-height:24px}
+.btnlab-page .bt-variant-name{font-family:var(--font-inter),sans-serif;font-size:13px;font-weight:500;color:var(--ink)}
+.btnlab-page .bt-variant-actions{display:flex;gap:2px;flex-shrink:0;opacity:0;transition:opacity .12s}
+.btnlab-page .bt-compare-item:hover .bt-variant-actions{opacity:1}
+.btnlab-page .bt-variant-actions button{display:inline-flex;padding:5px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;transition:.12s}
 .btnlab-page .bt-variant-actions button:hover{color:var(--ink);border-color:var(--line)}
 .btnlab-page .bt-export{display:flex;flex-direction:column;gap:10px}
 .btnlab-page .bt-code{background:var(--panel);border:1px solid var(--line);padding:16px;font-family:var(--font-geist-mono),monospace;font-size:12.5px;line-height:1.55;color:var(--ink);white-space:pre-wrap;overflow:auto;max-height:360px}
