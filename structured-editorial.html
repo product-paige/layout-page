@@ -7,7 +7,7 @@
 <script>(function(){try{if(localStorage.getItem('lp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');if(localStorage.getItem('lp-nav-collapsed')==='1')document.documentElement.classList.add('nav-collapsed');}catch(e){}})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="layout-system/site.css" rel="stylesheet">
 <link href="layout-system/system.css" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -48,6 +48,34 @@ tailwind.config = { theme: { extend: {
   .spec .sx-divider{display:none}
   .spec > .stack{gap:var(--sx-space-6) !important}
   .se-state{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:16px}
+
+  /* ===== Cards playground (Inter; live radius / padding / borders) ===== */
+  .cl-controls{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;padding:14px 18px;border:1px solid var(--line);background:var(--panel)}
+  .cl-ctrl{display:flex;align-items:center;gap:10px}
+  .cl-range{width:130px;accent-color:var(--royal);cursor:pointer}
+  .cl-val{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);min-width:40px}
+  .cl-seg{font-family:'Geist Mono',monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05em;padding:5px 12px;border:1px solid var(--line);color:var(--muted);background:transparent;cursor:pointer;transition:.12s}
+  .cl-seg:hover{color:var(--ink);border-color:var(--ink)}
+  .cl-seg.active{background:var(--royal);color:#fff;border-color:var(--royal)}
+  .cardlab{--cl-radius:14px;--cl-pad:22px;--cl-bw:1px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  @media(min-width:760px){ .cardlab{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  @media(min-width:1200px){ .cardlab{grid-template-columns:repeat(4,minmax(0,1fr))} }
+  .cl-card{font-family:'Inter',system-ui,sans-serif;background:var(--card);color:var(--ink);
+    border:var(--cl-bw) solid var(--line);border-radius:var(--cl-radius) !important;padding:var(--cl-pad);
+    aspect-ratio:3/4;display:flex;flex-direction:column;gap:12px;overflow:hidden;
+    transition:border-radius .18s ease,padding .18s ease,border-width .18s ease}
+  .cl-card *{font-family:'Inter',system-ui,sans-serif}
+  .cl-ph{background:#d7d7d4;border-radius:calc(var(--cl-radius) * .6) !important;flex-shrink:0}
+  .cl-grow{flex:1;min-height:0}
+  .cl-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:500}
+  .cl-title{font-weight:600;font-size:19px;letter-spacing:-.02em;line-height:1.12;color:var(--ink)}
+  .cl-num{font-weight:600;font-size:34px;letter-spacing:-.03em;line-height:1;color:var(--ink)}
+  .cl-text{font-size:13px;line-height:1.45;color:var(--muted)}
+  .cl-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:13px;color:var(--ink)}
+  .cl-btn{align-self:flex-start;font-size:13px;font-weight:500;color:#fff;background:var(--ink);padding:8px 16px;border-radius:999px !important}
+  .cl-overlay{position:relative}
+  .cl-overlay .cl-cap{position:absolute;left:0;right:0;bottom:0;padding:14px;background:linear-gradient(transparent,rgba(0,0,0,.55));border-radius:0 0 calc(var(--cl-radius) * .6) calc(var(--cl-radius) * .6) !important}
+  .cl-overlay .cl-title{color:#fff}
 </style>
 </head>
 <body class="antialiased" data-page="styles" data-title="Design Systems / Structured Editorial" data-crumb-href="style-systems.html">
@@ -240,31 +268,71 @@ tailwind.config = { theme: { extend: {
           </div>
         </div>
 
-        <!-- Cards -->
+        <!-- Cards — interactive playground (Inter, live radius / padding / borders) -->
         <div class="stack stack-3 px-8 py-9 border-b border-line" id="cards" data-jump>
-          <div class="flex items-end justify-between"><h3>Cards</h3><span class="lbl">.sx-card · .sx-feature</span></div>
-          <div class="sx-canvas spec border border-line" data-system="structured-editorial" data-mode="neutral">
-            <div class="sx-grid sx-grid-2">
-              <div class="sx-card">
-                <span class="sx-label" style="color:var(--sx-text-soft)">Surface card</span>
-                <h4 class="sx-feature-title" style="margin:var(--sx-space-2) 0 0">Grouped content</h4>
-                <p class="sx-meta" style="margin-top:var(--sx-space-2)">A bordered surface with steady padding for related content.</p>
+          <div class="flex items-end justify-between"><h3>Cards</h3><span class="lbl">Inter · live controls</span></div>
+          <div class="cl-controls">
+            <div class="cl-ctrl"><span class="lbl">Radius</span><input type="range" id="clRadius" min="0" max="36" value="14" class="cl-range" aria-label="Card radius"><span class="cl-val" id="clRadiusVal">14px</span></div>
+            <div class="cl-ctrl"><span class="lbl">Padding</span><div class="flex gap-1.5"><button class="cl-seg" data-pad="14">S</button><button class="cl-seg active" data-pad="22">M</button><button class="cl-seg" data-pad="32">L</button></div></div>
+            <div class="cl-ctrl"><span class="lbl">Borders</span><button class="cl-seg active" id="clBorder">On</button></div>
+          </div>
+          <div class="cardlab" id="cardlab">
+            <!-- 1 · media top -->
+            <article class="cl-card">
+              <div class="cl-ph cl-grow"></div>
+              <div class="cl-title">Lorem ipsum</div>
+              <div class="cl-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+            </article>
+            <!-- 2 · list + action -->
+            <article class="cl-card">
+              <div class="cl-eyebrow">Lorem</div>
+              <div class="cl-title">Dolor sit amet</div>
+              <div class="cl-grow" style="display:flex;flex-direction:column;justify-content:flex-end">
+                <div class="cl-row">Lorem ipsum</div>
+                <div class="cl-row">Dolor sit amet</div>
+                <div class="cl-row">Consectetur elit</div>
               </div>
-              <div class="sx-feature">
-                <i data-lucide="layers" class="sx-icon"></i>
-                <h4 class="sx-feature-title" style="margin:0">Feature block</h4>
-                <p class="sx-meta">Icon-led tile for benefits, capabilities, and value props.</p>
-              </div>
-            </div>
-            <div class="sx-card" data-clickable="true" style="margin-top:var(--sx-space-4)">
-              <div class="sx-between" style="align-items:center;gap:var(--sx-space-4)">
-                <div>
-                  <h4 class="sx-feature-title" style="margin:0">Clickable card</h4>
-                  <p class="sx-meta" style="margin-top:6px">The whole surface is a target — pointer cursor on hover.</p>
-                </div>
-                <i data-lucide="arrow-up-right" class="sx-icon"></i>
-              </div>
-            </div>
+              <button class="cl-btn">Lorem ipsum</button>
+            </article>
+            <!-- 3 · stat -->
+            <article class="cl-card">
+              <div class="cl-eyebrow">Lorem</div>
+              <div class="cl-num">2 dies</div>
+              <div class="cl-grow" style="display:flex;align-items:flex-start;justify-content:flex-end"><span class="cl-num" style="font-size:clamp(40px,7vw,72px);color:var(--line)">3</span></div>
+              <div class="cl-title">Lorem ipsum</div>
+              <div class="cl-text">Lorem ipsum dolor sit amet adipiscing.</div>
+            </article>
+            <!-- 4 · media bottom -->
+            <article class="cl-card">
+              <div class="cl-eyebrow">Lorem</div>
+              <div class="cl-title">Adipiscing elit</div>
+              <div class="cl-text">Lorem ipsum dolor sit amet.</div>
+              <div class="cl-ph cl-grow"></div>
+            </article>
+            <!-- 5 · overlay -->
+            <article class="cl-card cl-overlay">
+              <div class="cl-ph cl-grow"></div>
+              <div class="cl-cap"><div class="cl-title">Lorem ipsum</div></div>
+            </article>
+            <!-- 6 · two media -->
+            <article class="cl-card">
+              <div class="cl-title">Sed do eiusmod</div>
+              <div class="cl-text">Lorem ipsum dolor sit amet.</div>
+              <div class="cl-grow" style="display:flex;gap:10px"><div class="cl-ph" style="flex:1"></div><div class="cl-ph" style="flex:1"></div></div>
+            </article>
+            <!-- 7 · split media + content -->
+            <article class="cl-card">
+              <div class="cl-ph" style="height:42%"></div>
+              <div class="cl-eyebrow">Lorem</div>
+              <div class="cl-title">Tempor incididunt</div>
+              <div class="cl-text cl-grow">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod.</div>
+            </article>
+            <!-- 8 · quote / text only -->
+            <article class="cl-card">
+              <div class="cl-num" style="font-size:48px;line-height:.8;color:var(--line)">&ldquo;</div>
+              <div class="cl-title cl-grow" style="font-weight:500;font-size:17px;display:flex;align-items:center">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+              <div class="cl-eyebrow">Lorem ipsum</div>
+            </article>
           </div>
         </div>
 
@@ -498,6 +566,19 @@ tailwind.config = { theme: { extend: {
   document.getElementById('copyCode').addEventListener('click',e=>{navigator.clipboard?.writeText(currentText());flashBtn(e.currentTarget,'Copied');});
   /* ---- specimen / example links are demos — never navigate ---- */
   document.addEventListener('click',e=>{ const a=e.target.closest('.sx-canvas a'); if(a) e.preventDefault(); });
+
+  /* ---- Cards playground: radius slider / padding switcher / borders toggle apply to all cards ---- */
+  (function(){
+    var lab=document.getElementById('cardlab'); if(!lab) return;
+    var r=document.getElementById('clRadius'), rv=document.getElementById('clRadiusVal');
+    if(r) r.addEventListener('input',function(){ lab.style.setProperty('--cl-radius', r.value+'px'); rv.textContent=r.value+'px'; });
+    document.querySelectorAll('.cl-seg[data-pad]').forEach(function(b){ b.addEventListener('click',function(){
+      document.querySelectorAll('.cl-seg[data-pad]').forEach(function(x){x.classList.remove('active');}); b.classList.add('active');
+      lab.style.setProperty('--cl-pad', b.dataset.pad+'px');
+    });});
+    var bt=document.getElementById('clBorder'), bon=true;
+    if(bt) bt.addEventListener('click',function(){ bon=!bon; bt.classList.toggle('active',bon); bt.textContent=bon?'On':'Off'; lab.style.setProperty('--cl-bw', bon?'1px':'0px'); });
+  })();
 
   /* ---- jump tabs: click-to-scroll + scroll-spy ---- */
   const jtabs=Array.from(document.querySelectorAll('.jtab'));
