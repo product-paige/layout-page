@@ -42,7 +42,7 @@
       '<a class="lp-logo" href="index.html" aria-label="layout.page home">'+
         '<span class="lp-logo-mark"></span><span class="logo navlabel">LAYOUT.PAGE</span>'+
       '</a>'+
-      '<button class="lp-collapse" id="lpCollapse" aria-label="Toggle menu">'+icon('chevron-left','ico')+'</button>'+
+      '<button class="lp-collapse" id="lpCollapse" aria-label="Toggle sidebar">'+icon('corner-down-right','ico')+'</button>'+
     '</div>'+
     '<nav class="lp-links">'+links+'</nav>'+
     '<div class="lp-nav-foot">'+
@@ -50,10 +50,6 @@
       '<button id="themeToggle" class="themebtn" aria-label="Toggle theme">'+icon('moon','ico')+'</button>'+
     '</div>';
 
-  function syncCollapseIcon(){
-    var collapsed = root.classList.contains('nav-collapsed');
-    document.getElementById('lpCollapse').innerHTML = '<i data-lucide="'+(collapsed?'arrow-right':'arrow-left')+'" class="ico"></i>';
-  }
   function syncThemeIcon(){
     var dark = root.getAttribute('data-theme')==='dark';
     var t = document.getElementById('themeToggle');
@@ -61,10 +57,12 @@
   }
   function draw(){ if(window.lucide) lucide.createIcons({attrs:{'stroke-width':1.25,width:16,height:16}}); }
 
-  document.getElementById('lpCollapse').addEventListener('click', function(){
+  var collapseBtn = document.getElementById('lpCollapse');
+  collapseBtn.setAttribute('aria-expanded', String(!root.classList.contains('nav-collapsed')));
+  collapseBtn.addEventListener('click', function(){
     var collapsed = root.classList.toggle('nav-collapsed');
+    collapseBtn.setAttribute('aria-expanded', String(!collapsed));
     try{ localStorage.setItem('lp-nav-collapsed', collapsed?'1':'0'); }catch(e){}
-    syncCollapseIcon(); draw();
   });
   document.getElementById('themeToggle').addEventListener('click', function(){
     var dark = root.getAttribute('data-theme')==='dark';
@@ -146,5 +144,5 @@
   if(backdropEl) backdropEl.addEventListener('click', closeNav);
   mount.addEventListener('click', function(e){ if(e.target.closest('a')) closeNav(); });
 
-  syncCollapseIcon(); syncThemeIcon(); draw();
+  syncThemeIcon(); draw();
 })();

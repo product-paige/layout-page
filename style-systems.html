@@ -49,7 +49,7 @@ tailwind.config = { theme: { extend: {
   window.LP_STYLE_SYSTEMS.forEach(s=>{
     const a=document.createElement('a');
     a.href=s.href||(s.id+'.html');
-    a.className='sscard border-r border-b border-line p-7 block';
+    a.className='sscard border-r border-b border-line p-7 flex flex-col';
     const tags=s.tags.slice(0,4).map(t=>'<span class="tag">'+t+'</span>').join('');
     a.innerHTML=
       '<div class="sx-canvas border border-line mb-6" data-system="'+s.id+'" data-mode="neutral" style="padding:var(--sx-space-5) var(--sx-space-5)">'+
@@ -60,7 +60,7 @@ tailwind.config = { theme: { extend: {
       '<h2 class="text-[22px] mb-2">'+s.name+'</h2>'+
       '<p class="text-[14px] mb-4" style="color:var(--muted)">'+s.description+'</p>'+
       '<div class="flex flex-wrap gap-1.5 mb-5">'+tags+'</div>'+
-      '<span class="lpbtn lpbtn--primary lpbtn--sm lpbtn--full"><i data-lucide="corner-down-right" class="ico"></i> View system</span>';
+      '<span class="lpbtn lpbtn--primary lpbtn--sm lpbtn--full mt-auto"><i data-lucide="corner-down-right" class="ico"></i> View system</span>';
     grid.appendChild(a);
   });
   // coming-soon placeholders
