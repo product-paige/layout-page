@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
-import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -29,6 +28,7 @@ import {
   exportButtonsClaude,
 } from "@/lib/ds";
 import { ButtonPreview } from "@/components/ButtonPreview";
+import { RailGroup } from "@/components/RailGroup";
 import "./buttons.css";
 
 const ICONS: { name: IconName; Icon: LucideIcon }[] = [
@@ -192,191 +192,131 @@ export default function ButtonsLab() {
   return (
     <div className="btnlab-page lp-shell">
       <aside className="lp-rail">
-        <div className="lbl" style={{ marginBottom: "8px" }}>
-          Components
-        </div>
-        <nav className="rail-nav">
-          <Link href="/components/cards">Cards</Link>
-          <Link href="/components/buttons" className="active">
-            Buttons
-          </Link>
-        </nav>
-        <div className="lbl" style={{ margin: "18px 0 14px" }}>
-          Controls — Buttons
+        <div className="lbl rail-title" style={{ color: "var(--muted)" }}>
+          Controls
         </div>
 
-        {/* Variant */}
-        <div className="rail-ctrl">
-          <span className="lbl">Variant</span>
-          <div className="rail-segs">
-            {(["fill", "outline", "ghost"] as Variant[]).map((v) => (
+        <RailGroup title="Button" defaultOpen>
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Variant</span>
+            <div className="rail-segs">
+              {(["fill", "outline", "ghost"] as Variant[]).map((v) => (
+                <button
+                  key={v}
+                  className={`cl-seg${variant === v ? " active" : ""}`}
+                  onClick={() => setVariant(v)}
+                >
+                  {v.charAt(0).toUpperCase() + v.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Radius</span>
+              <span className="cl-val">{radius}px</span>
+            </div>
+            <input type="range" min={0} max={40} step={2} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="cl-range" />
+          </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Padding X</span>
+              <span className="cl-val">{px}px</span>
+            </div>
+            <input type="range" min={8} max={48} step={2} value={px} onChange={(e) => setPx(Number(e.target.value))} className="cl-range" />
+          </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Padding Y</span>
+              <span className="cl-val">{py}px</span>
+            </div>
+            <input type="range" min={4} max={28} step={1} value={py} onChange={(e) => setPy(Number(e.target.value))} className="cl-range" />
+          </div>
+        </RailGroup>
+
+        <RailGroup title="Icon">
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Icon</span>
+            <div className="rail-segs">
+              {ICONS.map(({ name, Icon }) => (
+                <button
+                  key={name}
+                  className={`cl-seg bt-iconbtn${icon === name ? " active" : ""}`}
+                  aria-label={name}
+                  onClick={() => setIcon(name)}
+                >
+                  <Icon size={18} strokeWidth={1.9} />
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Icon side</span>
+            <div className="rail-segs">
+              {(["left", "right", "none"] as IconSide[]).map((s) => (
+                <button
+                  key={s}
+                  className={`cl-seg${iconSide === s ? " active" : ""}`}
+                  onClick={() => setIconSide(s)}
+                >
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Icon gap</span>
+              <span className="cl-val">{gap}px</span>
+            </div>
+            <input type="range" min={0} max={20} step={1} value={gap} onChange={(e) => setGap(Number(e.target.value))} className="cl-range" />
+          </div>
+        </RailGroup>
+
+        <RailGroup title="Type">
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Font size</span>
+              <span className="cl-val">{fs}px</span>
+            </div>
+            <input type="range" min={12} max={22} step={1} value={fs} onChange={(e) => setFs(Number(e.target.value))} className="cl-range" />
+          </div>
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Weight</span>
+            <div className="rail-segs">
+              {[
+                { w: 400, label: "Regular" },
+                { w: 500, label: "Medium" },
+                { w: 600, label: "Bold" },
+              ].map(({ w, label }) => (
+                <button
+                  key={w}
+                  className={`cl-seg${weight === w ? " active" : ""}`}
+                  onClick={() => setWeight(w)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Case</span>
+            <div className="rail-segs">
               <button
-                key={v}
-                className={`cl-seg${variant === v ? " active" : ""}`}
-                onClick={() => setVariant(v)}
+                className={`cl-seg${textCase === "normal" ? " active" : ""}`}
+                onClick={() => setTextCase("normal")}
               >
-                {v.charAt(0).toUpperCase() + v.slice(1)}
+                Aa
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Radius */}
-        <div className="rail-ctrl">
-          <div className="rail-head">
-            <span className="lbl">Radius</span>
-            <span className="cl-val">{radius}px</span>
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={40}
-            step={2}
-            value={radius}
-            onChange={(e) => setRadius(Number(e.target.value))}
-            className="cl-range"
-          />
-        </div>
-
-        {/* Padding X */}
-        <div className="rail-ctrl">
-          <div className="rail-head">
-            <span className="lbl">Padding X</span>
-            <span className="cl-val">{px}px</span>
-          </div>
-          <input
-            type="range"
-            min={8}
-            max={48}
-            step={2}
-            value={px}
-            onChange={(e) => setPx(Number(e.target.value))}
-            className="cl-range"
-          />
-        </div>
-
-        {/* Padding Y */}
-        <div className="rail-ctrl">
-          <div className="rail-head">
-            <span className="lbl">Padding Y</span>
-            <span className="cl-val">{py}px</span>
-          </div>
-          <input
-            type="range"
-            min={4}
-            max={28}
-            step={1}
-            value={py}
-            onChange={(e) => setPy(Number(e.target.value))}
-            className="cl-range"
-          />
-        </div>
-
-        {/* Icon */}
-        <div className="rail-ctrl">
-          <span className="lbl">Icon</span>
-          <div className="rail-segs">
-            {ICONS.map(({ name, Icon }) => (
               <button
-                key={name}
-                className={`cl-seg bt-iconbtn${icon === name ? " active" : ""}`}
-                aria-label={name}
-                onClick={() => setIcon(name)}
+                className={`cl-seg${textCase === "upper" ? " active" : ""}`}
+                onClick={() => setTextCase("upper")}
               >
-                <Icon size={18} strokeWidth={1.9} />
+                AB
               </button>
-            ))}
+            </div>
           </div>
-        </div>
-
-        {/* Icon side */}
-        <div className="rail-ctrl">
-          <span className="lbl">Icon side</span>
-          <div className="rail-segs">
-            {(["left", "right", "none"] as IconSide[]).map((s) => (
-              <button
-                key={s}
-                className={`cl-seg${iconSide === s ? " active" : ""}`}
-                onClick={() => setIconSide(s)}
-              >
-                {s.charAt(0).toUpperCase() + s.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Icon gap */}
-        <div className="rail-ctrl">
-          <div className="rail-head">
-            <span className="lbl">Icon gap</span>
-            <span className="cl-val">{gap}px</span>
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={20}
-            step={1}
-            value={gap}
-            onChange={(e) => setGap(Number(e.target.value))}
-            className="cl-range"
-          />
-        </div>
-
-        {/* Font size */}
-        <div className="rail-ctrl">
-          <div className="rail-head">
-            <span className="lbl">Font size</span>
-            <span className="cl-val">{fs}px</span>
-          </div>
-          <input
-            type="range"
-            min={12}
-            max={22}
-            step={1}
-            value={fs}
-            onChange={(e) => setFs(Number(e.target.value))}
-            className="cl-range"
-          />
-        </div>
-
-        {/* Weight */}
-        <div className="rail-ctrl">
-          <span className="lbl">Weight</span>
-          <div className="rail-segs">
-            {[
-              { w: 400, label: "Regular" },
-              { w: 500, label: "Medium" },
-              { w: 600, label: "Bold" },
-            ].map(({ w, label }) => (
-              <button
-                key={w}
-                className={`cl-seg${weight === w ? " active" : ""}`}
-                onClick={() => setWeight(w)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Case */}
-        <div className="rail-ctrl">
-          <span className="lbl">Case</span>
-          <div className="rail-segs">
-            <button
-              className={`cl-seg${textCase === "normal" ? " active" : ""}`}
-              onClick={() => setTextCase("normal")}
-            >
-              Aa
-            </button>
-            <button
-              className={`cl-seg${textCase === "upper" ? " active" : ""}`}
-              onClick={() => setTextCase("upper")}
-            >
-              AB
-            </button>
-          </div>
-        </div>
+        </RailGroup>
       </aside>
 
       <main className="flex-1 min-w-0">
