@@ -39,8 +39,6 @@ const ICONS: { name: IconName; Icon: LucideIcon }[] = [
   { name: "move-right", Icon: MoveRight },
 ];
 
-const LABELS = ["Get started", "Learn more", "Continue"];
-
 // inline SVG markup matching each lucide icon (used in the copied snippet)
 const ICON_SVG: Record<IconName, string> = {
   "arrow-right":
@@ -405,14 +403,12 @@ export default function ButtonsLab() {
               data-case={textCase}
               style={labStyle}
             >
-              {LABELS.map((label) => (
-                <button key={label} className="bt-btn">
-                  <span className="bt-ico">
-                    <ActiveIcon size="1em" strokeWidth={1.9} />
-                  </span>
-                  <span className="bt-label">{label}</span>
-                </button>
-              ))}
+              <button className="bt-btn">
+                <span className="bt-ico">
+                  <ActiveIcon size="1em" strokeWidth={1.9} />
+                </span>
+                <span className="bt-label">Get started</span>
+              </button>
             </div>
           </div>
 
