@@ -29,6 +29,7 @@ import {
 } from "@/lib/ds";
 import { ButtonPreview } from "@/components/ButtonPreview";
 import { RailGroup } from "@/components/RailGroup";
+import { SystemSwitcher } from "@/components/SystemSwitcher";
 import "./buttons.css";
 
 const ICONS: { name: IconName; Icon: LucideIcon }[] = [
@@ -67,8 +68,8 @@ export default function ButtonsLab() {
   const [copied, setCopied] = useState(false);
 
   // design system: shared store (persisted)
-  const { ds, addButton, updateButton, removeButton } = useDesignSystem();
-  const variants = ds.buttons;
+  const { active, addButton, updateButton, removeButton } = useDesignSystem();
+  const variants = active.buttons;
   const [variantName, setVariantName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [exportTab, setExportTab] = useState<ExportTab>("claude");
@@ -192,6 +193,9 @@ export default function ButtonsLab() {
   return (
     <div className="btnlab-page lp-shell">
       <aside className="lp-rail">
+        <div style={{ marginBottom: 14 }}>
+          <SystemSwitcher />
+        </div>
         <div className="lbl rail-title" style={{ color: "var(--muted)" }}>
           Controls
         </div>

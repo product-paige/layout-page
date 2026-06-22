@@ -27,11 +27,40 @@ export type ButtonSettings = {
 };
 export type ButtonVariant = { id: string; name: string; s: ButtonSettings };
 
-export type DesignSystem = {
-  buttons: ButtonVariant[];
-  // future: cards, badges, inputs, tokens…
+// ---- per-system tokens (the design-system foundations) ----
+export type FontKey = "sans" | "serif" | "mono";
+export type Tokens = {
+  accent: string;
+  ink: string;
+  surface: string;
+  font: FontKey;
 };
-export const EMPTY_DS: DesignSystem = { buttons: [] };
+export const DEFAULT_TOKENS: Tokens = {
+  accent: "#4337FF",
+  ink: "#161616",
+  surface: "#ffffff",
+  font: "sans",
+};
+export const FONT_STACKS: Record<FontKey, string> = {
+  sans: "var(--font-inter), system-ui, sans-serif",
+  serif: "Georgia, 'Times New Roman', serif",
+  mono: "var(--font-geist-mono), ui-monospace, monospace",
+};
+
+// ---- a design system = named container of tokens + component variants ----
+export type System = {
+  id: string;
+  name: string;
+  tokens: Tokens;
+  buttons: ButtonVariant[];
+  // future: cards, badges, inputs…
+};
+// the whole store = a library of systems with one active
+export type Store = { systems: System[]; activeId: string };
+
+export function newSystem(name: string, buttons: ButtonVariant[] = []): System {
+  return { id: crypto.randomUUID(), name, tokens: { ...DEFAULT_TOKENS }, buttons };
+}
 
 export type ExportTab = "claude" | "css" | "tailwind";
 
@@ -109,11 +138,11 @@ export function exportButtonsClaude(vars: ButtonVariant[]) {
 }
 
 // ---- whole-system export (grows as components are added) ----
-export function exportSystem(ds: DesignSystem, tab: ExportTab): string {
-  if (ds.buttons.length === 0) {
-    return "/* Your design system is empty — save some components first. */";
+export function exportSystem(system: System, tab: ExportTab): string {
+  if (system.buttons.length === 0) {
+    return "/* This design system is empty — save some components first. */";
   }
-  if (tab === "css") return exportButtonsCSS(ds.buttons);
-  if (tab === "tailwind") return exportButtonsTailwind(ds.buttons);
-  return exportButtonsClaude(ds.buttons);
+  if (tab === "css") return exportButtonsCSS(system.buttons);
+  if (tab === "tailwind") return exportButtonsTailwind(system.buttons);
+  return exportButtonsClaude(system.buttons);
 }

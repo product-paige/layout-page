@@ -137,6 +137,21 @@ a.lp-crumb:hover{color:var(--royal)}
 .lp-crumb-current{color:var(--ink)}
 .lp-crumb-sep{padding:0 10px;color:var(--muted);opacity:.5}
 
+/* ---- design-system switcher (rails + Your System) ---- */
+.sys-switch{position:relative}
+.sys-switch-btn{display:flex;align-items:center;gap:8px;width:100%;background:var(--card);border:1px solid var(--line);padding:8px 10px;cursor:pointer;text-align:left;transition:.12s}
+.sys-switch-btn:hover{border-color:var(--ink)}
+.sys-switch-label{font-family:var(--font-geist-mono),monospace;text-transform:uppercase;font-size:11px;letter-spacing:.05em;color:var(--muted)}
+.sys-switch-name{font-family:var(--font-funnel),sans-serif;font-size:14px;font-weight:500;color:var(--ink);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sys-switch-chev{color:var(--muted);transition:transform .18s ease;flex-shrink:0}
+.sys-switch-chev.open{transform:rotate(180deg)}
+.sys-switch-menu{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:40;background:var(--card);border:1px solid var(--line);box-shadow:0 8px 30px rgba(10,10,10,.12);display:flex;flex-direction:column;padding:4px}
+.sys-switch-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:transparent;border:0;cursor:pointer;font-family:var(--font-funnel),sans-serif;font-size:14px;color:var(--ink);text-align:left;transition:.12s}
+.sys-switch-item:hover{background:var(--panel)}
+.sys-switch-item.active{color:var(--royal)}
+.sys-switch-new{display:flex;align-items:center;gap:8px;padding:9px 10px;margin-top:4px;border:0;border-top:1px solid var(--line);background:transparent;cursor:pointer;font-family:var(--font-geist-mono),monospace;text-transform:uppercase;font-size:12px;letter-spacing:.05em;color:var(--royal);width:100%}
+.sys-switch-new:hover{background:var(--panel)}
+
 /* ============================================================
    SHARED FOOTER
    ============================================================ */
