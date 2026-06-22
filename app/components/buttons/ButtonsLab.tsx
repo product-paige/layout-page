@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -20,14 +20,17 @@ import {
   type IconSide,
   type Case,
   type IconName,
+  type ButtonColor,
   type ButtonSettings as Settings,
   type ButtonVariant as SavedVariant,
   type ExportTab,
   exportButtonsCSS,
   exportButtonsTailwind,
   exportButtonsClaude,
+  resolveButtonColors,
+  EXPORT_FONT_STACKS,
 } from "@/lib/ds";
-import { ButtonPreview } from "@/components/ButtonPreview";
+import { ButtonPreview, settingsToStyle } from "@/components/ButtonPreview";
 import { RailGroup } from "@/components/RailGroup";
 import { SystemSwitcher } from "@/components/SystemSwitcher";
 import "./buttons.css";
@@ -65,6 +68,7 @@ export default function ButtonsLab() {
   const [fs, setFs] = useState(15);
   const [weight, setWeight] = useState(500);
   const [textCase, setTextCase] = useState<Case>("normal");
+  const [color, setColor] = useState<ButtonColor>("ink");
   const [copied, setCopied] = useState(false);
 
   // design system: shared store (persisted)
@@ -77,23 +81,18 @@ export default function ButtonsLab() {
 
   const ActiveIcon = ICONS.find((i) => i.name === icon)!.Icon;
 
-  const labStyle = {
-    "--bt-radius": `${radius}px`,
-    "--bt-px": `${px}px`,
-    "--bt-py": `${py}px`,
-    "--bt-gap": `${gap}px`,
-    "--bt-fs": `${fs}px`,
-    "--bt-fw": String(weight),
-  } as CSSProperties;
+  const labStyle = settingsToStyle(
+    { variant, color, radius, px, py, icon, iconSide, gap, fs, weight, textCase },
+    active.tokens,
+  );
 
   function copyCode() {
     const uc = textCase === "upper";
-    const fillCss =
-      variant === "fill"
-        ? "background:#161616;color:#fff;border:1.5px solid #161616;"
-        : variant === "outline"
-          ? "background:transparent;color:#161616;border:1.5px solid #161616;"
-          : "background:transparent;color:#161616;border:1.5px solid transparent;";
+    const cols = resolveButtonColors(
+      { variant, color, radius, px, py, icon, iconSide, gap, fs, weight, textCase },
+      active.tokens,
+    );
+    const fillCss = `background:${cols.bg};color:${cols.fg};border:1.5px solid ${cols.bd};`;
     const iconSvg = ICON_SVG[icon];
     const iconHtml =
       iconSide === "none"
@@ -102,7 +101,7 @@ export default function ButtonsLab() {
           iconSvg +
           "</span>";
     const css =
-      ".btn{font-family:Inter,system-ui,sans-serif;display:inline-flex;align-items:center;gap:" +
+      ".btn{font-family:" + EXPORT_FONT_STACKS[active.tokens.font] + ";display:inline-flex;align-items:center;gap:" +
       gap +
       "px;padding:" +
       py +
@@ -133,6 +132,7 @@ export default function ButtonsLab() {
 
   const currentSettings = (): Settings => ({
     variant,
+    color,
     radius,
     px,
     py,
@@ -157,6 +157,7 @@ export default function ButtonsLab() {
   }
   function editVariant(v: SavedVariant) {
     setVariant(v.s.variant);
+    setColor(v.s.color ?? "ink");
     setRadius(v.s.radius);
     setPx(v.s.px);
     setPy(v.s.py);
@@ -180,10 +181,10 @@ export default function ButtonsLab() {
 
   const exportText =
     exportTab === "css"
-      ? exportButtonsCSS(variants)
+      ? exportButtonsCSS(variants, active.tokens)
       : exportTab === "tailwind"
-        ? exportButtonsTailwind(variants)
-        : exportButtonsClaude(variants);
+        ? exportButtonsTailwind(variants, active.tokens)
+        : exportButtonsClaude(variants, active.tokens);
   function copyExport() {
     if (navigator.clipboard) navigator.clipboard.writeText(exportText);
     setExportCopied(true);
@@ -211,6 +212,20 @@ export default function ButtonsLab() {
                   onClick={() => setVariant(v)}
                 >
                   {v.charAt(0).toUpperCase() + v.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Color</span>
+            <div className="rail-segs">
+              {(["ink", "accent"] as ButtonColor[]).map((c) => (
+                <button
+                  key={c}
+                  className={`cl-seg${color === c ? " active" : ""}`}
+                  onClick={() => setColor(c)}
+                >
+                  {c === "ink" ? "Ink" : "Accent"}
                 </button>
               ))}
             </div>

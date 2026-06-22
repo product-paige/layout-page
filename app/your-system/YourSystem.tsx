@@ -20,6 +20,7 @@ export default function YourSystem() {
     duplicateSystem,
     deleteSystem,
     removeButton,
+    setToken,
   } = useDesignSystem();
   const [tab, setTab] = useState<ExportTab>("claude");
   const [copied, setCopied] = useState(false);
@@ -87,6 +88,57 @@ export default function YourSystem() {
       </div>
 
       <div className="stack stack-6" style={{ marginTop: 28 }}>
+        {/* tokens */}
+        <section className="stack stack-3">
+          <h2 className="ts-card-lg">Tokens</h2>
+          <div className="ys-tokens">
+            {(
+              [
+                ["accent", "Accent"],
+                ["ink", "Ink"],
+                ["surface", "Surface"],
+              ] as const
+            ).map(([key, label]) => (
+              <label className="ys-token" key={key}>
+                <span className="lbl">{label}</span>
+                <span className="ys-token-row">
+                  <input
+                    type="color"
+                    className="ys-token-swatch"
+                    value={active.tokens[key]}
+                    onChange={(e) => setToken(key, e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    className="ys-token-hex"
+                    value={active.tokens[key]}
+                    onChange={(e) => setToken(key, e.target.value)}
+                    aria-label={`${label} hex`}
+                  />
+                </span>
+              </label>
+            ))}
+            <div className="ys-token">
+              <span className="lbl">Font</span>
+              <div className="rail-segs">
+                {(["sans", "serif", "mono"] as const).map((f) => (
+                  <button
+                    key={f}
+                    className={"cl-seg" + (active.tokens.font === f ? " active" : "")}
+                    onClick={() => setToken("font", f)}
+                  >
+                    {f === "sans" ? "Sans" : f === "serif" ? "Serif" : "Mono"}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <p className="text-[16px]" style={{ color: "var(--muted)", maxWidth: "60ch" }}>
+            These power every component variant and the exported CSS. The font is a generic preview —
+            set your exact brand font in your own CSS later.
+          </p>
+        </section>
+
         {/* buttons */}
         <section className="stack stack-3">
           <div className="flex items-end justify-between flex-wrap gap-2">

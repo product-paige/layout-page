@@ -4,6 +4,7 @@
 // ============================================================
 
 export type Variant = "fill" | "outline" | "ghost";
+export type ButtonColor = "ink" | "accent";
 export type IconSide = "left" | "right" | "none";
 export type Case = "normal" | "upper";
 export type IconName =
@@ -15,6 +16,7 @@ export type IconName =
 
 export type ButtonSettings = {
   variant: Variant;
+  color: ButtonColor;
   radius: number;
   px: number;
   py: number;
@@ -71,34 +73,50 @@ export function slug(name: string) {
 export function weightWord(w: number) {
   return w >= 600 ? "semibold" : w === 500 ? "medium" : "regular";
 }
-function fillCssFor(v: Variant) {
-  if (v === "fill") return "background:#161616;color:#fff;border-color:#161616;";
-  if (v === "outline") return "background:transparent;color:#161616;border-color:#161616;";
-  return "background:transparent;color:#161616;border-color:transparent;";
+// resolve a variant's concrete colors from the system tokens (for live rendering)
+export function resolveButtonColors(s: ButtonSettings, t: Tokens) {
+  const c = (s.color ?? "ink") === "accent" ? t.accent : t.ink;
+  if (s.variant === "fill") return { bg: c, fg: t.surface, bd: c };
+  if (s.variant === "outline") return { bg: "transparent", fg: c, bd: c };
+  return { bg: "transparent", fg: c, bd: "transparent" }; // ghost
+}
+// portable font stacks for exported code (no app-specific CSS vars)
+export const EXPORT_FONT_STACKS: Record<FontKey, string> = {
+  sans: "Inter, system-ui, sans-serif",
+  serif: "Georgia, 'Times New Roman', serif",
+  mono: "ui-monospace, SFMono-Regular, monospace",
+};
+// CSS color block referencing the exported token vars
+function fillCssVars(variant: Variant, color: ButtonColor) {
+  const c = color === "accent" ? "var(--accent)" : "var(--ink)";
+  if (variant === "fill") return `background:${c};color:var(--surface);border-color:${c};`;
+  if (variant === "outline") return `background:transparent;color:${c};border-color:${c};`;
+  return `background:transparent;color:${c};border-color:transparent;`;
 }
 
 // ---- exporters: turn saved variants into portable code ----
-export function exportButtonsCSS(vars: ButtonVariant[]) {
+export function exportButtonsCSS(vars: ButtonVariant[], tokens: Tokens) {
   let s =
-    ".btn{font-family:Inter,system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;line-height:1;cursor:pointer;border:1.5px solid transparent;text-decoration:none}\n.btn svg{width:1em;height:1em}\n";
+    `:root{\n  --accent:${tokens.accent};\n  --ink:${tokens.ink};\n  --surface:${tokens.surface};\n}\n` +
+    `.btn{font-family:${EXPORT_FONT_STACKS[tokens.font]};display:inline-flex;align-items:center;justify-content:center;line-height:1;cursor:pointer;border:1.5px solid transparent;text-decoration:none}\n.btn svg{width:1em;height:1em}\n`;
   vars.forEach((v) => {
     const x = v.s;
     s +=
       `.btn-${slug(v.name)}{border-radius:${x.radius}px;padding:${x.py}px ${x.px}px;gap:${x.gap}px;` +
-      `font-size:${x.fs}px;font-weight:${x.weight};${fillCssFor(x.variant)}` +
+      `font-size:${x.fs}px;font-weight:${x.weight};${fillCssVars(x.variant, x.color ?? "ink")}` +
       (x.textCase === "upper" ? "text-transform:uppercase;letter-spacing:.04em;" : "") +
       "}\n";
   });
   return s.trim();
 }
-export function exportButtonsTailwind(vars: ButtonVariant[]) {
+export function exportButtonsTailwind(vars: ButtonVariant[], tokens: Tokens) {
   const fw = (w: number) => (w >= 600 ? "font-semibold" : w === 500 ? "font-medium" : "font-normal");
-  const fill = (v: Variant) =>
-    v === "fill"
-      ? "bg-neutral-900 text-white border-neutral-900"
-      : v === "outline"
-        ? "bg-transparent text-neutral-900 border-neutral-900"
-        : "bg-transparent text-neutral-900 border-transparent";
+  const fill = (variant: Variant, color: ButtonColor) => {
+    const c = color === "accent" ? tokens.accent : tokens.ink;
+    if (variant === "fill") return `bg-[${c}] text-[${tokens.surface}] border-[${c}]`;
+    if (variant === "outline") return `bg-transparent text-[${c}] border-[${c}]`;
+    return `bg-transparent text-[${c}] border-transparent`;
+  };
   return vars
     .map((v) => {
       const x = v.s;
@@ -106,7 +124,7 @@ export function exportButtonsTailwind(vars: ButtonVariant[]) {
         "inline-flex items-center justify-center border-[1.5px]",
         `rounded-[${x.radius}px] px-[${x.px}px] py-[${x.py}px] gap-[${x.gap}px]`,
         `text-[${x.fs}px] ${fw(x.weight)}`,
-        fill(x.variant),
+        fill(x.variant, x.color ?? "ink"),
         x.textCase === "upper" ? "uppercase tracking-[.04em]" : "",
       ]
         .filter(Boolean)
@@ -115,16 +133,21 @@ export function exportButtonsTailwind(vars: ButtonVariant[]) {
     })
     .join("\n\n");
 }
-export function exportButtonsClaude(vars: ButtonVariant[]) {
-  let s = "Build a button component system in HTML/CSS. Font: Inter. Variants:\n";
+export function exportButtonsClaude(vars: ButtonVariant[], tokens: Tokens) {
+  const fontName =
+    tokens.font === "serif" ? "a serif (e.g. Georgia)" : tokens.font === "mono" ? "a monospace" : "Inter";
+  let s =
+    `Build a button component system in HTML/CSS. Font: ${fontName}. ` +
+    `Colors — accent ${tokens.accent}, ink ${tokens.ink}, surface ${tokens.surface}. Variants:\n`;
   vars.forEach((v) => {
     const x = v.s;
+    const col = (x.color ?? "ink") === "accent" ? "accent" : "ink";
     const look =
       x.variant === "fill"
-        ? "solid dark fill with white text"
+        ? `solid ${col} fill with surface-colored text`
         : x.variant === "outline"
-          ? "transparent with a dark 1.5px border"
-          : "transparent, no border (ghost)";
+          ? `transparent with a ${col} 1.5px border and ${col} text`
+          : `transparent, no border (ghost), ${col} text`;
     const ico =
       x.iconSide === "none"
         ? "no icon"
@@ -133,7 +156,7 @@ export function exportButtonsClaude(vars: ButtonVariant[]) {
       `- ${v.name}: ${look}; ${x.radius}px corner radius; ${x.py}px×${x.px}px padding; ` +
       `${x.fs}px ${weightWord(x.weight)} text${x.textCase === "upper" ? ", uppercase with .04em tracking" : ""}; ${ico}.\n`;
   });
-  s += "Use semantic class names: a base .btn plus a modifier per variant (e.g. .btn-primary).";
+  s += "Use semantic class names: a base .btn plus a modifier per variant (e.g. .btn-primary), with the colors as CSS variables.";
   return s;
 }
 
@@ -142,7 +165,7 @@ export function exportSystem(system: System, tab: ExportTab): string {
   if (system.buttons.length === 0) {
     return "/* This design system is empty — save some components first. */";
   }
-  if (tab === "css") return exportButtonsCSS(system.buttons);
-  if (tab === "tailwind") return exportButtonsTailwind(system.buttons);
-  return exportButtonsClaude(system.buttons);
+  if (tab === "css") return exportButtonsCSS(system.buttons, system.tokens);
+  if (tab === "tailwind") return exportButtonsTailwind(system.buttons, system.tokens);
+  return exportButtonsClaude(system.buttons, system.tokens);
 }

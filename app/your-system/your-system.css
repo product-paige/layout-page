@@ -13,6 +13,13 @@
 .your-system-page .ys-sys-name:focus{outline:none;border-color:var(--royal);background:var(--card)}
 .your-system-page .ys-sys-actions{display:flex;gap:8px;flex-shrink:0}
 .your-system-page .lpbtn:disabled{opacity:.4;cursor:not-allowed}
+/* token editor */
+.your-system-page .ys-tokens{display:flex;flex-wrap:wrap;gap:24px}
+.your-system-page .ys-token{display:flex;flex-direction:column;gap:8px;min-width:140px}
+.your-system-page .ys-token-row{display:flex;align-items:center;gap:8px}
+.your-system-page .ys-token-swatch{width:36px;height:36px;padding:0;border:1px solid var(--line);background:none;cursor:pointer}
+.your-system-page .ys-token-hex{width:96px;height:36px;padding:0 8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:var(--font-geist-mono),monospace;font-size:13px}
+.your-system-page .ys-token-hex:focus,.your-system-page .ys-token-swatch:focus{outline:none;border-color:var(--royal)}
 .your-system-page .ys-empty{display:flex;flex-direction:column;align-items:flex-start;gap:16px;border:1px solid var(--line);background:var(--card);padding:32px}
 .your-system-page .ys-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
 .your-system-page .ys-card{display:flex;flex-direction:column;gap:14px;border:1px solid var(--line);background:var(--card);padding:18px}

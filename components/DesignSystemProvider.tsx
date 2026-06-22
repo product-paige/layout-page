@@ -137,7 +137,7 @@ export function DesignSystemProvider({ children }: { children: React.ReactNode }
       updateActive((sys) => ({ ...sys, buttons: sys.buttons.filter((b) => b.id !== id) })),
     clearActiveButtons: () => updateActive((sys) => ({ ...sys, buttons: [] })),
     setToken: (key, value) =>
-      updateActive((sys) => ({ ...sys, tokens: { ...sys.tokens, [key]: value } })),
+      updateActive((sys) => ({ ...sys, tokens: { ...sys.tokens, [key]: value } as Tokens })),
   };
 
   return <DesignSystemContext.Provider value={ctx}>{children}</DesignSystemContext.Provider>;
