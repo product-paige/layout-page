@@ -9,13 +9,39 @@ import "./design-systems.css";
 type Tab = "claude" | "css" | "tailwind";
 
 const JUMP_SECTIONS = [
-  { id: "foundations", label: "Foundations" },
-  { id: "type", label: "Type" },
   { id: "color", label: "Color" },
+  { id: "type", label: "Type" },
   { id: "spacing", label: "Spacing" },
+  { id: "components", label: "Components" },
+  { id: "export", label: "Export" },
 ];
 
-// ---- code panel: derived text per tab ----
+// Semantic color roles — what a premium system exposes (not raw ramp stops).
+// Driven by the live --sx-* tokens inside the system scope, so they're always accurate.
+const ROLES: { name: string; v: string }[] = [
+  { name: "Background", v: "--sx-bg" },
+  { name: "Surface", v: "--sx-surface" },
+  { name: "Surface muted", v: "--sx-surface-muted" },
+  { name: "Text", v: "--sx-text" },
+  { name: "Text muted", v: "--sx-text-muted" },
+  { name: "Border", v: "--sx-border" },
+  { name: "Accent", v: "--sx-accent" },
+  { name: "Accent ink", v: "--sx-accent-ink" },
+];
+
+const RADII: { name: string; v: string }[] = [
+  { name: "Small", v: "--sx-radius-sm" },
+  { name: "Medium", v: "--sx-radius-md" },
+];
+
+function esc(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function highlight(t: string) {
+  return esc(t)
+    .replace(/^(#{1,4} .*)$/gm, '<span class="h">$1</span>')
+    .replace(/^(&gt; .*)$/gm, '<span class="q">$1</span>');
+}
 function tailwindCfg() {
   let s = '@theme {\n  --font-sans: "Funnel Sans", system-ui, sans-serif;\n  --font-mono: "Geist Mono", ui-monospace, monospace;\n\n';
   SS.tokens.colors.neutral.forEach((c) => (s += "  --color" + c.name.replace("--se", "") + ": " + c.value + ";\n"));
@@ -25,55 +51,36 @@ function tailwindCfg() {
   return s;
 }
 
-function esc(s: string) {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-function highlight(t: string) {
-  return esc(t)
-    .replace(/^(#{1,4} .*)$/gm, '<span class="h">$1</span>')
-    .replace(/^(&gt; .*)$/gm, '<span class="q">$1</span>');
-}
-
 export default function DesignSystemsPage() {
   const [tab, setTab] = useState<Tab>("claude");
   const [copied, setCopied] = useState(false);
-  const [activeJump, setActiveJump] = useState("foundations");
-  const [copiedSwatch, setCopiedSwatch] = useState<string | null>(null);
+  const [heroCopied, setHeroCopied] = useState(false);
+  const [activeJump, setActiveJump] = useState("color");
 
   const content = useMemo<Record<Tab, string>>(
-    () => ({
-      css: SS.cssVariables,
-      tailwind: tailwindCfg(),
-      claude: SS.claudePrompt,
-    }),
+    () => ({ css: SS.cssVariables, tailwind: tailwindCfg(), claude: SS.claudePrompt }),
     []
   );
-
   const currentText = content[tab];
 
-  const copyCode = useCallback(() => {
-    navigator.clipboard?.writeText(currentText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1300);
-  }, [currentText]);
-
-  // swatch click → copy value, flash "Copied"
-  const copySwatch = useCallback((value: string) => {
-    navigator.clipboard?.writeText(value);
-    setCopiedSwatch(value);
-    setTimeout(() => setCopiedSwatch((v) => (v === value ? null : v)), 900);
+  const copyText = useCallback((t: string, hero = false) => {
+    navigator.clipboard?.writeText(t);
+    if (hero) {
+      setHeroCopied(true);
+      setTimeout(() => setHeroCopied(false), 1300);
+    } else {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1300);
+    }
   }, []);
 
-  // jump tabs: click-to-scroll
   const jumpTo = useCallback((id: string) => {
     setActiveJump(id);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  // scroll-spy
   useEffect(() => {
-    const sections = JUMP_SECTIONS.map((s) => document.getElementById(s.id)).filter(
+    const els = JUMP_SECTIONS.map((s) => document.getElementById(s.id)).filter(
       (el): el is HTMLElement => el != null
     );
     const spy = new IntersectionObserver(
@@ -85,95 +92,64 @@ export default function DesignSystemsPage() {
       },
       { rootMargin: "-110px 0px -55% 0px", threshold: 0 }
     );
-    sections.forEach((s) => spy.observe(s));
+    els.forEach((s) => spy.observe(s));
     return () => spy.disconnect();
   }, []);
 
-  // specimen / example links are demos — never navigate
+  // specimen links are demos — never navigate
   const preventDemoNav = useCallback((e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest("a")) e.preventDefault();
   }, []);
-
-  const colorGroups: [string, typeof SS.tokens.colors.neutral][] = [
-    ["Neutral", SS.tokens.colors.neutral],
-    ["Dark", SS.tokens.colors.dark],
-    ["Color example", SS.tokens.colors.color],
-  ];
 
   return (
     <div className="design-systems-page min-w-0">
       <div className="px-8 pt-6">
         <Breadcrumbs items={[{ label: "Overview", href: "/" }, { label: "Design Systems" }]} />
       </div>
-      {/* hero: name + meta on the left, install / code on the right */}
-      <div className="grid lg:grid-cols-[1fr_minmax(0,460px)] gap-x-12 gap-y-9 px-8 py-9 border-b border-line items-start">
-        <div className="stack stack-3">
-          <h1 className="ts-heading-xl text-ink">Structured Editorial</h1>
-          <div className="flex flex-wrap gap-1.5">
-            {SS.tags.slice(0, 4).map((t) => (
-              <span className="tag" key={t}>
-                {t}
-              </span>
-            ))}
-          </div>
-          <p className="subhead" style={{ color: "var(--muted)" }}>
-            A complete grayscale-first Design System for structure-led websites.
-          </p>
-          <p className="text-[16px] leading-[1.55] max-w-[52ch]" style={{ color: "var(--muted)" }}>
-            Type, color, spacing, and components in one grayscale-first system. Light by default;
-            dark and color are optional.
-          </p>
+
+      {/* ===== HERO: name + personality + one quick action ===== */}
+      <div className="stack stack-3 px-8 py-9 border-b border-line">
+        <h1 className="ts-heading-xl text-ink">Structured Editorial</h1>
+        <div className="flex flex-wrap gap-1.5">
+          {SS.tags.slice(0, 4).map((t) => (
+            <span className="tag" key={t}>
+              {t}
+            </span>
+          ))}
         </div>
-        <div className="stack stack-3 min-w-0">
-          <div className="flex items-start justify-between gap-4">
-            <div className="stack stack-1">
-              <div className="lbl">Add to your site</div>
-              <p className="text-[16px]" style={{ color: "var(--muted)" }}>
-                Install once — every section you add inherits it.
-              </p>
-            </div>
-            <button
-              className={`lpbtn lpbtn--primary lpbtn--sm${copied ? " copied" : ""}`}
-              onClick={copyCode}
-            >
-              {copied ? (
-                <>
-                  <Check className="ico" size={15} strokeWidth={1.25} /> Copied
-                </>
-              ) : (
-                <>
-                  <Sparkles className="ico" size={15} strokeWidth={1.25} /> Copy
-                </>
-              )}
-            </button>
-          </div>
-          <div className="flex gap-5 overflow-x-auto">
-            {(
-              [
-                ["claude", "Claude prompt"],
-                ["css", "CSS"],
-                ["tailwind", "Tailwind"],
-              ] as [Tab, string][]
-            ).map(([id, label]) => (
-              <button
-                key={id}
-                className={`ds-ptab${tab === id ? " active" : ""}`}
-                onClick={() => setTab(id)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          <div className="border border-line" style={{ background: "var(--card)", maxHeight: 360, overflow: "auto" }}>
-            <div
-              className="ds-codeview px-5 py-4"
-              dangerouslySetInnerHTML={{ __html: highlight(currentText) }}
-            />
-          </div>
+        <p className="subhead" style={{ color: "var(--muted)", maxWidth: "60ch" }}>
+          A grayscale-first system for structure-led sites — type, color, spacing, and components in
+          one set. Light by default; dark and color are optional.
+        </p>
+        <div className="flex gap-3 flex-wrap">
+          <button
+            className={`lpbtn lpbtn--primary lpbtn--sm${heroCopied ? " copied" : ""}`}
+            onClick={() => copyText(SS.claudePrompt, true)}
+          >
+            {heroCopied ? (
+              <>
+                <Check className="ico" size={15} strokeWidth={1.25} /> Copied
+              </>
+            ) : (
+              <>
+                <Sparkles className="ico" size={15} strokeWidth={1.25} /> Copy for Claude
+              </>
+            )}
+          </button>
+          <a
+            className="lpbtn lpbtn--secondary lpbtn--sm"
+            href="#export"
+            onClick={(e) => {
+              e.preventDefault();
+              jumpTo("export");
+            }}
+          >
+            Install options ↓
+          </a>
         </div>
       </div>
 
-      {/* sticky jump nav (section anchors) */}
+      {/* sticky jump nav */}
       <div className="ds-jumpbar px-8 py-3">
         <div className="flex gap-5 overflow-x-auto">
           {JUMP_SECTIONS.map((s) => (
@@ -193,20 +169,52 @@ export default function DesignSystemsPage() {
       </div>
 
       {/* ===== FOUNDATIONS ===== */}
-      <div className="stack stack-2 px-8 py-8 border-b border-line" id="foundations" data-jump>
-        <h2 className="ts-section-lg">Foundations</h2>
-        <p className="text-[16px]" style={{ color: "var(--muted)", maxWidth: "60ch" }}>
-          The tokens everything is built from — type, color, and spacing.
+      <div className="stack stack-1 px-8 pt-8 pb-2">
+        <div className="lbl" style={{ color: "var(--muted)" }}>
+          Foundations
+        </div>
+      </div>
+
+      {/* Color — semantic roles */}
+      <div className="stack stack-3 px-8 py-8 border-b border-line" id="color" data-jump>
+        <div className="flex items-end justify-between">
+          <h3>Color</h3>
+          <span className="lbl">Roles · grayscale-first</span>
+        </div>
+        <div
+          className="sx-canvas border border-line"
+          data-system="structured-editorial"
+          data-mode="neutral"
+          style={{ padding: "var(--sx-space-5)" }}
+        >
+          <div className="ds-roles">
+            {ROLES.map((r) => (
+              <div className="ds-role" key={r.v}>
+                <span className="ds-role-sw" style={{ background: `var(${r.v})` }} />
+                <span className="ds-role-name">{r.name}</span>
+                <span className="ds-role-var">{r.v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <p className="text-[16px]" style={{ color: "var(--muted)", maxWidth: "62ch" }}>
+          Eight semantic roles power every section. Switch to Dark or Color mode in the section
+          preview to see the same roles re-mapped — the accent only appears in Color mode.
         </p>
       </div>
 
-      {/* typography specimens */}
+      {/* Type */}
       <div className="stack stack-3 px-8 py-9 border-b border-line" id="type" data-jump>
         <div className="flex items-end justify-between">
           <h3>Typography</h3>
           <span className="lbl">Funnel Sans</span>
         </div>
-        <div className="sx-canvas border border-line" data-system="structured-editorial" data-mode="neutral" onClick={preventDemoNav}>
+        <div
+          className="sx-canvas border border-line"
+          data-system="structured-editorial"
+          data-mode="neutral"
+          onClick={preventDemoNav}
+        >
           {SS.tokens.typography.map((t, i) => {
             const mono = t.name === "Mono Label";
             const specimenStyle: React.CSSProperties = {
@@ -242,46 +250,7 @@ export default function DesignSystemsPage() {
         </div>
       </div>
 
-      {/* color swatches */}
-      <div className="stack stack-3 px-8 py-9 border-b border-line" id="color" data-jump>
-        <div className="flex items-end justify-between">
-          <h3>Color</h3>
-          <span className="lbl">Grayscale-first</span>
-        </div>
-        <div className="stack stack-4">
-          {colorGroups.map(([label, arr]) => (
-            <div key={label}>
-              <div className="lbl mb-3">{label}</div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 border-t border-l border-line">
-                {arr.map((c) => {
-                  const isCopied = copiedSwatch === c.value;
-                  return (
-                    <button
-                      key={c.name}
-                      className="border-r border-b border-line p-3 text-left"
-                      style={{ cursor: "pointer", background: "transparent" }}
-                      onClick={() => copySwatch(c.value)}
-                    >
-                      <span style={{ display: "block", height: 36, border: "1px solid var(--line)", background: c.value }} />
-                      <span
-                        className={`lbl${isCopied ? " ds-copied" : ""}`}
-                        style={{ display: "block", marginTop: 8, fontSize: 10.5, color: "var(--ink)" }}
-                      >
-                        {isCopied ? "Copied" : c.name}
-                      </span>
-                      <span style={{ display: "block", fontFamily: "var(--font-geist-mono), monospace", fontSize: 10.5, color: "var(--muted)" }}>
-                        {c.value}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* spacing — real applied layout spacing */}
+      {/* Spacing */}
       <div className="stack stack-3 px-8 py-9 border-b border-line" id="spacing" data-jump>
         <div className="flex items-end justify-between">
           <h3>Spacing</h3>
@@ -308,20 +277,6 @@ export default function DesignSystemsPage() {
             </div>
             <hr className="sx-divider" />
             <div className="ds-spec-row">
-              <span className="sx-label ds-spec-cap">Section padding · --sx-space-7 · 72px</span>
-              <div style={{ border: "1px dashed var(--sx-border)" }}>
-                <div
-                  className="sx-card"
-                  style={{ margin: "var(--sx-space-7) var(--sx-space-6)", display: "flex", alignItems: "center", justifyContent: "center" }}
-                >
-                  <span className="sx-label" style={{ color: "var(--sx-text-soft)" }}>
-                    Content
-                  </span>
-                </div>
-              </div>
-            </div>
-            <hr className="sx-divider" />
-            <div className="ds-spec-row">
               <span className="sx-label ds-spec-cap">Scale · 6px base</span>
               <div style={{ display: "flex", alignItems: "flex-end", gap: 12, flexWrap: "wrap" }}>
                 {SS.tokens.spacing
@@ -340,22 +295,128 @@ export default function DesignSystemsPage() {
         </div>
       </div>
 
-      {/* best practices — concise single list */}
-      <div className="stack stack-3 px-8 py-9">
+      {/* Radius */}
+      <div className="stack stack-3 px-8 py-9 border-b border-line">
         <div className="flex items-end justify-between">
-          <h3>Best practices</h3>
-          <span className="lbl">Use it well</span>
+          <h3>Radius</h3>
+          <span className="lbl">2 steps</span>
         </div>
-        <ul className="stack stack-3">
-          {SS.guidelines.do.slice(0, 5).map((d) => (
-            <li className="flex gap-3 items-start" key={d}>
-              <Check className="ico" size={16} strokeWidth={1.5} style={{ color: "var(--royal)", marginTop: 4, flexShrink: 0 }} />
-              <span className="text-[16px]" style={{ color: "var(--ink)" }}>
-                {d}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <div
+          className="sx-canvas border border-line"
+          data-system="structured-editorial"
+          data-mode="neutral"
+          style={{ padding: "var(--sx-space-5)" }}
+        >
+          <div className="sx-cluster" style={{ gap: "var(--sx-space-4)" }}>
+            {RADII.map((r) => (
+              <div key={r.v} style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start" }}>
+                <span
+                  style={{
+                    width: 80,
+                    height: 56,
+                    background: "var(--sx-surface-muted)",
+                    border: "1px solid var(--sx-border)",
+                    borderRadius: `var(${r.v})`,
+                  }}
+                />
+                <span className="sx-label" style={{ color: "var(--sx-text-muted)" }}>
+                  {r.name} · {r.v}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ===== COMPONENTS ===== */}
+      <div className="stack stack-3 px-8 py-9 border-b border-line" id="components" data-jump>
+        <div className="flex items-end justify-between">
+          <h3>Components</h3>
+          <span className="lbl">Built from the tokens</span>
+        </div>
+        <div
+          className="sx-canvas border border-line"
+          data-system="structured-editorial"
+          data-mode="neutral"
+          onClick={preventDemoNav}
+          style={{ padding: "var(--sx-space-5)" }}
+        >
+          <div className="stack" style={{ gap: "var(--sx-space-5)" }}>
+            <div className="ds-comp-row">
+              <span className="sx-label ds-comp-cap">Buttons</span>
+              <div className="sx-cluster" style={{ gap: "var(--sx-space-2)" }}>
+                <a className="sx-button sx-button-primary" href="#">Primary</a>
+                <a className="sx-button sx-button-dark" href="#">Dark</a>
+                <a className="sx-button sx-button-outline" href="#">Outline</a>
+                <a className="sx-button sx-button-outline sx-button--sm" href="#">Small</a>
+              </div>
+            </div>
+            <hr className="sx-divider" />
+            <div className="ds-comp-row">
+              <span className="sx-label ds-comp-cap">Card</span>
+              <div className="sx-card" style={{ maxWidth: 340, display: "flex", flexDirection: "column", gap: "var(--sx-space-2)" }}>
+                <p className="sx-eyebrow">[ Card ]</p>
+                <h4 className="sx-feature-title">A surface with system styling</h4>
+                <p className="sx-body" style={{ fontSize: "var(--sx-body-md)" }}>
+                  Border, radius, and padding all come from the tokens.
+                </p>
+              </div>
+            </div>
+            <hr className="sx-divider" />
+            <div className="ds-comp-row">
+              <span className="sx-label ds-comp-cap">Input · Tag · Link</span>
+              <div className="sx-cluster" style={{ gap: "var(--sx-space-3)", alignItems: "center" }}>
+                <input className="sx-input" style={{ maxWidth: 240 }} placeholder="you@company.com" />
+                <span className="sx-tag">Tag</span>
+                <a className="sx-link" href="#">Text link</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== EXPORT ===== */}
+      <div className="stack stack-3 px-8 py-9" id="export" data-jump>
+        <div className="flex items-end justify-between flex-wrap gap-2">
+          <h3>Export</h3>
+          <span className="lbl">Add to your site</span>
+        </div>
+        <p className="text-[16px]" style={{ color: "var(--muted)", maxWidth: "66ch" }}>
+          Install once — every section you add inherits it. Copy a Claude prompt, CSS variables, or a
+          Tailwind theme.
+        </p>
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex gap-5 overflow-x-auto">
+            {(
+              [
+                ["claude", "Claude prompt"],
+                ["css", "CSS"],
+                ["tailwind", "Tailwind"],
+              ] as [Tab, string][]
+            ).map(([id, label]) => (
+              <button key={id} className={`ds-ptab${tab === id ? " active" : ""}`} onClick={() => setTab(id)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <button
+            className={`lpbtn lpbtn--primary lpbtn--sm${copied ? " copied" : ""}`}
+            onClick={() => copyText(currentText)}
+          >
+            {copied ? (
+              <>
+                <Check className="ico" size={15} strokeWidth={1.25} /> Copied
+              </>
+            ) : (
+              <>
+                <Sparkles className="ico" size={15} strokeWidth={1.25} /> Copy
+              </>
+            )}
+          </button>
+        </div>
+        <div className="border border-line" style={{ background: "var(--card)", maxHeight: 360, overflow: "auto" }}>
+          <div className="ds-codeview px-5 py-4" dangerouslySetInnerHTML={{ __html: highlight(currentText) }} />
+        </div>
       </div>
     </div>
   );

@@ -35,3 +35,14 @@
 /* calmer specimens: let spacing do the separating */
 .ds-spec .sx-divider{display:none}
 .ds-spec > .stack{gap:var(--sx-space-6) !important}
+
+/* color roles (semantic swatches, driven by the live --sx-* tokens) */
+.design-systems-page .ds-roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--sx-space-3)}
+.design-systems-page .ds-role{display:flex;flex-direction:column;gap:6px}
+.design-systems-page .ds-role-sw{height:48px;border:1px solid var(--sx-border);display:block}
+.design-systems-page .ds-role-name{font-family:var(--sx-font-sans);font-size:13px;font-weight:500;color:var(--sx-text)}
+.design-systems-page .ds-role-var{font-family:var(--font-geist-mono),monospace;font-size:11px;color:var(--sx-text-muted)}
+
+/* component specimens */
+.design-systems-page .ds-comp-row{display:flex;flex-direction:column;gap:var(--sx-space-3)}
+.design-systems-page .ds-comp-cap{color:var(--sx-text-soft)}
