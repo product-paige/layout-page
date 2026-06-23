@@ -9,9 +9,9 @@ const LINKS = [
   { href: "/", label: "Overview" },
   { href: "/sections", label: "Browse Sections" },
   { href: "/design-systems", label: "Design Systems" },
-  { href: "/components", label: "Components" },
   { href: "/page-layouts", label: "Page Layouts" },
-  { href: "/your-system", label: "Your System" },
+  // Builder (Components, Your System) hidden for the Lane 1 MVP — pages still
+  // exist by URL; re-add when the builder ships (Lane 2/3).
 ];
 
 export default function TopNav() {
