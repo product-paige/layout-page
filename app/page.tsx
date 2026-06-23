@@ -1,16 +1,13 @@
 import Link from "next/link";
 import { LayoutGrid, Pilcrow, Layers, CornerDownRight } from "lucide-react";
+import { SECTIONS } from "@/lib/sections";
 
-const CATEGORIES = [
-  { cat: "Header", count: 18 },
-  { cat: "Hero", count: 26 },
-  { cat: "Features", count: 22 },
-  { cat: "Content", count: 19 },
-  { cat: "Testimonials", count: 16 },
-  { cat: "Pricing", count: 14 },
-  { cat: "FAQ", count: 12 },
-  { cat: "Footer", count: 15 },
-];
+// real catalog numbers — derived from the section data so they stay honest
+const SECTION_COUNT = SECTIONS.length;
+const CATEGORIES = Array.from(new Set(SECTIONS.map((s) => s.category))).map((cat) => ({
+  cat,
+  count: SECTIONS.filter((s) => s.category === cat).length,
+}));
 
 export default function Home() {
   return (
@@ -104,7 +101,9 @@ export default function Home() {
         <div className="grid grid-cols-2 lg:grid-cols-4 border-t border-l border-line">
           {CATEGORIES.map((c) => (
             <Link key={c.cat} href={`/sections?cat=${c.cat}`} className="catcard">
-              <span className="lbl catcount">{c.count} layouts</span>
+              <span className="lbl catcount">
+                {c.count} {c.count === 1 ? "section" : "sections"}
+              </span>
               <span className="cattitle">
                 {c.cat} <CornerDownRight className="ico" size={16} strokeWidth={1.25} />
               </span>
@@ -165,7 +164,7 @@ export default function Home() {
               Browse the whole library and copy a starter set. No card needed.
             </p>
             <ul className="mb-8">
-              <li className="py-2.5 border-t border-linesoft lbl">Preview all 240 layouts</li>
+              <li className="py-2.5 border-t border-linesoft lbl">Preview all {SECTION_COUNT} sections</li>
               <li className="py-2.5 border-t border-linesoft lbl">Copy 12 free sections</li>
               <li className="py-2.5 border-t border-linesoft lbl">1 category unlocked</li>
             </ul>
@@ -183,7 +182,7 @@ export default function Home() {
               Every layout and every style, unlimited copies, plus new sections added each week.
             </p>
             <ul className="mb-8">
-              <li className="py-2.5 border-t border-cream/20 lbl text-cream/80">All 240 structure-first layouts</li>
+              <li className="py-2.5 border-t border-cream/20 lbl text-cream/80">All {SECTION_COUNT} structure-first sections</li>
               <li className="py-2.5 border-t border-cream/20 lbl text-cream/80">Every category, style &amp; token theme</li>
               <li className="py-2.5 border-t border-cream/20 lbl text-cream/80">Copy-fit notes for each section</li>
               <li className="py-2.5 border-t border-cream/20 lbl text-cream/80">&quot;Copy for Claude&quot; mode</li>

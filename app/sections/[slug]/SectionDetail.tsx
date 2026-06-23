@@ -12,7 +12,6 @@ type View = "claude" | "code";
 const SYSTEMS: { value: string; label: string; soon?: boolean }[] = [
   { value: "structured-editorial", label: "Structured Editorial" },
   { value: "scion", label: "Scion" },
-  { value: "soon", label: "Commerce Clean", soon: true },
 ];
 
 const MODES: { value: Mode; label: string }[] = [
