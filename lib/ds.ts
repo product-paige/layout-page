@@ -5,6 +5,7 @@
 
 export type Variant = "fill" | "outline" | "ghost";
 export type ButtonColor = "ink" | "accent";
+export type IconBgKey = "none" | "ink" | "accent" | "surface";
 export type IconSide = "left" | "right" | "none";
 export type Case = "normal" | "upper";
 export type IconName =
@@ -26,6 +27,10 @@ export type ButtonSettings = {
   fs: number;
   weight: number;
   textCase: Case;
+  borderWidth: number; // px
+  letterSpacing: number; // em × 100 (e.g. 4 = 0.04em)
+  iconBg: IconBgKey; // optional colored container behind the icon
+  iconPad: number; // px, padding inside that container
 };
 export type ButtonVariant = { id: string; name: string; s: ButtonSettings };
 
@@ -80,6 +85,13 @@ export function resolveButtonColors(s: ButtonSettings, t: Tokens) {
   if (s.variant === "outline") return { bg: "transparent", fg: c, bd: c };
   return { bg: "transparent", fg: c, bd: "transparent" }; // ghost
 }
+// resolve the optional icon-container colors from tokens (null = no container)
+export function resolveIconBg(key: IconBgKey, t: Tokens): { bg: string; fg: string } | null {
+  if (!key || key === "none") return null;
+  if (key === "ink") return { bg: t.ink, fg: t.surface };
+  if (key === "accent") return { bg: t.accent, fg: t.surface };
+  return { bg: t.surface, fg: t.ink }; // surface
+}
 // portable font stacks for exported code (no app-specific CSS vars)
 export const EXPORT_FONT_STACKS: Record<FontKey, string> = {
   sans: "Inter, system-ui, sans-serif",
@@ -101,10 +113,12 @@ export function exportButtonsCSS(vars: ButtonVariant[], tokens: Tokens) {
     `.btn{font-family:${EXPORT_FONT_STACKS[tokens.font]};display:inline-flex;align-items:center;justify-content:center;line-height:1;cursor:pointer;border:1.5px solid transparent;text-decoration:none}\n.btn svg{width:1em;height:1em}\n`;
   vars.forEach((v) => {
     const x = v.s;
+    const ls = (x.letterSpacing ?? 0) / 100;
     s +=
       `.btn-${slug(v.name)}{border-radius:${x.radius}px;padding:${x.py}px ${x.px}px;gap:${x.gap}px;` +
-      `font-size:${x.fs}px;font-weight:${x.weight};${fillCssVars(x.variant, x.color ?? "ink")}` +
-      (x.textCase === "upper" ? "text-transform:uppercase;letter-spacing:.04em;" : "") +
+      `font-size:${x.fs}px;font-weight:${x.weight};border-width:${x.borderWidth ?? 1.5}px;${fillCssVars(x.variant, x.color ?? "ink")}` +
+      (ls !== 0 ? `letter-spacing:${ls}em;` : "") +
+      (x.textCase === "upper" ? "text-transform:uppercase;" : "") +
       "}\n";
   });
   return s.trim();
@@ -120,12 +134,15 @@ export function exportButtonsTailwind(vars: ButtonVariant[], tokens: Tokens) {
   return vars
     .map((v) => {
       const x = v.s;
+      const ls = (x.letterSpacing ?? 0) / 100;
       const cls = [
-        "inline-flex items-center justify-center border-[1.5px]",
+        "inline-flex items-center justify-center",
+        `border-[${x.borderWidth ?? 1.5}px]`,
         `rounded-[${x.radius}px] px-[${x.px}px] py-[${x.py}px] gap-[${x.gap}px]`,
         `text-[${x.fs}px] ${fw(x.weight)}`,
         fill(x.variant, x.color ?? "ink"),
-        x.textCase === "upper" ? "uppercase tracking-[.04em]" : "",
+        x.textCase === "upper" ? "uppercase" : "",
+        ls !== 0 ? `tracking-[${ls}em]` : "",
       ]
         .filter(Boolean)
         .join(" ");
@@ -152,9 +169,15 @@ export function exportButtonsClaude(vars: ButtonVariant[], tokens: Tokens) {
       x.iconSide === "none"
         ? "no icon"
         : `a ${x.icon.replace(/-/g, " ")} icon on the ${x.iconSide}, ${x.gap}px from the label`;
+    const bw = x.borderWidth ?? 1.5;
+    const ls = (x.letterSpacing ?? 0) / 100;
+    const iconBgNote =
+      x.iconBg && x.iconBg !== "none"
+        ? `, icon sits in a ${x.iconBg} background container with ${x.iconPad ?? 6}px padding`
+        : "";
     s +=
-      `- ${v.name}: ${look}; ${x.radius}px corner radius; ${x.py}px×${x.px}px padding; ` +
-      `${x.fs}px ${weightWord(x.weight)} text${x.textCase === "upper" ? ", uppercase with .04em tracking" : ""}; ${ico}.\n`;
+      `- ${v.name}: ${look}; ${x.radius}px corner radius; ${bw}px border; ${x.py}px×${x.px}px padding; ` +
+      `${x.fs}px ${weightWord(x.weight)} text${x.textCase === "upper" ? ", uppercase" : ""}${ls !== 0 ? `, ${ls}em letter-spacing` : ""}; ${ico}${iconBgNote}.\n`;
   });
   s += "Use semantic class names: a base .btn plus a modifier per variant (e.g. .btn-primary), with the colors as CSS variables.";
   return s;

@@ -14,6 +14,7 @@ import {
   type IconName,
   type Tokens,
   resolveButtonColors,
+  resolveIconBg,
   FONT_STACKS,
 } from "@/lib/ds";
 import { useDesignSystem } from "@/components/DesignSystemProvider";
@@ -30,6 +31,7 @@ const ICONS: Record<IconName, LucideIcon> = {
 // the system's tokens) + font. Used by the stage, the compare grid, and Your System.
 export function settingsToStyle(s: ButtonSettings, tokens: Tokens): CSSProperties {
   const c = resolveButtonColors(s, tokens);
+  const ib = resolveIconBg(s.iconBg ?? "none", tokens);
   return {
     "--bt-radius": `${s.radius}px`,
     "--bt-px": `${s.px}px`,
@@ -40,6 +42,11 @@ export function settingsToStyle(s: ButtonSettings, tokens: Tokens): CSSPropertie
     "--bt-bg": c.bg,
     "--bt-fg": c.fg,
     "--bt-bd": c.bd,
+    "--bt-bw": `${s.borderWidth ?? 1.5}px`,
+    "--bt-ls": `${(s.letterSpacing ?? 0) / 100}em`,
+    "--bt-icon-bg": ib ? ib.bg : "transparent",
+    "--bt-icon-fg": ib ? ib.fg : "currentColor",
+    "--bt-icon-pad": ib ? `${s.iconPad ?? 6}px` : "0px",
     "--bt-font": FONT_STACKS[tokens.font],
   } as CSSProperties;
 }

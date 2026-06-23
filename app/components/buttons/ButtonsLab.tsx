@@ -21,6 +21,7 @@ import {
   type Case,
   type IconName,
   type ButtonColor,
+  type IconBgKey,
   type ButtonSettings as Settings,
   type ButtonVariant as SavedVariant,
   type ExportTab,
@@ -69,10 +70,14 @@ export default function ButtonsLab() {
   const [weight, setWeight] = useState(500);
   const [textCase, setTextCase] = useState<Case>("normal");
   const [color, setColor] = useState<ButtonColor>("ink");
+  const [borderWidth, setBorderWidth] = useState(1.5);
+  const [letterSpacing, setLetterSpacing] = useState(0);
+  const [iconBg, setIconBg] = useState<IconBgKey>("none");
+  const [iconPad, setIconPad] = useState(6);
   const [copied, setCopied] = useState(false);
 
   // design system: shared store (persisted)
-  const { active, addButton, updateButton, removeButton } = useDesignSystem();
+  const { active, addButton, updateButton, removeButton, setToken } = useDesignSystem();
   const variants = active.buttons;
   const [variantName, setVariantName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -82,17 +87,17 @@ export default function ButtonsLab() {
   const ActiveIcon = ICONS.find((i) => i.name === icon)!.Icon;
 
   const labStyle = settingsToStyle(
-    { variant, color, radius, px, py, icon, iconSide, gap, fs, weight, textCase },
+    { variant, color, radius, px, py, icon, iconSide, gap, fs, weight, textCase, borderWidth, letterSpacing, iconBg, iconPad },
     active.tokens,
   );
 
   function copyCode() {
     const uc = textCase === "upper";
     const cols = resolveButtonColors(
-      { variant, color, radius, px, py, icon, iconSide, gap, fs, weight, textCase },
+      { variant, color, radius, px, py, icon, iconSide, gap, fs, weight, textCase, borderWidth, letterSpacing, iconBg, iconPad },
       active.tokens,
     );
-    const fillCss = `background:${cols.bg};color:${cols.fg};border:1.5px solid ${cols.bd};`;
+    const fillCss = `background:${cols.bg};color:${cols.fg};border:${borderWidth}px solid ${cols.bd};`;
     const iconSvg = ICON_SVG[icon];
     const iconHtml =
       iconSide === "none"
@@ -116,7 +121,8 @@ export default function ButtonsLab() {
       weight +
       ";line-height:1;cursor:pointer;" +
       fillCss +
-      (uc ? "text-transform:uppercase;letter-spacing:.04em;" : "") +
+      (letterSpacing !== 0 ? "letter-spacing:" + letterSpacing / 100 + "em;" : "") +
+      (uc ? "text-transform:uppercase;" : "") +
       "}\n.btn svg{width:1em;height:1em}";
     const btn =
       '<button class="btn">' +
@@ -142,6 +148,10 @@ export default function ButtonsLab() {
     fs,
     weight,
     textCase,
+    borderWidth,
+    letterSpacing,
+    iconBg,
+    iconPad,
   });
 
   function saveVariant() {
@@ -167,6 +177,10 @@ export default function ButtonsLab() {
     setFs(v.s.fs);
     setWeight(v.s.weight);
     setTextCase(v.s.textCase);
+    setBorderWidth(v.s.borderWidth ?? 1.5);
+    setLetterSpacing(v.s.letterSpacing ?? 0);
+    setIconBg(v.s.iconBg ?? "none");
+    setIconPad(v.s.iconPad ?? 6);
     setEditingId(v.id);
     setVariantName(v.name);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -251,6 +265,13 @@ export default function ButtonsLab() {
             </div>
             <input type="range" min={4} max={28} step={1} value={py} onChange={(e) => setPy(Number(e.target.value))} className="cl-range" />
           </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Border width</span>
+              <span className="cl-val">{borderWidth}px</span>
+            </div>
+            <input type="range" min={0} max={4} step={0.5} value={borderWidth} onChange={(e) => setBorderWidth(Number(e.target.value))} className="cl-range" />
+          </div>
         </RailGroup>
 
         <RailGroup title="Icon">
@@ -290,15 +311,67 @@ export default function ButtonsLab() {
             </div>
             <input type="range" min={0} max={20} step={1} value={gap} onChange={(e) => setGap(Number(e.target.value))} className="cl-range" />
           </div>
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Background</span>
+            <div className="rail-segs">
+              {(["none", "ink", "accent", "surface"] as IconBgKey[]).map((b) => (
+                <button
+                  key={b}
+                  className={`cl-seg${iconBg === b ? " active" : ""}`}
+                  onClick={() => setIconBg(b)}
+                >
+                  {b === "none" ? "None" : b.charAt(0).toUpperCase() + b.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Bg padding</span>
+              <span className="cl-val">{iconPad}px</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={14}
+              step={1}
+              value={iconPad}
+              onChange={(e) => setIconPad(Number(e.target.value))}
+              className="cl-range"
+              disabled={iconBg === "none"}
+            />
+          </div>
         </RailGroup>
 
         <RailGroup title="Type">
+          <div className="rail-ctrl-inner">
+            <span className="lbl">Font</span>
+            <div className="rail-segs">
+              {(["sans", "serif", "mono"] as const).map((f) => (
+                <button
+                  key={f}
+                  className={`cl-seg${active.tokens.font === f ? " active" : ""}`}
+                  onClick={() => setToken("font", f)}
+                >
+                  {f === "sans" ? "Sans" : f === "serif" ? "Serif" : "Mono"}
+                </button>
+              ))}
+            </div>
+            <span className="cl-hint">System font — set your exact font in your CSS later.</span>
+          </div>
           <div className="rail-ctrl-inner">
             <div className="rail-head">
               <span className="lbl">Font size</span>
               <span className="cl-val">{fs}px</span>
             </div>
             <input type="range" min={12} max={22} step={1} value={fs} onChange={(e) => setFs(Number(e.target.value))} className="cl-range" />
+          </div>
+          <div className="rail-ctrl-inner">
+            <div className="rail-head">
+              <span className="lbl">Letter spacing</span>
+              <span className="cl-val">{(letterSpacing / 100).toFixed(2)}em</span>
+            </div>
+            <input type="range" min={-4} max={16} step={1} value={letterSpacing} onChange={(e) => setLetterSpacing(Number(e.target.value))} className="cl-range" />
           </div>
           <div className="rail-ctrl-inner">
             <span className="lbl">Weight</span>
